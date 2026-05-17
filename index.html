@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLK Photography | Indian Wedding Photography & Videography</title>
+  <meta name="description" content="MLK Photography booking enquiry app for Indian wedding photography and videography in Kajang, Malaysia.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="MLK Photography home">
+      <span class="logo-mark">MLK</span>
+      <span>MLK PHOTOGRAPHY</span>
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#services">Services</a>
+      <a href="#packages">Packages</a>
+      <a href="#how">How it works</a>
+      <a href="#reviews">Reviews</a>
+      <a href="gallery.html">Gallery</a>
+      <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-card glass">
+          <span class="eyebrow">Indian Wedding Photography & Videography</span>
+          <h1>Premium memories with a modern glass experience.</h1>
+          <p class="lead">
+            MLK Photography helps you enquire, choose packages, continue on WhatsApp,
+            view Google Drive galleries, select photos, and share reviews in one simple flow.
+          </p>
+          <div class="hero-meta">
+            <span class="pill">Kajang, Malaysia</span>
+            <span class="pill">Comp. Reg No: TR0243394-M</span>
+            <span class="pill">Google Drive Delivery</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+            <a class="btn btn-secondary" href="#packages">View Packages</a>
+            <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
+          </div>
+        </div>
+
+        <div class="visual-card glass" aria-label="MLK Photography visual card">
+          <div class="visual-info">
+            <span class="eyebrow">Booking flow</span>
+            <h3>Submit details, save to Google Sheet, continue on WhatsApp.</h3>
+            <p class="muted">Designed mobile-first for customers coming from WhatsApp.</p>
+            <div class="stats">
+              <div class="stat"><strong>4</strong><span>Easy steps</span></div>
+              <div class="stat"><strong>8+</strong><span>Event types</span></div>
+              <div class="stat"><strong>RM500+</strong><span>Packages</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Services</span>
+            <h2>For weddings, ceremonies, events and shoots.</h2>
+          </div>
+          <p>Customers can choose one or multiple event types before selecting a package.</p>
+        </div>
+        <div class="grid-4">
+          <article class="service-card glass-soft">
+            <div class="icon">📷</div>
+            <h3>Photography</h3>
+            <p class="muted">Wedding, reception, pre-wedding, naming ceremony, gym and event coverage.</p>
+          </article>
+          <article class="service-card glass-soft">
+            <div class="icon">🎬</div>
+            <h3>Videography</h3>
+            <p class="muted">Full event video, cinematic montage, Full HD, 4K and drone options.</p>
+          </article>
+          <article class="service-card glass-soft">
+            <div class="icon">💾</div>
+            <h3>Drive Gallery</h3>
+            <p class="muted">Photos can be delivered from Google Drive and viewed inside the app.</p>
+          </article>
+          <article class="service-card glass-soft">
+            <div class="icon">⭐</div>
+            <h3>Customer Review</h3>
+            <p class="muted">After photo selection, customers can submit reviews for homepage display.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="events" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Event types</span>
+            <h2>Choose one or multiple events.</h2>
+          </div>
+          <button class="btn btn-primary js-open-enquiry" type="button">Choose Event Type</button>
+        </div>
+        <div id="homeEventChips" class="event-chip-wrap"></div>
+      </div>
+    </section>
+
+    <section id="packages" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Packages</span>
+            <h2>Package cards with full features.</h2>
+          </div>
+          <p>Package price is the final package total. Transportation charges are not included and will be confirmed separately.</p>
+        </div>
+        <div id="packageGrid" class="package-grid"></div>
+      </div>
+    </section>
+
+    <section id="how" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">How it works</span>
+            <h2>Simple enquiry to WhatsApp flow.</h2>
+          </div>
+        </div>
+        <div class="grid-4 steps">
+          <article class="step-card glass-soft">
+            <h3>Select event type</h3>
+            <p class="muted">Customer chooses one or multiple event types.</p>
+          </article>
+          <article class="step-card glass-soft">
+            <h3>Choose package</h3>
+            <p class="muted">Customer selects Package A, B, C, Only Photos, Photography Only or Custom.</p>
+          </article>
+          <article class="step-card glass-soft">
+            <h3>Submit enquiry</h3>
+            <p class="muted">Details are saved into Google Sheet before WhatsApp opens.</p>
+          </article>
+          <article class="step-card glass-soft">
+            <h3>Continue on WhatsApp</h3>
+            <p class="muted">Auto-filled message opens for the customer to send.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery-preview" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Gallery</span>
+            <h2>Google Drive photo selection ready.</h2>
+          </div>
+          <a class="btn btn-secondary" href="gallery.html">Open Gallery Page</a>
+        </div>
+        <div class="gallery-preview">
+          <div class="gallery-tile"><strong>Wedding</strong></div>
+          <div class="gallery-tile"><strong>Pre-wedding</strong></div>
+          <div class="gallery-tile"><strong>Reception</strong></div>
+          <div class="gallery-tile"><strong>Naming Ceremony</strong></div>
+          <div class="gallery-tile"><strong>Gym Shoot</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reviews" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Reviews</span>
+            <h2>What our customers say.</h2>
+          </div>
+          <p>Reviews appear here only after the customer gives permission and admin approves in Google Sheet.</p>
+        </div>
+        <div id="reviewTrack" class="review-track"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-card glass">
+      <div>
+        <h3>MLK PHOTOGRAPHY</h3>
+        <p class="muted">Indian Wedding Photography & Videography, Kajang, Malaysia<br>Comp. Reg No: TR0243394-M</p>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+        <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="enquiryModal" class="modal" aria-hidden="true">
+    <div class="modal-panel glass" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow">MLK Booking Enquiry</span>
+          <h2 id="modalTitle">Submit & continue to WhatsApp.</h2>
+          <p class="muted">Your enquiry will be saved to Google Sheet first.</p>
+        </div>
+        <button id="closeModal" class="close-btn" type="button" aria-label="Close enquiry form">✕</button>
+      </div>
+
+      <form id="enquiryForm" class="wizard">
+        <div class="progress" aria-hidden="true">
+          <span class="active"></span><span></span><span></span><span></span>
+        </div>
+
+        <section class="wizard-step active" data-step="1">
+          <h3>1. Select event type</h3>
+          <p class="muted">You can choose more than one.</p>
+          <div id="eventChoices" class="event-chip-wrap"></div>
+        </section>
+
+        <section class="wizard-step" data-step="2">
+          <h3>2. Select package</h3>
+          <p class="muted">Choose one package. Select Custom Package for multiple events or special needs.</p>
+          <div id="wizardPackageGrid" class="package-grid"></div>
+        </section>
+
+        <section class="wizard-step" data-step="3">
+          <h3>3. Your details</h3>
+          <div class="form-grid">
+            <div class="field">
+              <label for="customerName">Name</label>
+              <input id="customerName" name="name" autocomplete="name" placeholder="Your full name">
+            </div>
+            <div class="field">
+              <label for="contactNumber">Contact Number / WhatsApp</label>
+              <input id="contactNumber" name="contactNumber" autocomplete="tel" placeholder="0123456789">
+            </div>
+            <div class="field">
+              <label for="eventDate">Event Date</label>
+              <input id="eventDate" name="eventDate" type="date">
+            </div>
+            <div class="field">
+              <label for="eventDay">Day</label>
+              <input id="eventDay" name="eventDay" placeholder="Auto-filled" readonly>
+            </div>
+            <div class="field">
+              <label for="eventTime">Time</label>
+              <input id="eventTime" name="eventTime" type="time">
+            </div>
+            <div class="field">
+              <label for="eventLocation">Location</label>
+              <input id="eventLocation" name="eventLocation" placeholder="Kajang / Temple / Hall / Address">
+            </div>
+            <div id="customRequestWrap" class="field full">
+              <label for="customRequest">Custom Request / Full Event Plan</label>
+              <textarea id="customRequest" name="customRequest" placeholder="Example: Wedding morning ceremony + evening reception + pre-wedding shoot. Please include timing, locations and special request."></textarea>
+            </div>
+            <div class="field full">
+              <label class="checkbox-row">
+                <input id="termsAccepted" type="checkbox">
+                <span>I understand that the package price shown is the final package total and transportation charges are not included.</span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="wizard-step" data-step="4">
+          <h3>4. Review enquiry</h3>
+          <p class="muted">Please check the details before continuing to WhatsApp.</p>
+          <div id="reviewSummary" class="summary-box glass-soft"></div>
+          <div id="formAlert" class="alert"></div>
+          <div id="formSuccess" class="success-note">Enquiry saved. Opening WhatsApp...</div>
+        </section>
+
+        <div class="wizard-actions">
+          <button id="prevStep" class="btn btn-secondary" type="button">Back</button>
+          <button id="nextStep" class="btn btn-primary" type="button">Continue</button>
+          <button id="submitEnquiry" class="btn btn-whatsapp" type="submit">Submit & Continue to WhatsApp</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

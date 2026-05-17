@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLK Photography | Customer Gallery</title>
+  <meta name="description" content="Customer gallery and photo selection for MLK Photography.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="MLK Photography home">
+      <span class="logo-mark">MLK</span>
+      <span>MLK PHOTOGRAPHY</span>
+    </a>
+    <nav class="nav" aria-label="Gallery navigation">
+      <a href="index.html#packages">Packages</a>
+      <a href="index.html#reviews">Reviews</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-title-card glass">
+        <span class="eyebrow">Customer Gallery</span>
+        <h1>View, select and submit your favorite photos.</h1>
+        <p class="lead">Enter your Booking ID or open the private gallery link sent by MLK Photography.</p>
+        <div class="gallery-toolbar">
+          <div class="field" style="flex:1">
+            <label for="bookingIdInput">Booking ID</label>
+            <input id="bookingIdInput" placeholder="Example: BK-0001">
+          </div>
+          <button id="loadGallery" class="btn btn-primary" type="button">Load Gallery</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:24px">
+      <div class="container">
+        <div id="galleryInfo" class="info-card glass-soft">
+          <h3>Gallery not loaded yet</h3>
+          <p class="muted">After loading, your event photos will appear below.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div id="photoGrid" class="photo-grid"></div>
+        <div id="selectionBar" class="sticky-submit glass" style="display:none">
+          <div>
+            <strong id="selectionCounter">Selected 0 photos</strong>
+            <p class="muted" id="selectionLimitText" style="margin:4px 0 0">Choose your favorite photos.</p>
+          </div>
+          <button id="submitSelection" class="btn btn-primary" type="button">Submit Selected Photos</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="reviewSection" class="section" style="display:none; padding-top:0">
+      <div class="container">
+        <div class="glass" style="padding:28px">
+          <span class="eyebrow">Customer Review</span>
+          <h2>How was your experience?</h2>
+          <p class="muted">Your review will be saved first. It appears on the homepage only after admin approval.</p>
+          <div class="form-grid">
+            <div class="field">
+              <label for="reviewName">Customer Name</label>
+              <input id="reviewName" placeholder="Your name">
+            </div>
+            <div class="field">
+              <label for="reviewEventType">Event Type</label>
+              <input id="reviewEventType" placeholder="Wedding, Reception">
+            </div>
+            <div class="field full">
+              <label>Rating</label>
+              <div id="ratingRow" class="rating-row" aria-label="Rating stars">
+                <span class="rating-star active" data-rating="1">★</span>
+                <span class="rating-star active" data-rating="2">★</span>
+                <span class="rating-star active" data-rating="3">★</span>
+                <span class="rating-star active" data-rating="4">★</span>
+                <span class="rating-star active" data-rating="5">★</span>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="reviewMessage">Review Message</label>
+              <textarea id="reviewMessage" placeholder="Share your experience with MLK Photography."></textarea>
+            </div>
+            <div class="field full">
+              <label class="checkbox-row">
+                <input id="permissionDisplay" type="checkbox">
+                <span>I allow MLK Photography to display my review on the website/app homepage.</span>
+              </label>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:18px">
+            <button id="submitReview" class="btn btn-primary" type="button">Submit Review</button>
+            <a class="btn btn-secondary" href="index.html#reviews">View Homepage Reviews</a>
+          </div>
+          <div id="reviewSuccess" class="success-note">Thank you. Your review has been saved for admin approval.</div>
+          <div id="galleryAlert" class="alert"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-card glass">
+      <div>
+        <h3>MLK PHOTOGRAPHY</h3>
+        <p class="muted">Indian Wedding Photography & Videography, Kajang, Malaysia</p>
+      </div>
+      <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
+    </div>
+  </footer>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/gallery.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLK Photography | Admin Dashboard</title>
+  <meta name="description" content="MLK Photography admin dashboard connected to Google Sheet.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="MLK Photography home">
+      <span class="logo-mark">MLK</span>
+      <span>MLK ADMIN</span>
+    </a>
+    <nav class="nav" aria-label="Admin navigation">
+      <a href="index.html">Home</a>
+      <a href="gallery.html">Gallery</a>
+      <a id="sheetLink" href="#" target="_blank" rel="noopener">Open Google Sheet</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-title-card glass">
+        <span class="eyebrow">Admin Dashboard</span>
+        <h1>Enquiries, bookings, reviews and reports.</h1>
+        <p class="lead">This page reads summary data from Google Sheet. For editing statuses, use the Google Sheet directly.</p>
+        <div class="actions">
+          <button id="refreshDashboard" class="btn btn-primary" type="button">Refresh Dashboard</button>
+          <a id="openSheetButton" class="btn btn-secondary" href="#" target="_blank" rel="noopener">Open Google Sheet</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:24px">
+      <div class="container">
+        <div id="dashboardAlert" class="alert"></div>
+        <div class="metric-grid">
+          <article class="metric-card glass-soft"><span class="muted">Total Enquiries</span><strong id="mTotal">0</strong></article>
+          <article class="metric-card glass-soft"><span class="muted">New Enquiries</span><strong id="mNew">0</strong></article>
+          <article class="metric-card glass-soft"><span class="muted">Confirmed Bookings</span><strong id="mConfirmed">0</strong></article>
+          <article class="metric-card glass-soft"><span class="muted">Reviews Pending</span><strong id="mReviews">0</strong></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container glass" style="padding:24px">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Latest enquiries</span>
+            <h2>Customer submissions</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Event</th>
+                <th>Package</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="enquiriesTable">
+              <tr><td colspan="6" class="muted">No data loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container glass" style="padding:24px">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Reviews</span>
+            <h2>Pending approval</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Event</th>
+                <th>Rating</th>
+                <th>Permission</th>
+                <th>Approved</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTable">
+              <tr><td colspan="6" class="muted">No data loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-card glass">
+      <div>
+        <h3>MLK PHOTOGRAPHY</h3>
+        <p class="muted">Main admin control remains inside Google Sheet.</p>
+      </div>
+      <a id="footerSheetButton" class="btn btn-primary" href="#" target="_blank" rel="noopener">Open Sheet</a>
+    </div>
+  </footer>
+
+  <script src="assets/config.js"></script>
+  <script src="assets/admin.js"></script>
+</body>
+</html>
