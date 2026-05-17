@@ -5,8 +5,8 @@
   3. Change the WhatsApp number to your main business number.
 */
 window.MLK_CONFIG = {
-  GOOGLE_SCRIPT_URL: 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE',
-  WHATSAPP_NUMBER: '60146289063',
-  GOOGLE_SHEET_URL: 'PASTE_YOUR_GOOGLE_SHEET_URL_HERE',
-  ADMIN_TOKEN: 'CHANGE_THIS_ADMIN_TOKEN'
+  GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxmGrsOSJAqD9-PURt0-xzfTsgug-F0udQ01UTGKE5k85ootp7ejZ0wT26NXf5aqirm/exec',
+  WHATSAPP_NUMBER: '60162507723',
+  GOOGLE_SHEET_URL: 'https://docs.google.com/spreadsheets/d/1McbqqN26ebA_lgsGk1cjPYJNIuHXbXJ7lbfqZvArV9Q/edit?pli=1&gid=2078324413#gid=2078324413',
+  ADMIN_TOKEN: 'mlk-admin-2026'
 };
