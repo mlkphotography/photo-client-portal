@@ -22,3 +22,54 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
 @media (max-width:980px){.desktop-nav{display:none}.about-grid,.portal-grid{grid-template-columns:1fr;gap:34px}.service-grid,.review-track{grid-template-columns:repeat(2,1fr)}.image-frame-tall{height:520px}.portal-preview{order:-1}.footer-grid{grid-template-columns:1fr 1fr}.package-grid{grid-template-columns:1fr}}
 @media (max-width:680px){:root{--container:calc(100% - 28px)}body{padding-bottom:86px}.site-header{top:10px;height:60px;width:calc(100% - 20px);padding:8px 9px}.brand-mark{width:38px;height:38px}.brand-text{font-size:10px;letter-spacing:.08em}.header-actions .btn{display:none}.icon-link{width:38px;height:38px}.hero{align-items:end}.hero-content{text-align:left;width:calc(100% - 28px);padding:132px 0 96px}.hero h1{font-size:52px;line-height:.92;margin-bottom:18px}.hero-copy{font-size:16px;margin-bottom:28px}.hero-actions,.inline-actions{display:grid;grid-template-columns:1fr;width:100%}.btn{width:100%;min-height:54px}.scroll-cue{display:none}.section{padding:64px 0}.section-heading.center{text-align:left}.section h2{font-size:38px}.section-copy>p:not(.eyebrow){font-size:16px}.image-frame-tall{height:420px}.mini-stats{grid-template-columns:1fr}.service-grid,.review-track{grid-template-columns:1fr}.service-card{min-height:auto}.service-card img{height:230px}.portal-cover{height:180px}.photo-mini-grid{gap:8px}.selection-bar{font-size:13px;align-items:center}.cta-card{text-align:left;padding:34px 20px;border-radius:26px}.footer{padding-bottom:110px}.footer-grid{grid-template-columns:1fr;gap:28px}.mobile-sticky-cta{position:fixed;z-index:70;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(8,8,9,.82);backdrop-filter:blur(18px);border-top:1px solid var(--border)}.mobile-sticky-cta .btn{min-height:50px;padding-inline:12px;font-size:13px}.modal{padding:10px}.modal-panel{margin:72px 0 20px;padding:18px;border-radius:22px}.modal-head h2{font-size:24px}.wizard-grid{grid-template-columns:1fr}.wizard-actions{display:grid;grid-template-columns:1fr}.event-chip-wrap{gap:8px}.choice-chip,.event-chip{width:100%;justify-content:center}.package-card{padding:18px}.price{font-size:24px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+
+/* Requested cleanup: cleaner nav, portal preview and real social icons */
+.header-actions { gap: 10px; }
+.portal-preview-body h3 { display: none; }
+.portal-points span { display: inline-flex; align-items: center; gap: 10px; }
+.portal-points span i {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(212, 165, 116, 0.14);
+  color: var(--gold);
+  font-style: normal;
+  font-size: 13px;
+  flex: 0 0 auto;
+}
+.social-links a {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+.social-links a:hover {
+  background: rgba(212, 165, 116, 0.16);
+  border-color: rgba(212, 165, 116, 0.45);
+  transform: translateY(-2px);
+}
+.social-links svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.social-links a[aria-label="Facebook"] svg,
+.social-links a[aria-label="TikTok"] svg { fill: currentColor; stroke: none; }
+.social-links a[aria-label="YouTube"] svg path:first-child { fill: none; stroke: currentColor; }
+.social-links a[aria-label="YouTube"] svg path:last-child { fill: currentColor; stroke: none; }
+@media (max-width: 760px) {
+  .desktop-nav a[href="#contact"] { display: none; }
+}
