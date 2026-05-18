@@ -470,3 +470,23 @@
 
   document.addEventListener('DOMContentLoaded', init);
 })();
+
+(function () {
+  function initHomeDesign() {
+    const slides = Array.from(document.querySelectorAll('.hero-slide'));
+    let current = 0;
+
+    if (slides.length > 1) {
+      window.setInterval(() => {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+      }, 6500);
+    }
+
+    const year = document.getElementById('year');
+    if (year) year.textContent = new Date().getFullYear();
+  }
+
+  document.addEventListener('DOMContentLoaded', initHomeDesign);
+})();
