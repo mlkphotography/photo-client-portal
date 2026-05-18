@@ -90,6 +90,8 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
   align-items:center;
 }
 
+/* LEFT CONTENT */
+
 .section-copy h2{
   font-size:clamp(36px,5vw,56px);
   line-height:1;
@@ -128,7 +130,7 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
   margin-top:36px;
 }
 
-/* PREVIEW */
+/* RIGHT PREVIEW */
 
 .portal-preview{
   position:relative;
@@ -145,10 +147,13 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
 .browser-bar span{
   width:10px;
   height:10px;
+
   border-radius:999px;
 
   background:rgba(255,255,255,0.24);
 }
+
+/* MAIN IMAGE */
 
 .portal-main-image{
   border-radius:30px;
@@ -163,57 +168,50 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
   width:100%;
   display:block;
 
-  aspect-ratio:16/10;
+  aspect-ratio:4/3;
   object-fit:cover;
 }
 
-/* FLOATING CARD */
+/* FLOATING IMAGE CARD */
 
 .portal-floating-card{
   position:absolute;
 
-  right:-20px;
-  bottom:28px;
+  right:-18px;
+  bottom:34px;
 
-  display:flex;
-  align-items:center;
-  gap:14px;
+  width:220px;
+  padding:10px;
 
-  padding:14px;
+  border-radius:24px;
 
-  border-radius:22px;
+  background:rgba(18,18,20,0.92);
 
-  background:rgba(18,18,20,0.88);
-
-  border:1px solid rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
 
   backdrop-filter:blur(14px);
 
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.35);
+    0 18px 45px rgba(0,0,0,0.45);
 }
 
-.portal-floating-card{
-  min-width:220px;
-  max-width:260px;
-  overflow:visible;
+.portal-floating-card img{
+  width:100%;
+  display:block;
+
+  aspect-ratio:4/5;
+  object-fit:cover;
+
+  border-radius:18px;
 }
+
+/* HIDE OLD TEXT */
 
 .portal-floating-card div{
-  min-width:0;
+  display:none;
 }
 
-.portal-floating-card small{
-  white-space:nowrap;
-  overflow:visible;
-}
-
-.portal-floating-card strong{
-  display:block;
-  white-space:nowrap;
-}
-
-/* MOBILE */
+/* TABLET */
 
 @media (max-width:900px){
 
@@ -224,10 +222,12 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
 
   .portal-floating-card{
     right:12px;
-    bottom:12px;
+    bottom:20px;
   }
 
 }
+
+/* MOBILE */
 
 @media (max-width:680px){
 
@@ -245,13 +245,18 @@ a{color:inherit;text-decoration:none}img{display:block;width:100%;height:100%;ob
   }
 
   .portal-floating-card{
-    padding:12px;
+    width:140px;
+
+    right:12px;
+    bottom:18px;
+
+    padding:8px;
+
     border-radius:18px;
   }
 
   .portal-floating-card img{
-    width:52px;
-    height:52px;
+    border-radius:14px;
   }
 
 }
