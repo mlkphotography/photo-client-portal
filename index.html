@@ -3,61 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLK Photography | Indian Wedding Photography & Videography</title>
-  <meta name="description" content="MLK Photography booking enquiry app for Indian wedding photography and videography in Kajang, Malaysia.">
+  <title>MLK Photography | Wedding & Event Photography</title>
+  <meta name="description" content="MLK Photography captures weddings, engagements, events and portraits with a premium client portal experience.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#home" aria-label="MLK Photography home">
-      <span class="logo-mark">MLK</span>
-      <span>MLK PHOTOGRAPHY</span>
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="MLK Photography home">
+      <span class="brand-mark">MLK</span>
+      <span class="brand-text">MLK Photography</span>
     </a>
-    <nav class="nav" aria-label="Main navigation">
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#about">About</a>
       <a href="#services">Services</a>
-      <a href="#packages">Packages</a>
-      <a href="#how">How it works</a>
+      <a href="#portal">Client Portal</a>
       <a href="#reviews">Reviews</a>
       <a href="gallery.html">Gallery</a>
-      <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
     </nav>
+
+    <div class="header-actions">
+      <a class="icon-link js-whatsapp-link" href="#" target="_blank" rel="noopener" aria-label="WhatsApp MLK Photography">WA</a>
+      <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+    </div>
   </header>
 
-  <main id="home">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-card glass">
-          <span class="eyebrow">Indian Wedding Photography & Videography</span>
-          <h1>Premium memories with a modern glass experience.</h1>
-          <p class="lead">
-            MLK Photography helps you enquire, choose packages, continue on WhatsApp,
-            view Google Drive galleries, select photos, and share reviews in one simple flow.
-          </p>
-          <div class="hero-meta">
-            <span class="pill">Kajang, Malaysia</span>
-            <span class="pill">Comp. Reg No: TR0243394-M</span>
-            <span class="pill">Google Drive Delivery</span>
-          </div>
-          <div class="actions">
-            <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
-            <a class="btn btn-secondary" href="#packages">View Packages</a>
-            <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
-          </div>
-        </div>
+  <main>
+    <section class="hero" aria-label="MLK Photography hero">
+      <div class="hero-slider" aria-hidden="true">
+        <div class="hero-slide active" style="background-image:url('images/slide-1.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/slide-2.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/slide-3.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/slide-4.jpg')"></div>
+        <div class="hero-slide" style="background-image:url('images/slide-5.jpg')"></div>
+      </div>
+      <div class="hero-overlay"></div>
 
-        <div class="visual-card glass" aria-label="MLK Photography visual card">
-          <div class="visual-info">
-            <span class="eyebrow">Booking flow</span>
-            <h3>Submit details, save to Google Sheet, continue on WhatsApp.</h3>
-            <p class="muted">Designed mobile-first for customers coming from WhatsApp.</p>
-            <div class="stats">
-              <div class="stat"><strong>4</strong><span>Easy steps</span></div>
-              <div class="stat"><strong>8+</strong><span>Event types</span></div>
-              <div class="stat"><strong>RM500+</strong><span>Packages</span></div>
-            </div>
+      <div class="hero-content">
+        <p class="eyebrow">Wedding • Engagement • Events • Portraits</p>
+        <h1>Your Moments,<br>Framed Forever</h1>
+        <p class="hero-copy">Premium photography for weddings, engagements, events and portraits — captured with emotion, elegance and timeless detail.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+          <a class="btn btn-secondary js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
+        </div>
+      </div>
+
+      <a class="scroll-cue" href="#about" aria-label="Scroll to about section">Scroll</a>
+    </section>
+
+    <section id="about" class="section about-section">
+      <div class="container about-grid">
+        <div class="image-frame image-frame-tall">
+          <img src="images/about.jpg" alt="MLK Photography wedding moment" loading="lazy">
+        </div>
+        <div class="section-copy">
+          <p class="eyebrow">About MLK Photography</p>
+          <h2>Elegant storytelling for once-in-a-lifetime moments.</h2>
+          <p>MLK Photography captures weddings, engagements, family events and portraits with a calm, premium and personal experience from first enquiry to final gallery delivery.</p>
+          <div class="mini-stats" aria-label="MLK Photography highlights">
+            <div><strong>100+</strong><span>Moments captured</span></div>
+            <div><strong>5★</strong><span>Client experience</span></div>
+            <div><strong>MY</strong><span>Kajang based</span></div>
           </div>
         </div>
       </div>
@@ -65,138 +75,120 @@
 
     <section id="services" class="section">
       <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Services</span>
-            <h2>For weddings, ceremonies, events and shoots.</h2>
-          </div>
-          <p>Customers can choose one or multiple event types before selecting a package.</p>
+        <div class="section-heading center">
+          <p class="eyebrow">Services</p>
+          <h2>Photography for every meaningful chapter.</h2>
         </div>
-        <div class="grid-4">
-          <article class="service-card glass-soft">
-            <div class="icon">📷</div>
-            <h3>Photography</h3>
-            <p class="muted">Wedding, reception, pre-wedding, naming ceremony, gym and event coverage.</p>
+        <div class="service-grid">
+          <article class="service-card">
+            <img src="images/service-wedding.jpg" alt="Wedding photography" loading="lazy">
+            <div><h3>Wedding</h3><p>Emotional wedding coverage with timeless detail.</p></div>
           </article>
-          <article class="service-card glass-soft">
-            <div class="icon">🎬</div>
-            <h3>Videography</h3>
-            <p class="muted">Full event video, cinematic montage, Full HD, 4K and drone options.</p>
+          <article class="service-card">
+            <img src="images/service-engagement.jpg" alt="Engagement photography" loading="lazy">
+            <div><h3>Engagement</h3><p>Elegant couple portraits and pre-wedding moments.</p></div>
           </article>
-          <article class="service-card glass-soft">
-            <div class="icon">💾</div>
-            <h3>Drive Gallery</h3>
-            <p class="muted">Photos can be delivered from Google Drive and viewed inside the app.</p>
+          <article class="service-card">
+            <img src="images/service-event.jpg" alt="Event photography" loading="lazy">
+            <div><h3>Events</h3><p>Professional coverage for ceremonies and celebrations.</p></div>
           </article>
-          <article class="service-card glass-soft">
-            <div class="icon">⭐</div>
-            <h3>Customer Review</h3>
-            <p class="muted">After photo selection, customers can submit reviews for homepage display.</p>
+          <article class="service-card">
+            <img src="images/service-portrait.jpg" alt="Portrait photography" loading="lazy">
+            <div><h3>Portraits</h3><p>Clean, confident portraits for personal and brand use.</p></div>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="events" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Event types</span>
-            <h2>Choose one or multiple events.</h2>
+    <section id="portal" class="section portal-section">
+      <div class="container portal-grid">
+        <div class="section-copy">
+          <p class="eyebrow">Client Portal</p>
+          <h2>A smoother experience after the photoshoot.</h2>
+          <p>Clients can open a private gallery, select favourite photos and submit reviews from their phone — simple, fast and professional.</p>
+          <div class="portal-points">
+            <span>Private client gallery</span>
+            <span>Favourite photo selection</span>
+            <span>Review submission</span>
           </div>
-          <button class="btn btn-primary js-open-enquiry" type="button">Choose Event Type</button>
-        </div>
-        <div id="homeEventChips" class="event-chip-wrap"></div>
-      </div>
-    </section>
-
-    <section id="packages" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Packages</span>
-            <h2>Package cards with full features.</h2>
-          </div>
-          <p>Package price is the final package total. Transportation charges are not included and will be confirmed separately.</p>
-        </div>
-        <div id="packageGrid" class="package-grid"></div>
-      </div>
-    </section>
-
-    <section id="how" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">How it works</span>
-            <h2>Simple enquiry to WhatsApp flow.</h2>
+          <div class="inline-actions">
+            <a class="btn btn-secondary" href="gallery.html">View Gallery Demo</a>
+            <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
           </div>
         </div>
-        <div class="grid-4 steps">
-          <article class="step-card glass-soft">
-            <h3>Select event type</h3>
-            <p class="muted">Customer chooses one or multiple event types.</p>
-          </article>
-          <article class="step-card glass-soft">
-            <h3>Choose package</h3>
-            <p class="muted">Customer selects Package A, B, C, Only Photos, Photography Only or Custom.</p>
-          </article>
-          <article class="step-card glass-soft">
-            <h3>Submit enquiry</h3>
-            <p class="muted">Details are saved into Google Sheet before WhatsApp opens.</p>
-          </article>
-          <article class="step-card glass-soft">
-            <h3>Continue on WhatsApp</h3>
-            <p class="muted">Auto-filled message opens for the customer to send.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="gallery-preview" class="section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Gallery</span>
-            <h2>Google Drive photo selection ready.</h2>
+        <div class="portal-preview" aria-label="Client portal preview">
+          <div class="browser-bar"><span></span><span></span><span></span></div>
+          <div class="portal-cover"></div>
+          <div class="portal-preview-body">
+            <div>
+              <p class="eyebrow">Private Gallery</p>
+              <h3>Aisyah & Amir</h3>
+            </div>
+            <div class="photo-mini-grid">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="selection-bar"><span>12 selected</span><strong>Submit Selection</strong></div>
           </div>
-          <a class="btn btn-secondary" href="gallery.html">Open Gallery Page</a>
-        </div>
-        <div class="gallery-preview">
-          <div class="gallery-tile"><strong>Wedding</strong></div>
-          <div class="gallery-tile"><strong>Pre-wedding</strong></div>
-          <div class="gallery-tile"><strong>Reception</strong></div>
-          <div class="gallery-tile"><strong>Naming Ceremony</strong></div>
-          <div class="gallery-tile"><strong>Gym Shoot</strong></div>
         </div>
       </div>
     </section>
 
     <section id="reviews" class="section">
       <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Reviews</span>
-            <h2>What our customers say.</h2>
-          </div>
-          <p>Reviews appear here only after the customer gives permission and admin approves in Google Sheet.</p>
+        <div class="section-heading center">
+          <p class="eyebrow">Reviews</p>
+          <h2>Kind words from beautiful moments.</h2>
         </div>
         <div id="reviewTrack" class="review-track"></div>
+      </div>
+    </section>
+
+    <section class="section final-cta">
+      <div class="container cta-card">
+        <p class="eyebrow">Book MLK Photography</p>
+        <h2>Ready to capture your special moment?</h2>
+        <p>Start with a quick enquiry or message us directly on WhatsApp.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+          <a class="btn btn-secondary js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="container footer-card glass">
+    <div class="container footer-grid">
       <div>
-        <h3>MLK PHOTOGRAPHY</h3>
-        <p class="muted">Indian Wedding Photography & Videography, Kajang, Malaysia<br>Comp. Reg No: TR0243394-M</p>
+        <a class="brand footer-brand" href="#top" aria-label="MLK Photography home">
+          <span class="brand-mark">MLK</span>
+          <span class="brand-text">MLK Photography</span>
+        </a>
+        <p>Premium photography for weddings, engagements, events and portraits in Malaysia.</p>
       </div>
-      <div class="actions">
-        <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
-        <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
+      <div>
+        <h3>Explore</h3>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#portal">Client Portal</a>
+        <a href="gallery.html">Gallery</a>
+      </div>
+      <div>
+        <h3>Social</h3>
+        <div class="social-links">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="Facebook">FB</a>
+          <a href="#" aria-label="TikTok">TT</a>
+          <a href="#" aria-label="YouTube">YT</a>
+        </div>
       </div>
     </div>
+    <div class="container copyright">© <span id="year"></span> MLK Photography. All rights reserved.</div>
   </footer>
+
+  <div class="mobile-sticky-cta" aria-label="Mobile quick actions">
+    <button class="btn btn-primary js-open-enquiry" type="button">Start Enquiry</button>
+    <a class="btn btn-secondary js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
 
   <div id="enquiryModal" class="modal" aria-hidden="true">
     <div class="modal-panel glass" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
