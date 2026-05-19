@@ -2097,3 +2097,38 @@ td{
     gap:6px;
   }
 }
+
+/* ===== YOUR EXISTING CSS ABOVE ===== */
+
+
+
+/* ===== DATE & TIME INPUT FIX ===== */
+
+.form-field input[type="date"],
+.form-field input[type="time"]{
+  appearance:none;
+  -webkit-appearance:none;
+  box-sizing:border-box;
+  overflow:hidden;
+  width:100%;
+  min-height:58px;
+  height:58px;
+  padding:0 18px;
+  background:#fff;
+  border:1px solid #ddd2c4;
+  border-radius:16px;
+  color:#111;
+  font-size:16px;
+  line-height:1;
+}
+
+.form-field input[type="date"]::-webkit-date-and-time-value,
+.form-field input[type="time"]::-webkit-date-and-time-value{
+  text-align:left;
+}
+
+.form-field input[type="date"]::-webkit-calendar-picker-indicator,
+.form-field input[type="time"]::-webkit-calendar-picker-indicator{
+  opacity:.65;
+  cursor:pointer;
+}
