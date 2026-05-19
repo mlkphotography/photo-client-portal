@@ -411,7 +411,8 @@ color:rgba(22,20,18,.72);
 .mini-stats strong{
   display:block;
   font-size:24px;
-  color:#fff;
+  color:#111;
+  font-weight:700;
 }
 
 .mini-stats span{
