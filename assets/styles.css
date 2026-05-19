@@ -1782,16 +1782,14 @@ td{
   gap:10px;
 }
 
-.phone-row{
-  display:grid;
-  grid-template-columns:95px 1fr;
-  gap:10px;
-}
-
 .dark-btn{
   background:#111!important;
   color:#fff!important;
   border:1px solid rgba(0,0,0,.12)!important;
+}
+
+#addEventBtn{
+  margin-top:24px;
 }
 
 .events-wrap,
@@ -1863,6 +1861,7 @@ td{
 }
 
 .package-choice{
+  position:relative;
   border:1px solid #ddd2c4;
   background:#fff;
   color:#111;
@@ -1870,11 +1869,27 @@ td{
   padding:18px;
   text-align:left;
   cursor:pointer;
+  transition:.25s ease;
 }
 
 .package-choice.active{
-  border-color:var(--gold);
-  box-shadow:0 12px 30px rgba(184,137,91,.18);
+  border:2px solid var(--gold);
+  background:rgba(184,137,91,.12);
+  box-shadow:0 16px 38px rgba(184,137,91,.25);
+  transform:translateY(-2px);
+}
+
+.package-choice.active::after{
+  content:"✓ Selected";
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:var(--gold);
+  color:#111;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:900;
 }
 
 .package-choice h4{
@@ -1889,11 +1904,29 @@ td{
   font-size:20px;
 }
 
+.package-badge{
+  display:inline-flex;
+  margin-bottom:12px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#f3e8dc;
+  color:#111;
+  font-size:12px;
+  font-weight:800;
+}
+
 .package-choice ul{
   margin:0;
   padding-left:18px;
   color:#5d5147;
   font-size:14px;
+}
+
+.terms-note{
+  margin-top:14px;
+  font-size:12px;
+  line-height:1.5;
+  color:#8b7355;
 }
 
 .thank-you-box{
@@ -1915,9 +1948,73 @@ td{
 }
 
 @media(max-width:760px){
-  .phone-row,
-  .event-package-type,
-  .package-choice-grid{
+  .modal{
+    align-items:flex-start;
+    padding:10px;
+  }
+
+  .enquiry-panel{
+    width:100%;
+    max-height:calc(100vh - 20px);
+    margin:0;
+    padding:24px 18px;
+    border-radius:24px;
+    overflow:auto;
+  }
+
+  .form-header h2{
+    font-size:30px;
+    line-height:1.05;
+  }
+
+  .form-steps{
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .step-dot{
+    width:34px;
+    height:34px;
+  }
+
+  .event-box,
+  .event-package-box{
+    padding:18px;
+    border-radius:20px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr!important;
+    gap:16px;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea{
+    min-height:56px;
+    font-size:16px;
+  }
+
+  .phone-row{
+    grid-template-columns:82px 1fr;
+  }
+
+  .package-choice-grid,
+  .event-package-type{
+    grid-template-columns:1fr!important;
+  }
+
+  .form-actions{
+    position:sticky;
+    bottom:0;
+    background:#f8f4ef;
+    padding-top:14px;
+    display:grid!important;
     grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .form-actions .btn{
+    width:100%;
   }
 }
