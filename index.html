@@ -232,16 +232,30 @@
     </div>
 
     <form id="enquiryForm">
+      <input id="websiteField" type="text" autocomplete="off" tabindex="-1" style="display:none">
+
       <div class="form-step active" data-step="1">
         <div class="form-grid">
           <div class="form-field full">
             <label for="customerName">Full Name</label>
-            <input id="customerName" type="text" required>
+            <input
+              id="customerName"
+              type="text"
+              placeholder="Example: Kumar Raj"
+              required
+            >
           </div>
 
           <div class="form-field">
             <label for="countrySearch">Country</label>
-            <input id="countrySearch" list="countryList" type="text" placeholder="Search country" required>
+            <input
+              id="countrySearch"
+              list="countryList"
+              type="text"
+              value="Malaysia"
+              placeholder="Search country"
+              required
+            >
             <datalist id="countryList"></datalist>
           </div>
 
@@ -249,7 +263,13 @@
             <label for="phoneNumber">Phone Number</label>
             <div class="phone-row">
               <input id="phoneCode" type="text" readonly value="+60">
-              <input id="phoneNumber" type="tel" placeholder="12 345 6789" required>
+              <input
+                id="phoneNumber"
+                type="tel"
+                inputmode="numeric"
+                placeholder="123456789"
+                required
+              >
             </div>
           </div>
         </div>
