@@ -103,12 +103,26 @@
   }
 
   function renderCountries() {
-    const list = $('#countryList');
-    if (!list) return;
+    const select = $('#countrySearch');
+    if (!select) return;
 
-    list.innerHTML = countries.map((country) => {
-      return `<option value="${escapeHtml(country.name)}"></option>`;
+    select.innerHTML = countries.map((country) => {
+      return `
+        <option value="${escapeHtml(country.name)}" ${country.name === 'Malaysia' ? 'selected' : ''}>
+          ${escapeHtml(country.name)}
+        </option>
+      `;
     }).join('');
+
+    const malaysia = getCountryByName('Malaysia');
+
+    if (malaysia) {
+      state.customer.country = malaysia.name;
+      state.customer.phoneCode = malaysia.code;
+
+      const phoneCode = $('#phoneCode');
+      if (phoneCode) phoneCode.value = malaysia.code;
+    }
   }
 
   function updateStepUI() {
@@ -248,9 +262,15 @@
                 <button class="package-choice ${active ? 'active' : ''}" type="button" data-package-name="${escapeHtml(pkg.name)}">
                   <h4>${escapeHtml(pkg.name)}</h4>
                   <strong>${escapeHtml(pkg.price)}</strong>
+
+                  ${pkg.badge ? `
+                    <div class="package-badge">${escapeHtml(pkg.badge)}</div>
+                  ` : ''}
+
                   <ul>
                     ${(pkg.features || []).map((feature) => `<li>${escapeHtml(feature)}</li>`).join('')}
                   </ul>
+
                   ${pkg.terms ? `<p class="terms-note">${escapeHtml(pkg.terms)}</p>` : ''}
                 </button>
               `;
@@ -290,9 +310,7 @@
   }
 
   function validateStep(step) {
-    if ($('#websiteField')?.value) {
-      return 'Submission blocked.';
-    }
+    if ($('#websiteField')?.value) return 'Submission blocked.';
 
     if (Date.now() - formStartedAt < 4000) {
       return 'Please take a moment to complete the form properly.';
@@ -519,7 +537,7 @@
       event.target.value = event.target.value.replace(/\D/g, '');
     });
 
-    $('#countrySearch')?.addEventListener('input', (event) => {
+    $('#countrySearch')?.addEventListener('change', (event) => {
       const country = getCountryByName(event.target.value);
 
       if (country) {
