@@ -1782,8 +1782,10 @@ td{
   gap:10px;
 }
 
-.phone-row input{
-  width:100%;
+.phone-row{
+  display:grid;
+  grid-template-columns:95px 1fr;
+  gap:10px;
 }
 
 .dark-btn{
