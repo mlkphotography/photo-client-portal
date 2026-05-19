@@ -13,6 +13,8 @@
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
+  const formStartedAt = Date.now();
+
   const state = {
     step: 1,
     customer: {
@@ -75,7 +77,8 @@
       notes: '',
       packageType: 'photo',
       packageName: '',
-      packagePrice: ''
+      packagePrice: '',
+      packageTerms: ''
     };
   }
 
@@ -86,7 +89,9 @@
   }
 
   function getCountryByName(name) {
-    return countries.find((country) => country.name.toLowerCase() === String(name).toLowerCase());
+    return countries.find((country) => {
+      return country.name.toLowerCase() === String(name || '').toLowerCase();
+    });
   }
 
   function normalizePhone(phone) {
@@ -101,9 +106,9 @@
     const list = $('#countryList');
     if (!list) return;
 
-    list.innerHTML = countries.map((country) => `
-      <option value="${escapeHtml(country.name)}"></option>
-    `).join('');
+    list.innerHTML = countries.map((country) => {
+      return `<option value="${escapeHtml(country.name)}"></option>`;
+    }).join('');
   }
 
   function updateStepUI() {
@@ -129,6 +134,7 @@
     if (actions) actions.style.display = state.step === 5 ? 'none' : 'flex';
 
     if (prevBtn) prevBtn.style.display = state.step === 1 ? 'none' : 'inline-flex';
+
     if (nextBtn) {
       nextBtn.style.display = state.step >= 4 ? 'none' : 'inline-flex';
 
@@ -150,53 +156,63 @@
     const wrap = $('#eventsWrap');
     if (!wrap) return;
 
-    wrap.innerHTML = state.events.map((eventItem, index) => `
-      <div class="event-box" data-event-index="${index}">
-        <div class="event-box-head">
-          <h3>Event ${index + 1}</h3>
-          ${state.events.length > 1 ? `<button class="remove-event" type="button" data-remove-event="${index}">Remove</button>` : ''}
+    wrap.innerHTML = state.events.map((eventItem, index) => {
+      return `
+        <div class="event-box" data-event-index="${index}">
+          <div class="event-box-head">
+            <h3>Event ${index + 1}</h3>
+            ${state.events.length > 1 ? `<button class="remove-event" type="button" data-remove-event="${index}">Remove</button>` : ''}
+          </div>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Event Type</label>
+              <select data-event-field="type" required>
+                <option value="">Select event</option>
+                ${eventTypes.map((type) => {
+                  return `
+                    <option value="${escapeHtml(type)}" ${eventItem.type === type ? 'selected' : ''}>
+                      ${escapeHtml(type)}
+                    </option>
+                  `;
+                }).join('')}
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label>Event Date</label>
+              <input data-event-field="date" type="date" value="${escapeHtml(eventItem.date)}" required>
+            </div>
+
+            <div class="form-field">
+              <label>Event Day</label>
+              <input data-event-field="day" type="text" value="${escapeHtml(eventItem.day)}" readonly placeholder="Auto-filled">
+            </div>
+
+            <div class="form-field">
+              <label>Event Time</label>
+              <input data-event-field="time" type="time" value="${escapeHtml(eventItem.time)}" required>
+            </div>
+
+            <div class="form-field full">
+              <label>Event Location</label>
+              <input
+                data-event-field="location"
+                type="text"
+                value="${escapeHtml(eventItem.location)}"
+                placeholder="Example: Kajang / temple name / full address"
+                required
+              >
+            </div>
+
+            <div class="form-field full">
+              <label>Custom Request / Notes</label>
+              <textarea data-event-field="notes" rows="4" placeholder="Optional">${escapeHtml(eventItem.notes)}</textarea>
+            </div>
+          </div>
         </div>
-
-        <div class="form-grid">
-          <div class="form-field">
-            <label>Event Type</label>
-            <select data-event-field="type" required>
-              <option value="">Select event</option>
-              ${eventTypes.map((type) => `
-                <option value="${escapeHtml(type)}" ${eventItem.type === type ? 'selected' : ''}>
-                  ${escapeHtml(type)}
-                </option>
-              `).join('')}
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label>Event Date</label>
-            <input data-event-field="date" type="date" value="${escapeHtml(eventItem.date)}" required>
-          </div>
-
-          <div class="form-field">
-            <label>Event Day</label>
-            <input data-event-field="day" type="text" value="${escapeHtml(eventItem.day)}" readonly placeholder="Auto-filled">
-          </div>
-
-          <div class="form-field">
-            <label>Event Time</label>
-            <input data-event-field="time" type="time" value="${escapeHtml(eventItem.time)}" required>
-          </div>
-
-          <div class="form-field full">
-            <label>Event Location</label>
-            <input data-event-field="location" type="text" value="${escapeHtml(eventItem.location)}" required>
-          </div>
-
-          <div class="form-field full">
-            <label>Custom Request / Notes</label>
-            <textarea data-event-field="notes" rows="4" placeholder="Optional">${escapeHtml(eventItem.notes)}</textarea>
-          </div>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   function renderEventPackages() {
@@ -204,7 +220,9 @@
     if (!wrap) return;
 
     wrap.innerHTML = state.events.map((eventItem, eventIndex) => {
-      const packageList = eventItem.packageType === 'photoVideo' ? packages.photoVideo : packages.photo;
+      const packageList = eventItem.packageType === 'photoVideo'
+        ? packages.photoVideo
+        : packages.photo;
 
       return `
         <div class="event-package-box" data-event-index="${eventIndex}">
@@ -216,6 +234,7 @@
             <button type="button" class="${eventItem.packageType === 'photo' ? 'active' : ''}" data-package-type="photo">
               Photography Only
             </button>
+
             <button type="button" class="${eventItem.packageType === 'photoVideo' ? 'active' : ''}" data-package-type="photoVideo">
               Photography + Videography
             </button>
@@ -232,6 +251,7 @@
                   <ul>
                     ${(pkg.features || []).map((feature) => `<li>${escapeHtml(feature)}</li>`).join('')}
                   </ul>
+                  ${pkg.terms ? `<p class="terms-note">${escapeHtml(pkg.terms)}</p>` : ''}
                 </button>
               `;
             }).join('')}
@@ -251,23 +271,33 @@
       <p><strong>Phone Number</strong><span>${escapeHtml(getFullPhone())}</span></p>
     `;
 
-    const eventRows = state.events.map((eventItem, index) => `
-      <div style="margin-top:22px;">
-        <h3 style="margin-bottom:10px;color:#111;">Event ${index + 1}: ${escapeHtml(eventItem.type)}</h3>
-        <p><strong>Date</strong><span>${escapeHtml(eventItem.date)}</span></p>
-        <p><strong>Day</strong><span>${escapeHtml(eventItem.day)}</span></p>
-        <p><strong>Time</strong><span>${escapeHtml(eventItem.time)}</span></p>
-        <p><strong>Location</strong><span>${escapeHtml(eventItem.location)}</span></p>
-        <p><strong>Package Type</strong><span>${eventItem.packageType === 'photoVideo' ? 'Photography + Videography' : 'Photography Only'}</span></p>
-        <p><strong>Package</strong><span>${escapeHtml(eventItem.packageName)} - ${escapeHtml(eventItem.packagePrice)}</span></p>
-        <p><strong>Notes</strong><span>${escapeHtml(eventItem.notes || '-')}</span></p>
-      </div>
-    `).join('');
+    const eventRows = state.events.map((eventItem, index) => {
+      return `
+        <div style="margin-top:22px;">
+          <h3 style="margin-bottom:10px;color:#111;">Event ${index + 1}: ${escapeHtml(eventItem.type)}</h3>
+          <p><strong>Date</strong><span>${escapeHtml(eventItem.date)}</span></p>
+          <p><strong>Day</strong><span>${escapeHtml(eventItem.day)}</span></p>
+          <p><strong>Time</strong><span>${escapeHtml(eventItem.time)}</span></p>
+          <p><strong>Location</strong><span>${escapeHtml(eventItem.location)}</span></p>
+          <p><strong>Package Type</strong><span>${eventItem.packageType === 'photoVideo' ? 'Photography + Videography' : 'Photography Only'}</span></p>
+          <p><strong>Package</strong><span>${escapeHtml(eventItem.packageName)} - ${escapeHtml(eventItem.packagePrice)}</span></p>
+          <p><strong>Notes</strong><span>${escapeHtml(eventItem.notes || '-')}</span></p>
+        </div>
+      `;
+    }).join('');
 
     summary.innerHTML = customerRows + eventRows;
   }
 
   function validateStep(step) {
+    if ($('#websiteField')?.value) {
+      return 'Submission blocked.';
+    }
+
+    if (Date.now() - formStartedAt < 4000) {
+      return 'Please take a moment to complete the form properly.';
+    }
+
     if (step === 1) {
       state.customer.name = $('#customerName')?.value.trim() || '';
       state.customer.country = $('#countrySearch')?.value.trim() || '';
@@ -275,6 +305,10 @@
       state.customer.phoneNumber = $('#phoneNumber')?.value.trim() || '';
 
       if (!state.customer.name) return 'Full name is required.';
+
+      if (!/^[A-Za-z\s]+$/.test(state.customer.name)) {
+        return 'Full name can only contain letters and spaces.';
+      }
 
       const country = getCountryByName(state.customer.country);
       if (!country) return 'Please select a valid country.';
@@ -290,6 +324,10 @@
     if (step === 2) {
       if (!state.events.length) return 'Please add at least one event.';
 
+      if (state.events.length > 5) {
+        return 'Maximum 5 events are allowed per enquiry.';
+      }
+
       for (let i = 0; i < state.events.length; i++) {
         const eventItem = state.events[i];
 
@@ -297,6 +335,10 @@
         if (!eventItem.date) return `Please select date for Event ${i + 1}.`;
         if (!eventItem.time) return `Please select time for Event ${i + 1}.`;
         if (!eventItem.location) return `Please enter location for Event ${i + 1}.`;
+
+        if (eventItem.notes && eventItem.notes.length > 500) {
+          return `Notes for Event ${i + 1} must be below 500 characters.`;
+        }
       }
     }
 
@@ -324,7 +366,7 @@
       customerName: state.customer.name,
       country: state.customer.country,
       phoneCode: state.customer.phoneCode,
-      phoneNumber: state.customer.phoneNumber,
+      phoneNumber: normalizePhone(state.customer.phoneNumber),
       fullPhone: getFullPhone(),
       events: state.events,
       termsAccepted: 'Yes',
@@ -336,16 +378,18 @@
   }
 
   function buildWhatsAppMessage(data) {
-    const eventText = data.events.map((eventItem, index) => [
-      `Event ${index + 1}: ${eventItem.type}`,
-      `Date: ${eventItem.date}`,
-      `Day: ${eventItem.day}`,
-      `Time: ${eventItem.time}`,
-      `Location: ${eventItem.location}`,
-      `Package Type: ${eventItem.packageType === 'photoVideo' ? 'Photography + Videography' : 'Photography Only'}`,
-      `Selected Package: ${eventItem.packageName} - ${eventItem.packagePrice}`,
-      `Notes: ${eventItem.notes || '-'}`
-    ].join('\n')).join('\n\n');
+    const eventText = data.events.map((eventItem, index) => {
+      return [
+        `Event ${index + 1}: ${eventItem.type}`,
+        `Date: ${eventItem.date}`,
+        `Day: ${eventItem.day}`,
+        `Time: ${eventItem.time}`,
+        `Location: ${eventItem.location}`,
+        `Package Type: ${eventItem.packageType === 'photoVideo' ? 'Photography + Videography' : 'Photography Only'}`,
+        `Selected Package: ${eventItem.packageName} - ${eventItem.packagePrice}`,
+        `Notes: ${eventItem.notes || '-'}`
+      ].join('\n');
+    }).join('\n\n');
 
     return [
       'Hi MLK Photography, I would like to enquire about your photography/videography service.',
@@ -467,6 +511,14 @@
       if (event.target.id === 'enquiryModal') closeModal();
     });
 
+    $('#customerName')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.replace(/[^A-Za-z\s]/g, '');
+    });
+
+    $('#phoneNumber')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.replace(/\D/g, '');
+    });
+
     $('#countrySearch')?.addEventListener('input', (event) => {
       const country = getCountryByName(event.target.value);
 
@@ -480,6 +532,11 @@
     });
 
     $('#addEventBtn')?.addEventListener('click', () => {
+      if (state.events.length >= 5) {
+        alert('Maximum 5 events are allowed per enquiry.');
+        return;
+      }
+
       state.events.push(createEvent());
       renderEvents();
     });
@@ -504,6 +561,7 @@
           });
 
           state.events[index].day = day;
+
           const dayInput = box.querySelector('[data-event-field="day"]');
           if (dayInput) dayInput.value = day;
         }
@@ -532,6 +590,7 @@
         state.events[eventIndex].packageType = typeBtn.dataset.packageType;
         state.events[eventIndex].packageName = '';
         state.events[eventIndex].packagePrice = '';
+        state.events[eventIndex].packageTerms = '';
         renderEventPackages();
       }
 
@@ -543,6 +602,7 @@
         if (selected) {
           state.events[eventIndex].packageName = selected.name;
           state.events[eventIndex].packagePrice = selected.price;
+          state.events[eventIndex].packageTerms = selected.terms || '';
         }
 
         renderEventPackages();
@@ -580,6 +640,7 @@
       state.submittedData = data;
 
       const submitBtn = $('#submitEnquiry');
+
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
