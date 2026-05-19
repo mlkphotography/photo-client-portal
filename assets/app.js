@@ -1,21 +1,21 @@
 (function () {
   const config = window.MLK_CONFIG || {};
   const PLACEHOLDER_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
   const scriptUrl = config.GOOGLE_SCRIPT_URL || PLACEHOLDER_URL;
   const hasScriptUrl = scriptUrl && scriptUrl !== PLACEHOLDER_URL;
   const whatsappNumber = (config.WHATSAPP_NUMBER || '').replace(/\D/g, '');
 
-  let packages = Array.isArray(window.MLK_PACKAGES) ? window.MLK_PACKAGES.slice() : [];
-  const eventTypes = Array.isArray(window.MLK_EVENT_TYPES) ? window.MLK_EVENT_TYPES : [];
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+  let allPackages = Array.isArray(window.MLK_PACKAGES) ? window.MLK_PACKAGES.slice() : [];
 
   const state = {
     step: 1,
-    eventTypes: [],
-    package: null,
+    packageType: 'photo',
+    selectedPackage: null
   };
-
-  const $ = (selector) => document.querySelector(selector);
-  const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
   function escapeHtml(value) {
     return String(value || '')
@@ -29,259 +29,121 @@
   function makeId(prefix) {
     const now = new Date();
     const pad = (n) => String(n).padStart(2, '0');
-    const date = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
-    const time = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-    return `${prefix}-${date}-${time}-${Math.floor(Math.random() * 900 + 100)}`;
+
+    return `${prefix}-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}-${Math.floor(Math.random() * 900 + 100)}`;
   }
 
-  function jsonp(action, params, onSuccess, onError) {
-    if (!hasScriptUrl) {
-      if (onError) onError(new Error('Missing Google Script URL'));
-      return;
-    }
+  function getVisiblePackages() {
+    return allPackages.filter((pkg) => {
+      if (!pkg.type) return true;
+      return pkg.type === state.packageType;
+    });
+  }
 
-    const callbackName = `mlkCallback_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    const url = new URL(scriptUrl);
-    url.searchParams.set('action', action);
-    url.searchParams.set('callback', callbackName);
-
-    Object.entries(params || {}).forEach(([key, value]) => {
-      url.searchParams.set(key, value);
+  function updateStepUI() {
+    $$('.form-step').forEach((step) => {
+      step.classList.toggle('active', Number(step.dataset.step) === state.step);
     });
 
-    const script = document.createElement('script');
-    const timer = window.setTimeout(() => {
-      cleanup();
-      if (onError) onError(new Error('Google Script request timeout'));
-    }, 12000);
+    $$('.step-dot').forEach((dot) => {
+      dot.classList.toggle('active', Number(dot.dataset.step) === state.step);
+    });
 
-    function cleanup() {
-      window.clearTimeout(timer);
-      delete window[callbackName];
-      script.remove();
-    }
+    const prevBtn = $('#prevStep');
+    const nextBtn = $('#nextStep');
+    const submitBtn = $('#submitEnquiry');
 
-    window[callbackName] = function (data) {
-      cleanup();
-      onSuccess(data);
-    };
+    if (prevBtn) prevBtn.style.display = state.step === 1 ? 'none' : 'inline-flex';
+    if (nextBtn) nextBtn.style.display = state.step === 3 ? 'none' : 'inline-flex';
+    if (submitBtn) submitBtn.style.display = state.step === 3 ? 'inline-flex' : 'none';
 
-    script.onerror = function () {
-      cleanup();
-      if (onError) onError(new Error('Google Script request failed'));
-    };
-
-    script.src = url.toString();
-    document.body.appendChild(script);
-  }
-
-  function packageFeaturesHtml(pkg, limit) {
-    const list = (pkg.features || []).slice(0, limit || pkg.features.length);
-    return `<ul class="feature-list">${list.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
-  }
-
-  function packageCard(pkg, index, compact) {
-    const selectedClass = state.package && state.package.name === pkg.name ? ' selected' : '';
-    const featureLimit = compact ? 5 : 7;
-
-    return `
-      <article class="package-card glass-soft${selectedClass}" data-package-index="${index}">
-        <div class="package-top">
-          <div>
-            <span class="muted">${escapeHtml(pkg.category)}</span>
-            <h3>${escapeHtml(pkg.name)}</h3>
-          </div>
-          <span class="badge">${escapeHtml(pkg.badge || '')}</span>
-        </div>
-
-        <div class="price">${escapeHtml(pkg.price)}</div>
-
-        ${packageFeaturesHtml(pkg, featureLimit)}
-
-        <p class="terms-note">${escapeHtml(pkg.terms)}</p>
-
-        <button class="btn btn-primary js-select-package" type="button" data-package-index="${index}">
-          ${state.package && state.package.name === pkg.name ? 'Selected' : 'Select Package'}
-        </button>
-      </article>
-    `;
+    if (state.step === 3) renderSummary();
   }
 
   function renderPackages() {
     const grid = $('#packageGrid');
-    const wizardGrid = $('#wizardPackageGrid');
+    if (!grid) return;
 
-    if (grid) {
-      grid.innerHTML = packages.map((pkg, index) => packageCard(pkg, index, false)).join('');
+    const packages = getVisiblePackages();
+
+    if (!packages.length) {
+      grid.innerHTML = `
+        <div class="review-summary">
+          <p><strong>No packages available</strong><span>Please check data.js</span></p>
+        </div>
+      `;
+      return;
     }
 
-    if (wizardGrid) {
-      wizardGrid.innerHTML = packages.map((pkg, index) => packageCard(pkg, index, true)).join('');
-    }
-  }
-
-  function renderEventChoices() {
-    const wrap = $('#eventChoices');
-    if (!wrap) return;
-
-    wrap.innerHTML = eventTypes.map((type) => {
-      const id = `event_${type.replace(/[^a-z0-9]/gi, '_')}`;
+    grid.innerHTML = packages.map((pkg, index) => {
+      const isActive = state.selectedPackage && state.selectedPackage.name === pkg.name;
+      const features = Array.isArray(pkg.features) ? pkg.features : [];
 
       return `
-        <label class="choice-chip ${state.eventTypes.includes(type) ? 'active' : ''}" for="${id}">
-          <input id="${id}" type="checkbox" value="${escapeHtml(type)}" ${state.eventTypes.includes(type) ? 'checked' : ''}>
-          <span>${escapeHtml(type)}</span>
-        </label>
+        <button class="enquiry-package-card ${isActive ? 'active' : ''}" type="button" data-package-index="${index}">
+          <h3>${escapeHtml(pkg.name)}</h3>
+          <strong>${escapeHtml(pkg.price)}</strong>
+          <ul>
+            ${features.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+          </ul>
+        </button>
       `;
     }).join('');
   }
 
-  function updateWizard() {
-    $$('.wizard-step').forEach((step) => {
-      step.classList.toggle('active', Number(step.dataset.step) === state.step);
-    });
-
-    $$('.progress span').forEach((bar, index) => {
-      bar.classList.toggle('active', index < state.step);
-    });
-
-    const prevStep = $('#prevStep');
-    const nextStep = $('#nextStep');
-    const submitEnquiry = $('#submitEnquiry');
-
-    if (prevStep) prevStep.style.display = state.step === 1 ? 'none' : 'inline-flex';
-    if (nextStep) nextStep.style.display = state.step === 4 ? 'none' : 'inline-flex';
-    if (submitEnquiry) submitEnquiry.style.display = state.step === 4 ? 'inline-flex' : 'none';
-
-    if (state.step === 4) renderSummary();
-  }
-
-  function setEventChoice(type, checked) {
-    if (checked && !state.eventTypes.includes(type)) {
-      state.eventTypes.push(type);
-    }
-
-    if (!checked) {
-      state.eventTypes = state.eventTypes.filter((item) => item !== type);
-    }
-
-    renderEventChoices();
-    updateCustomFieldHint();
-  }
-
-  function selectPackage(index) {
-    state.package = packages[index];
-    renderPackages();
-    updateCustomFieldHint();
-  }
-
-  function updateCustomFieldHint() {
-    const request = $('#customRequest');
-    if (!request) return;
-
-    const multiple = state.eventTypes.length > 1;
-    const other = state.eventTypes.includes('Other');
-    const custom = state.package && state.package.name === 'Custom Package';
-
-    if (multiple || other || custom) {
-      request.placeholder = 'Please describe your full event plan, timings, locations and special needs.';
-    } else {
-      request.placeholder = 'Any special request? Example: location details, extra hours, album preference.';
-    }
-  }
-
-  function openModal(preselectedEvent) {
-    const modal = $('#enquiryModal');
-    if (!modal) return;
-
-    if (preselectedEvent && !state.eventTypes.includes(preselectedEvent)) {
-      state.eventTypes.push(preselectedEvent);
-    }
-
-    renderEventChoices();
-    renderPackages();
-    updateCustomFieldHint();
-
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    const modal = $('#enquiryModal');
-    if (!modal) return;
-
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-
   function validateStep(step) {
-    if (step === 1 && state.eventTypes.length === 0) {
-      return 'Please select at least one event type.';
+    if (step === 1) {
+      const requiredFields = [
+        ['customerName', 'Full name is required.'],
+        ['contactNumber', 'Contact number is required.'],
+        ['eventType', 'Event type is required.'],
+        ['eventDate', 'Event date is required.'],
+        ['eventTime', 'Event time is required.'],
+        ['eventLocation', 'Event location is required.']
+      ];
+
+      for (const [id, message] of requiredFields) {
+        const field = document.getElementById(id);
+        if (!field || !field.value.trim()) return message;
+      }
     }
 
-    if (step === 2 && !state.package) {
+    if (step === 2 && !state.selectedPackage) {
       return 'Please select a package.';
     }
 
     if (step === 3) {
-      const required = [
-        ['customerName', 'Name is required.'],
-        ['contactNumber', 'Contact number is required.'],
-        ['eventDate', 'Event date is required.'],
-        ['eventTime', 'Event time is required.'],
-        ['eventLocation', 'Location is required.'],
-      ];
-
-      for (const [id, message] of required) {
-        const input = document.getElementById(id);
-        if (!input || !input.value.trim()) return message;
-      }
-
-      const needsCustom =
-        state.eventTypes.length > 1 ||
-        state.eventTypes.includes('Other') ||
-        (state.package && state.package.name === 'Custom Package');
-
-      if (needsCustom && !$('#customRequest').value.trim()) {
-        return 'Please add your full event plan or custom request.';
-      }
-
-      if (!$('#termsAccepted').checked) {
-        return 'Please accept the package and transportation note.';
+      const terms = $('#termsAccepted');
+      if (!terms || !terms.checked) {
+        return 'Please confirm the details are correct.';
       }
     }
 
     return '';
   }
 
-  function showAlert(message) {
-    const alertBox = $('#formAlert');
-    if (!alertBox) return;
-
-    alertBox.textContent = message;
-    alertBox.classList.toggle('show', Boolean(message));
+  function showError(message) {
+    if (message) alert(message);
   }
 
   function getFormData() {
-    const selectedPackage = state.package || {};
+    const pkg = state.selectedPackage || {};
 
     return {
       action: 'submitEnquiry',
       enquiryId: makeId('ENQ'),
-      name: $('#customerName').value.trim(),
-      contactNumber: $('#contactNumber').value.trim(),
-      eventDate: $('#eventDate').value,
-      day: $('#eventDay').value,
-      time: $('#eventTime').value,
-      location: $('#eventLocation').value.trim(),
-      eventTypes: state.eventTypes.join(', '),
-      packageName: selectedPackage.name || '',
-      packagePrice: selectedPackage.price || '',
-      customRequest: $('#customRequest').value.trim(),
-      termsAccepted: $('#termsAccepted').checked ? 'Yes' : 'No',
-      whatsappRedirect: 'Yes',
+      name: $('#customerName')?.value.trim() || '',
+      contactNumber: $('#contactNumber')?.value.trim() || '',
+      eventType: $('#eventType')?.value || '',
+      eventDate: $('#eventDate')?.value || '',
+      eventDay: $('#eventDay')?.value || '',
+      eventTime: $('#eventTime')?.value || '',
+      eventLocation: $('#eventLocation')?.value.trim() || '',
+      customRequest: $('#customRequest')?.value.trim() || '',
+      packageType: state.packageType,
+      packageName: pkg.name || '',
+      packagePrice: pkg.price || '',
+      termsAccepted: $('#termsAccepted')?.checked ? 'Yes' : 'No',
       enquiryStatus: 'New',
       bookingStatus: 'Pending',
       paymentStatus: 'Not Paid',
@@ -298,21 +160,21 @@
     const rows = [
       ['Name', data.name],
       ['Contact Number', data.contactNumber],
+      ['Event Type', data.eventType],
       ['Event Date', data.eventDate],
-      ['Day', data.day],
-      ['Time', data.time],
-      ['Location', data.location],
-      ['Event Type', data.eventTypes],
+      ['Event Day', data.eventDay],
+      ['Event Time', data.eventTime],
+      ['Location', data.eventLocation],
+      ['Package Type', data.packageType === 'photo-video' ? 'Photography + Videography' : 'Photography Only'],
       ['Package', `${data.packageName} - ${data.packagePrice}`],
-      ['Custom Request', data.customRequest || '-'],
-      ['Terms', 'Package price is final total. Transportation not included.']
+      ['Custom Request', data.customRequest || '-']
     ];
 
     summary.innerHTML = rows.map(([label, value]) => `
-      <div class="summary-row">
+      <p>
         <strong>${escapeHtml(label)}</strong>
         <span>${escapeHtml(value)}</span>
-      </div>
+      </p>
     `).join('');
   }
 
@@ -322,30 +184,32 @@
       '',
       `Name: ${data.name}`,
       `Contact Number: ${data.contactNumber}`,
+      `Event Type: ${data.eventType}`,
       `Event Date: ${data.eventDate}`,
-      `Day: ${data.day}`,
-      `Time: ${data.time}`,
-      `Location: ${data.location}`,
-      `Event Type: ${data.eventTypes}`,
+      `Day: ${data.eventDay}`,
+      `Time: ${data.eventTime}`,
+      `Location: ${data.eventLocation}`,
+      `Package Type: ${data.packageType === 'photo-video' ? 'Photography + Videography' : 'Photography Only'}`,
       `Selected Package: ${data.packageName} - ${data.packagePrice}`,
       '',
       'Custom Request:',
       data.customRequest || '-',
       '',
-      'I understand that the package price is the final package total and transportation charges are not included.'
+      'I confirm the details above are correct.'
     ].join('\n');
   }
 
-  function saveEnquiry(data) {
+  async function saveEnquiry(data) {
     if (!hasScriptUrl) {
-      return Promise.resolve({ demo: true });
+      console.warn('Google Script URL not configured. Skipping save.');
+      return;
     }
 
     const body = new URLSearchParams({
       payload: JSON.stringify(data)
     });
 
-    return fetch(scriptUrl, {
+    await fetch(scriptUrl, {
       method: 'POST',
       mode: 'no-cors',
       body
@@ -353,48 +217,106 @@
   }
 
   function goToWhatsApp(data) {
+    if (!whatsappNumber) {
+      alert('WhatsApp number is not configured in config.js');
+      return;
+    }
+
     const message = buildWhatsAppMessage(data);
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
     window.location.href = url;
   }
 
-  function loadPackagesFromSheet() {
-    if (!hasScriptUrl) return;
+  function openModal() {
+    const modal = $('#enquiryModal');
+    if (!modal) return;
 
-    jsonp('getPackages', {}, (data) => {
-      if (data && Array.isArray(data.packages) && data.packages.length > 0) {
-        packages = data.packages.map((pkg) => ({
-          name: pkg.name,
-          price: pkg.price,
-          category: pkg.category,
-          badge: pkg.badge,
-          features: Array.isArray(pkg.features)
-            ? pkg.features
-            : String(pkg.features || '').split(';').map((s) => s.trim()).filter(Boolean),
-          terms: pkg.terms
-        }));
+    state.step = 1;
+    updateStepUI();
+    renderPackages();
 
-        renderPackages();
-      }
+    modal.classList.add('active');
+    modal.classList.add('open');
+
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    const modal = $('#enquiryModal');
+    if (!modal) return;
+
+    modal.classList.remove('active');
+    modal.classList.remove('open');
+
+    document.body.style.overflow = '';
+  }
+
+  function setEventDay() {
+    const eventDate = $('#eventDate');
+    const eventDay = $('#eventDay');
+
+    if (!eventDate || !eventDay || !eventDate.value) return;
+
+    const date = new Date(`${eventDate.value}T00:00:00`);
+
+    eventDay.value = date.toLocaleDateString('en-MY', {
+      weekday: 'long'
     });
+  }
+
+  function setWhatsappLinks() {
+    if (!whatsappNumber) return;
+
+    const message = 'Hi MLK Photography, I would like to enquire about your photography/videography service.';
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+    $$('.js-whatsapp-link').forEach((link) => {
+      link.href = url;
+    });
+  }
+
+  function initHeroSlider() {
+    const slides = $$('.hero-slide');
+    if (slides.length <= 1) return;
+
+    let current = 0;
+
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 6500);
   }
 
   function renderReviews(reviews) {
     const track = $('#reviewTrack');
     if (!track) return;
 
-    if (!reviews || reviews.length === 0) {
-      track.innerHTML = `
-        <article class="review-card glass-soft">
-          <div class="stars">★★★★★</div>
-          <p class="muted">Reviews will appear here after admin approval.</p>
-          <strong>MLK Photography</strong>
-        </article>
-      `;
-      return;
-    }
+    const safeReviews = Array.isArray(reviews) && reviews.length
+      ? reviews
+      : [
+          {
+            customerName: 'Ravi & Priya',
+            eventType: 'Wedding',
+            rating: 5,
+            message: 'Beautiful coverage and very professional service. Thank you MLK Photography.'
+          },
+          {
+            customerName: 'Anitha',
+            eventType: 'Event',
+            rating: 5,
+            message: 'The photos were clear, natural and delivered smoothly.'
+          },
+          {
+            customerName: 'Kumar',
+            eventType: 'Portrait',
+            rating: 5,
+            message: 'Easy booking process and good communication through WhatsApp.'
+          }
+        ];
 
-    track.innerHTML = reviews.slice(0, 6).map((review) => {
+    track.innerHTML = safeReviews.slice(0, 6).map((review) => {
       const rating = Math.max(1, Math.min(5, Number(review.rating || 5)));
 
       return `
@@ -408,150 +330,78 @@
     }).join('');
   }
 
-  function renderFallbackReviews() {
-    renderReviews([
-      {
-        customerName: 'Ravi & Priya',
-        eventType: 'Wedding',
-        rating: 5,
-        message: 'Beautiful coverage and very professional service. Thank you MLK Photography.'
-      },
-      {
-        customerName: 'Anitha',
-        eventType: 'Event',
-        rating: 5,
-        message: 'The photos were clear, natural and delivered smoothly.'
-      },
-      {
-        customerName: 'Kumar',
-        eventType: 'Portrait',
-        rating: 5,
-        message: 'Easy booking process and good communication through WhatsApp.'
-      }
-    ]);
-  }
-
   function loadReviews() {
-    if (!hasScriptUrl) {
-      renderFallbackReviews();
-      return;
-    }
-
-    jsonp(
-      'getApprovedReviews',
-      {},
-      (data) => renderReviews(data.reviews || []),
-      () => renderFallbackReviews()
-    );
-  }
-
-  function setWhatsappLinks() {
-    const text = 'Hi MLK Photography, I would like to enquire about your photography/videography service.';
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
-
-    $$('.js-whatsapp-link').forEach((link) => {
-      link.href = url;
-    });
-  }
-
-  function initHeroSlider() {
-    const slides = Array.from(document.querySelectorAll('.hero-slide'));
-    let current = 0;
-
-    if (slides.length <= 1) return;
-
-    window.setInterval(() => {
-      slides[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('active');
-    }, 6500);
+    renderReviews();
   }
 
   function setCurrentYear() {
-    const year = document.getElementById('year');
+    const year = $('#year');
     if (year) year.textContent = new Date().getFullYear();
   }
 
   function bindEvents() {
-    document.addEventListener('click', (event) => {
-      const openBtn = event.target.closest('.js-open-enquiry');
-
-      if (openBtn) {
-        const preselected = openBtn.dataset.event || '';
-        openModal(preselected);
-      }
-
-      const selectBtn = event.target.closest('.js-select-package');
-
-      if (selectBtn) {
-        selectPackage(Number(selectBtn.dataset.packageIndex));
-
-        const modal = $('#enquiryModal');
-
-        if (modal && !modal.classList.contains('open')) {
-          openModal();
-          state.step = 3;
-          updateWizard();
-        }
-      }
+    $$('.js-open-enquiry').forEach((button) => {
+      button.addEventListener('click', openModal);
     });
 
-    const closeModalBtn = $('#closeModal');
-    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    const closeBtn = $('#closeEnquiryModal');
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
     const modal = $('#enquiryModal');
     if (modal) {
       modal.addEventListener('click', (event) => {
-        if (event.target.id === 'enquiryModal') closeModal();
-      });
-    }
-
-    const eventChoices = $('#eventChoices');
-    if (eventChoices) {
-      eventChoices.addEventListener('change', (event) => {
-        if (event.target.matches('input[type="checkbox"]')) {
-          setEventChoice(event.target.value, event.target.checked);
-        }
+        if (event.target === modal) closeModal();
       });
     }
 
     const eventDate = $('#eventDate');
-    if (eventDate) {
-      eventDate.addEventListener('change', (event) => {
-        const date = event.target.value;
-        if (!date) return;
+    if (eventDate) eventDate.addEventListener('change', setEventDay);
 
-        const day = new Date(`${date}T00:00:00`).toLocaleDateString('en-MY', {
-          weekday: 'long'
-        });
+    $$('.package-type').forEach((button) => {
+      button.addEventListener('click', () => {
+        $$('.package-type').forEach((btn) => btn.classList.remove('active'));
+        button.classList.add('active');
 
-        $('#eventDay').value = day;
+        state.packageType = button.dataset.type || 'photo';
+        state.selectedPackage = null;
+
+        renderPackages();
+      });
+    });
+
+    const packageGrid = $('#packageGrid');
+    if (packageGrid) {
+      packageGrid.addEventListener('click', (event) => {
+        const card = event.target.closest('.enquiry-package-card');
+        if (!card) return;
+
+        const packages = getVisiblePackages();
+        state.selectedPackage = packages[Number(card.dataset.packageIndex)];
+
+        renderPackages();
       });
     }
 
-    const nextStep = $('#nextStep');
-    if (nextStep) {
-      nextStep.addEventListener('click', () => {
+    const nextBtn = $('#nextStep');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
         const error = validateStep(state.step);
 
         if (error) {
-          showAlert(error);
-          alert(error);
+          showError(error);
           return;
         }
 
-        showAlert('');
-        state.step = Math.min(4, state.step + 1);
-        updateWizard();
+        state.step = Math.min(3, state.step + 1);
+        updateStepUI();
       });
     }
 
-    const prevStep = $('#prevStep');
-    if (prevStep) {
-      prevStep.addEventListener('click', () => {
-        showAlert('');
+    const prevBtn = $('#prevStep');
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
         state.step = Math.max(1, state.step - 1);
-        updateWizard();
+        updateStepUI();
       });
     }
 
@@ -563,42 +413,42 @@
         const error = validateStep(3);
 
         if (error) {
-          showAlert(error);
+          showError(error);
           return;
         }
 
         const data = getFormData();
-
-        showAlert('');
-
-        const formSuccess = $('#formSuccess');
-        if (formSuccess) formSuccess.classList.add('show');
-
         const submitBtn = $('#submitEnquiry');
-        if (submitBtn) submitBtn.disabled = true;
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submitting...';
+        }
 
         try {
           await saveEnquiry(data);
-        } catch (err) {
-          console.warn('Save attempt finished with browser restriction:', err);
+        } catch (error) {
+          console.warn('Save failed, continuing to WhatsApp:', error);
         }
 
-        window.setTimeout(() => goToWhatsApp(data), 650);
+        goToWhatsApp(data);
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit & WhatsApp';
+        }
       });
     }
   }
 
   function init() {
-    renderEventChoices();
     renderPackages();
-    updateWizard();
-    updateCustomFieldHint();
+    updateStepUI();
     setWhatsappLinks();
     initHeroSlider();
     setCurrentYear();
-    bindEvents();
-    loadPackagesFromSheet();
     loadReviews();
+    bindEvents();
   }
 
   document.addEventListener('DOMContentLoaded', init);
