@@ -662,7 +662,7 @@ color:rgba(22,20,18,.72);
 }
 
 .footer p{
-  color:var(--muted);
+  color:rgba(255,255,255,.72);
   max-width:460px;
   margin-top:16px;
 }
@@ -677,8 +677,12 @@ color:rgba(22,20,18,.72);
 
 .footer a:not(.brand){
   display:block;
-  color:var(--muted);
+  color:rgba(255,255,255,.72);
   margin-bottom:9px;
+}
+
+.footer .brand{
+  color:#fff;
 }
 
 .footer a:hover{
