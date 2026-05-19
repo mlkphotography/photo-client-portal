@@ -213,90 +213,113 @@
     <div class="container copyright">© <span id="year"></span> MLK Photography. All rights reserved.</div>
   </footer>
 
-  <div id="enquiryModal" class="modal" aria-hidden="true">
-    <div class="modal-panel glass" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <div>
-          <span class="eyebrow">MLK Booking Enquiry</span>
-          <h2 id="modalTitle">Submit & continue to WhatsApp.</h2>
-          <p class="muted">Your enquiry will be saved to Google Sheet first.</p>
+  <div id="enquiryModal" class="modal">
+  <div class="modal-panel enquiry-panel">
+    <button class="modal-close" id="closeEnquiryModal" type="button">×</button>
+
+    <div class="form-header">
+      <p class="eyebrow">Booking Enquiry</p>
+      <h2>Tell us about your event</h2>
+      <p>Fill in your details and we’ll continue the conversation on WhatsApp.</p>
+    </div>
+
+    <div class="form-steps">
+      <span class="step-dot active" data-step="1">1</span>
+      <span class="step-dot" data-step="2">2</span>
+      <span class="step-dot" data-step="3">3</span>
+    </div>
+
+    <form id="enquiryForm">
+      <!-- STEP 1 -->
+      <div class="form-step active" data-step="1">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="customerName">Full Name</label>
+            <input id="customerName" name="name" type="text" required>
+          </div>
+
+          <div class="form-field">
+            <label for="contactNumber">Contact Number</label>
+            <input id="contactNumber" name="contactNumber" type="tel" required>
+          </div>
+
+          <div class="form-field">
+            <label for="eventType">Event Type</label>
+            <select id="eventType" name="eventType" required>
+              <option value="">Select event</option>
+              <option value="Wedding">Wedding</option>
+              <option value="Engagement">Engagement</option>
+              <option value="Reception">Reception</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Temple Event">Temple Event</option>
+              <option value="Corporate Event">Corporate Event</option>
+              <option value="Product Shoot">Product Shoot</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="eventDate">Event Date</label>
+            <input id="eventDate" name="eventDate" type="date" required>
+          </div>
+
+          <div class="form-field">
+            <label for="eventDay">Event Day</label>
+            <input id="eventDay" name="eventDay" type="text" readonly placeholder="Auto-filled">
+          </div>
+
+          <div class="form-field">
+            <label for="eventTime">Event Time</label>
+            <input id="eventTime" name="eventTime" type="time" required>
+          </div>
+
+          <div class="form-field full">
+            <label for="eventLocation">Event Location</label>
+            <input id="eventLocation" name="eventLocation" type="text" required>
+          </div>
+
+          <div class="form-field full">
+            <label for="customRequest">Custom Request / Notes</label>
+            <textarea id="customRequest" name="customRequest" rows="4" placeholder="Tell us anything important about your event..."></textarea>
+          </div>
         </div>
-        <button id="closeModal" class="close-btn" type="button" aria-label="Close enquiry form">✕</button>
       </div>
 
-      <form id="enquiryForm" class="wizard">
-        <div class="progress" aria-hidden="true">
-          <span class="active"></span><span></span><span></span><span></span>
+      <!-- STEP 2 -->
+      <div class="form-step" data-step="2">
+        <div class="package-type-wrap">
+          <button type="button" class="package-type active" data-type="photo">
+            Photography Only
+          </button>
+
+          <button type="button" class="package-type" data-type="photo-video">
+            Photography + Videography
+          </button>
         </div>
 
-        <section class="wizard-step active" data-step="1">
-          <h3>1. Select event type</h3>
-          <p class="muted">You can choose more than one.</p>
-          <div id="eventChoices" class="event-chip-wrap"></div>
-        </section>
+        <div id="packageGrid" class="enquiry-package-grid"></div>
+      </div>
 
-        <section class="wizard-step" data-step="2">
-          <h3>2. Tell us what you need</h3>
-          <p class="muted">Choose the closest option, or select Custom Package for multiple events and special needs.</p>
-          <div id="wizardPackageGrid" class="package-grid"></div>
-        </section>
+      <!-- STEP 3 -->
+      <div class="form-step" data-step="3">
+        <div id="reviewSummary" class="review-summary"></div>
 
-        <section class="wizard-step" data-step="3">
-          <h3>3. Your details</h3>
-          <div class="form-grid">
-            <div class="field">
-              <label for="customerName">Name</label>
-              <input id="customerName" name="name" autocomplete="name" placeholder="Your full name">
-            </div>
-            <div class="field">
-              <label for="contactNumber">Contact Number / WhatsApp</label>
-              <input id="contactNumber" name="contactNumber" autocomplete="tel" placeholder="0123456789">
-            </div>
-            <div class="field">
-              <label for="eventDate">Event Date</label>
-              <input id="eventDate" name="eventDate" type="date">
-            </div>
-            <div class="field">
-              <label for="eventDay">Day</label>
-              <input id="eventDay" name="eventDay" placeholder="Auto-filled" readonly>
-            </div>
-            <div class="field">
-              <label for="eventTime">Time</label>
-              <input id="eventTime" name="eventTime" type="time">
-            </div>
-            <div class="field">
-              <label for="eventLocation">Location</label>
-              <input id="eventLocation" name="eventLocation" placeholder="Kajang / Temple / Hall / Address">
-            </div>
-            <div id="customRequestWrap" class="field full">
-              <label for="customRequest">Custom Request / Full Event Plan</label>
-              <textarea id="customRequest" name="customRequest" placeholder="Example: Wedding morning ceremony + evening reception + pre-wedding shoot. Please include timing, locations and special request."></textarea>
-            </div>
-            <div class="field full">
-              <label class="checkbox-row">
-                <input id="termsAccepted" type="checkbox">
-                <span>I understand that the package price shown is the final package total and transportation charges are not included.</span>
-              </label>
-            </div>
-          </div>
-        </section>
+        <label class="terms-row">
+          <input id="termsAccepted" type="checkbox" required>
+          <span>I confirm the details above are correct.</span>
+        </label>
+      </div>
 
-        <section class="wizard-step" data-step="4">
-          <h3>4. Review enquiry</h3>
-          <p class="muted">Please check the details before continuing to WhatsApp.</p>
-          <div id="reviewSummary" class="summary-box glass-soft"></div>
-          <div id="formAlert" class="alert"></div>
-          <div id="formSuccess" class="success-note">Enquiry saved. Opening WhatsApp...</div>
-        </section>
-
-        <div class="wizard-actions">
-          <button id="prevStep" class="btn btn-secondary" type="button">Back</button>
-          <button id="nextStep" class="btn btn-primary" type="button">Continue</button>
-          <button id="submitEnquiry" class="btn btn-whatsapp" type="submit">Submit & Continue to WhatsApp</button>
-        </div>
-      </form>
-    </div>
+      <div class="form-actions">
+        <button id="prevStep" class="btn btn-secondary" type="button">Back</button>
+        <button id="nextStep" class="btn btn-primary" type="button">Next</button>
+        <button id="submitEnquiry" class="btn btn-whatsapp" type="submit">
+          Submit & WhatsApp
+        </button>
+      </div>
+    </form>
   </div>
+</div>
 
   <script src="assets/config.js"></script>
   <script src="assets/data.js"></script>
