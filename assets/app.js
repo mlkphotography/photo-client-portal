@@ -66,6 +66,40 @@
     return `${prefix}-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}-${Math.floor(Math.random() * 900 + 100)}`;
   }
 
+  function formatTime12Hour(time) {
+    if (!time) return '';
+
+    const [hourValue, minuteValue] = time.split(':');
+    let hour = Number(hourValue);
+    const minute = minuteValue || '00';
+    const period = hour >= 12 ? 'PM' : 'AM';
+
+    hour = hour % 12;
+    if (hour === 0) hour = 12;
+
+    return `${hour}:${minute} ${period}`;
+  }
+
+  function scrollFormToTop() {
+    const panel = document.querySelector('.enquiry-panel');
+
+    if (panel) {
+      panel.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    const modal = document.querySelector('#enquiryModal');
+
+    if (modal) {
+      modal.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
+
   function createEvent() {
     return {
       id: Date.now() + Math.floor(Math.random() * 1000),
@@ -297,7 +331,7 @@
           <h3 style="margin-bottom:10px;color:#111;">Event ${index + 1}: ${escapeHtml(eventItem.type)}</h3>
           <p><strong>Date</strong><span>${escapeHtml(eventItem.date)}</span></p>
           <p><strong>Day</strong><span>${escapeHtml(eventItem.day)}</span></p>
-          <p><strong>Time</strong><span>${escapeHtml(eventItem.time)}</span></p>
+          <p><strong>Time</strong><span>${escapeHtml(formatTime12Hour(eventItem.time))}</span></p>
           <p><strong>Location</strong><span>${escapeHtml(eventItem.location)}</span></p>
           <p><strong>Package Type</strong><span>${eventItem.packageType === 'photoVideo' ? 'Photography + Videography' : 'Photography Only'}</span></p>
           <p><strong>Package</strong><span>${escapeHtml(eventItem.packageName)} - ${escapeHtml(eventItem.packagePrice)}</span></p>
@@ -386,7 +420,12 @@
       phoneCode: state.customer.phoneCode,
       phoneNumber: normalizePhone(state.customer.phoneNumber),
       fullPhone: getFullPhone(),
-      events: state.events,
+      events: state.events.map((eventItem) => {
+        return {
+          ...eventItem,
+          displayTime: formatTime12Hour(eventItem.time)
+        };
+      }),
       termsAccepted: 'Yes',
       enquiryStatus: 'New',
       bookingStatus: 'Pending',
@@ -401,7 +440,7 @@
         `Event ${index + 1}: ${eventItem.type}`,
         `Date: ${eventItem.date}`,
         `Day: ${eventItem.day}`,
-        `Time: ${eventItem.time}`,
+        `Time: ${eventItem.displayTime || formatTime12Hour(eventItem.time)}`,
         `Location: ${eventItem.location}`,
         `Package Type: ${eventItem.packageType === 'photoVideo' ? 'Photography + Videography' : 'Photography Only'}`,
         `Selected Package: ${eventItem.packageName} - ${eventItem.packagePrice}`,
@@ -449,6 +488,7 @@
   function startThankYouRedirect(data) {
     state.step = 5;
     updateStepUI();
+    scrollFormToTop();
 
     let count = 5;
     const countdown = $('#redirectCountdown');
@@ -474,6 +514,7 @@
     state.step = 1;
     ensureOneEvent();
     updateStepUI();
+    scrollFormToTop();
 
     modal.classList.add('active');
     modal.classList.add('open');
@@ -637,11 +678,13 @@
 
       state.step = Math.min(4, state.step + 1);
       updateStepUI();
+      scrollFormToTop();
     });
 
     $('#prevStep')?.addEventListener('click', () => {
       state.step = Math.max(1, state.step - 1);
       updateStepUI();
+      scrollFormToTop();
     });
 
     $('#enquiryForm')?.addEventListener('submit', async (event) => {
