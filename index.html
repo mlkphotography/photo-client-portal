@@ -234,47 +234,32 @@
     <form id="enquiryForm">
       <input id="websiteField" type="text" autocomplete="off" tabindex="-1" style="display:none">
 
+      <!-- STEP 1 -->
       <div class="form-step active" data-step="1">
         <div class="form-grid">
           <div class="form-field full">
             <label for="customerName">Full Name</label>
-            <input
-              id="customerName"
-              type="text"
-              placeholder="Example: Kumar Raj"
-              required
-            >
+            <input id="customerName" type="text" placeholder="Example: Kumar Raj" required>
           </div>
 
           <div class="form-field">
             <label for="countrySearch">Country</label>
-            <input
-              id="countrySearch"
-              list="countryList"
-              type="text"
-              value="Malaysia"
-              placeholder="Search country"
-              required
-            >
-            <datalist id="countryList"></datalist>
+            <select id="countrySearch" required>
+              <option value="Malaysia" selected>Malaysia</option>
+            </select>
           </div>
 
           <div class="form-field">
             <label for="phoneNumber">Phone Number</label>
             <div class="phone-row">
               <input id="phoneCode" type="text" readonly value="+60">
-              <input
-                id="phoneNumber"
-                type="tel"
-                inputmode="numeric"
-                placeholder="123456789"
-                required
-              >
+              <input id="phoneNumber" type="tel" inputmode="numeric" placeholder="123456789" required>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- STEP 2 -->
       <div class="form-step" data-step="2">
         <div id="eventsWrap" class="events-wrap"></div>
 
@@ -283,10 +268,12 @@
         </button>
       </div>
 
+      <!-- STEP 3 -->
       <div class="form-step" data-step="3">
         <div id="eventPackagesWrap" class="event-packages-wrap"></div>
       </div>
 
+      <!-- STEP 4 -->
       <div class="form-step" data-step="4">
         <div id="reviewSummary" class="review-summary"></div>
 
@@ -298,6 +285,7 @@
         </label>
       </div>
 
+      <!-- STEP 5 -->
       <div class="form-step" data-step="5">
         <div class="thank-you-box">
           <h3>Thank you for your enquiry</h3>
