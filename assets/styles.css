@@ -2018,3 +2018,82 @@ td{
     width:100%;
   }
 }
+
+.enquiry-panel,
+.enquiry-panel *,
+.event-box,
+.event-package-box,
+.package-choice{
+  box-sizing:border-box;
+}
+
+.enquiry-panel{
+  overflow-x:hidden;
+}
+
+.form-field,
+.form-field input,
+.form-field select,
+.form-field textarea,
+.phone-row,
+.phone-row input{
+  min-width:0;
+  max-width:100%;
+}
+
+@media(max-width:760px){
+  .modal{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  .enquiry-panel{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  .form-grid,
+  .events-wrap,
+  .event-packages-wrap,
+  .event-box,
+  .event-package-box,
+  .package-choice-grid{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  .phone-row{
+    grid-template-columns:78px minmax(0,1fr);
+    width:100%;
+  }
+
+  .phone-row input{
+    width:100%;
+  }
+
+  .event-box,
+  .event-package-box{
+    padding:16px;
+  }
+
+  .package-choice{
+    width:100%;
+    max-width:100%;
+    padding:16px;
+  }
+
+  .package-choice.active::after{
+    position:static;
+    display:inline-flex;
+    margin:0 0 12px 0;
+  }
+
+  .review-summary p{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:6px;
+  }
+}
