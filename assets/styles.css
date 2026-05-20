@@ -2132,3 +2132,95 @@ td{
   opacity:.65;
   cursor:pointer;
 }
+
+
+/* ===== PERFORMANCE FIX FOR SMOOTH SCROLL ===== */
+
+/* Remove expensive blur effects */
+.site-header,
+.topbar,
+.glass,
+.glass-soft,
+.page-title-card,
+.portal-floating-card,
+.modal-panel,
+.portal-preview,
+.btn-secondary {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Keep glass look, but lighter */
+.site-header {
+  background: rgba(255,255,255,.95) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.12) !important;
+}
+
+.topbar {
+  background: rgba(12,9,8,.92) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.14) !important;
+}
+
+.glass,
+.glass-soft,
+.page-title-card {
+  background: rgba(255,255,255,.94) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.10) !important;
+}
+
+/* Stop heavy full-screen zoom animation */
+.hero-slide {
+  animation: none !important;
+  transform: none !important;
+  transition: opacity 1.1s ease !important;
+}
+
+/* Reduce heavy shadows */
+.service-card,
+.image-frame,
+.portal-preview,
+.cta-card,
+.review-card,
+.metric-card,
+.modal-panel,
+.enquiry-panel {
+  box-shadow: 0 10px 28px rgba(0,0,0,.12) !important;
+}
+
+/* Make hover animations lighter */
+.btn:hover,
+.service-card:hover img,
+.package-choice.active,
+.enquiry-package-card:hover,
+.enquiry-package-card.active {
+  transform: none !important;
+}
+
+/* Mobile extra performance */
+@media (max-width: 760px) {
+  * {
+    scroll-behavior: auto !important;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,.45),
+      rgba(0,0,0,.72)
+    ) !important;
+  }
+
+  .site-header,
+  .topbar {
+    box-shadow: 0 6px 18px rgba(0,0,0,.14) !important;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
