@@ -3,120 +3,155 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MLK Photography | Customer Gallery</title>
-  <meta name="description" content="Customer gallery and photo selection for MLK Photography.">
+  <title>MLK Photography | Private Gallery</title>
+  <meta name="description" content="Private client gallery, photo selection and testimonial for MLK Photography.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/gallery-upgrade.css">
 </head>
-<body>
-  <header class="topbar">
+<body class="gallery-page">
+  <header class="gallery-login-header">
     <a class="brand" href="index.html" aria-label="MLK Photography home">
-      <span class="logo-mark">MLK</span>
-      <span>MLK PHOTOGRAPHY</span>
+      <span class="brand-mark"><img src="images/logo.jpg" alt="MLK Photography Logo"></span>
+      <span class="brand-text">MLK Photography</span>
     </a>
-    <nav class="nav" aria-label="Gallery navigation">
-      <a href="index.html#packages">Packages</a>
-      <a href="index.html#reviews">Reviews</a>
-      <a href="admin.html">Admin</a>
-    </nav>
+    <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
   </header>
 
   <main>
-    <section class="page-hero">
-      <div class="container page-title-card glass">
-        <span class="eyebrow">Customer Gallery</span>
-        <h1>View, select and submit your favorite photos.</h1>
-        <p class="lead">Enter your Booking ID or open the private gallery link sent by MLK Photography.</p>
-        <div class="gallery-toolbar">
-          <div class="field" style="flex:1">
-            <label for="bookingIdInput">Booking ID</label>
-            <input id="bookingIdInput" placeholder="Example: BK-0001">
+    <section id="loginView" class="gallery-login-section">
+      <div class="gallery-login-card">
+        <p class="eyebrow">Private Client Gallery</p>
+        <h1>Your photo gallery is ready.</h1>
+        <p class="login-copy">Enter your email address and gallery code to view, favorite and download your photos.</p>
+
+        <div class="login-form">
+          <div class="form-field">
+            <label for="clientEmail">Email Address</label>
+            <input id="clientEmail" type="email" placeholder="client@email.com" autocomplete="email" required>
           </div>
-          <button id="loadGallery" class="btn btn-primary" type="button">Load Gallery</button>
+
+          <div class="form-field">
+            <label for="galleryCode">Gallery Code</label>
+            <input id="galleryCode" type="text" placeholder="Example: MLK2026" autocomplete="off" required>
+          </div>
+
+          <button id="openGalleryBtn" class="btn btn-primary" type="button">Open Gallery</button>
         </div>
+
+        <p class="expiry-note">Gallery expires 30 days after delivery. Please download your photos before expiry.</p>
+        <div id="loginAlert" class="alert"></div>
       </div>
     </section>
 
-    <section class="section" style="padding-top:24px">
-      <div class="container">
-        <div id="galleryInfo" class="info-card glass-soft">
-          <h3>Gallery not loaded yet</h3>
-          <p class="muted">After loading, your event photos will appear below.</p>
+    <section id="galleryView" class="gallery-app" style="display:none">
+      <div class="gallery-app-head">
+        <div>
+          <p class="eyebrow">Client Gallery</p>
+          <h1 id="galleryTitle">Your Gallery</h1>
+          <p id="galleryMeta" class="muted"></p>
+          <p id="galleryExpiry" class="gallery-expiry-text"></p>
+        </div>
+        <div class="gallery-head-actions">
+          <a id="downloadAllBtn" class="btn btn-secondary dark-btn" href="#" target="_blank" rel="noopener">Download All Photos</a>
+          <button id="logoutGalleryBtn" class="btn btn-secondary dark-btn" type="button">Logout</button>
         </div>
       </div>
-    </section>
 
-    <section class="section" style="padding-top:0">
-      <div class="container">
-        <div id="photoGrid" class="photo-grid"></div>
-        <div id="selectionBar" class="sticky-submit glass" style="display:none">
-          <div>
-            <strong id="selectionCounter">Selected 0 photos</strong>
-            <p class="muted" id="selectionLimitText" style="margin:4px 0 0">Choose your favorite photos.</p>
-          </div>
-          <button id="submitSelection" class="btn btn-primary" type="button">Submit Selected Photos</button>
+      <div class="gallery-toolbar-v2">
+        <div class="form-field gallery-search-field">
+          <label for="photoSearch">Search Photo</label>
+          <input id="photoSearch" type="search" placeholder="Search by filename...">
         </div>
+        <button id="showSelectedBtn" class="btn btn-secondary dark-btn" type="button">Show Selected Photos</button>
+        <select id="sortPhotos" class="gallery-sort" aria-label="Sort photos">
+          <option value="oldest">Oldest First</option>
+          <option value="newest">Newest First</option>
+        </select>
       </div>
-    </section>
 
-    <section id="reviewSection" class="section" style="display:none; padding-top:0">
-      <div class="container">
-        <div class="glass" style="padding:28px">
-          <span class="eyebrow">Customer Review</span>
-          <h2>How was your experience?</h2>
-          <p class="muted">Your review will be saved first. It appears on the homepage only after admin approval.</p>
-          <div class="form-grid">
-            <div class="field">
-              <label for="reviewName">Customer Name</label>
-              <input id="reviewName" placeholder="Your name">
-            </div>
-            <div class="field">
-              <label for="reviewEventType">Event Type</label>
-              <input id="reviewEventType" placeholder="Wedding, Reception">
-            </div>
-            <div class="field full">
-              <label>Rating</label>
-              <div id="ratingRow" class="rating-row" aria-label="Rating stars">
-                <span class="rating-star active" data-rating="1">★</span>
-                <span class="rating-star active" data-rating="2">★</span>
-                <span class="rating-star active" data-rating="3">★</span>
-                <span class="rating-star active" data-rating="4">★</span>
-                <span class="rating-star active" data-rating="5">★</span>
-              </div>
-            </div>
-            <div class="field full">
-              <label for="reviewMessage">Review Message</label>
-              <textarea id="reviewMessage" placeholder="Share your experience with MLK Photography."></textarea>
-            </div>
-            <div class="field full">
-              <label class="checkbox-row">
-                <input id="permissionDisplay" type="checkbox">
-                <span>I allow MLK Photography to display my review on the website/app homepage.</span>
-              </label>
-            </div>
-          </div>
-          <div class="actions" style="margin-top:18px">
-            <button id="submitReview" class="btn btn-primary" type="button">Submit Review</button>
-            <a class="btn btn-secondary" href="index.html#reviews">View Homepage Reviews</a>
-          </div>
-          <div id="reviewSuccess" class="success-note">Thank you. Your review has been saved for admin approval.</div>
-          <div id="galleryAlert" class="alert"></div>
-        </div>
+      <div id="lockedNotice" class="locked-notice" style="display:none">
+        Selection already submitted. Your gallery is locked. Contact MLK Photography if you need to reopen it.
+      </div>
+
+      <div id="photoGrid" class="photo-grid-v2"></div>
+
+      <div id="emptyGallery" class="empty-gallery" style="display:none">
+        <h3>No photos found</h3>
+        <p class="muted">Try clearing the search or contact MLK Photography.</p>
+      </div>
+
+      <div id="selectionBar" class="selection-bar-v2" style="display:none">
+        <strong id="selectionCounter">0 Photos Selected</strong>
+        <button id="reviewSelectedBtn" class="btn btn-primary" type="button">Review Selected Photos</button>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-card glass">
-      <div>
-        <h3>MLK PHOTOGRAPHY</h3>
-        <p class="muted">Indian Wedding Photography & Videography, Kajang, Malaysia</p>
+  <div id="reviewSelectionModal" class="gallery-modal" aria-hidden="true">
+    <div class="gallery-modal-panel large">
+      <button class="gallery-modal-close" data-close-modal="reviewSelectionModal" type="button">×</button>
+      <p class="eyebrow">Review Selected Photos</p>
+      <h2>Confirm your favorites</h2>
+      <p class="muted">Remove any photo before submitting your final selection.</p>
+      <div id="selectedPreviewGrid" class="selected-preview-grid"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary dark-btn" data-close-modal="reviewSelectionModal" type="button">Back to Gallery</button>
+        <button id="submitFinalSelectionBtn" class="btn btn-primary" type="button">Submit Final Selection</button>
       </div>
-      <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp Us</a>
     </div>
-  </footer>
+  </div>
+
+  <div id="testimonialModal" class="gallery-modal" aria-hidden="true">
+    <div class="gallery-modal-panel testimonial-panel">
+      <p class="eyebrow">Testimonial</p>
+      <h2>Share your experience</h2>
+      <p class="muted">Please write a short testimonial for MLK Photography.</p>
+      <div id="testimonialStars" class="rating-row testimonial-stars" aria-label="Rating stars">
+        <span class="rating-star active" data-rating="1">★</span>
+        <span class="rating-star active" data-rating="2">★</span>
+        <span class="rating-star active" data-rating="3">★</span>
+        <span class="rating-star active" data-rating="4">★</span>
+        <span class="rating-star active" data-rating="5">★</span>
+      </div>
+      <div class="form-field full">
+        <label for="testimonialMessage">Your Testimonial</label>
+        <textarea id="testimonialMessage" rows="5" placeholder="Tell us about your experience..."></textarea>
+      </div>
+      <button id="submitTestimonialBtn" class="btn btn-primary" type="button">Submit Testimonial</button>
+      <div id="testimonialAlert" class="alert"></div>
+    </div>
+  </div>
+
+  <div id="lightboxModal" class="gallery-lightbox" aria-hidden="true">
+    <button id="closeLightbox" class="lightbox-close" type="button">×</button>
+    <button id="prevPhoto" class="lightbox-nav prev" type="button">‹</button>
+    <button id="nextPhoto" class="lightbox-nav next" type="button">›</button>
+    <div class="lightbox-topbar">
+      <strong id="lightboxName">Photo</strong>
+      <div class="lightbox-actions">
+        <button id="lightboxFavorite" class="btn btn-primary" type="button">♡ Favorite</button>
+        <a id="lightboxDownload" class="btn btn-secondary dark-btn" href="#" target="_blank" rel="noopener">Download</a>
+      </div>
+    </div>
+    <img id="lightboxImage" alt="Selected photo preview">
+  </div>
+
+  <section id="successView" class="success-view" style="display:none">
+    <div class="success-card">
+      <div class="success-icon">✔</div>
+      <h1>Selection Submitted Successfully</h1>
+      <p>Thank you for choosing MLK Photography.</p>
+      <p>Your selected photos have been saved.</p>
+      <p class="expiry-note">This gallery will expire in 30 days. Please download your photos before expiry.</p>
+      <div class="success-actions">
+        <a id="successDownloadAll" class="btn btn-primary" href="#" target="_blank" rel="noopener">Download All Photos</a>
+        <a class="btn btn-secondary dark-btn" href="index.html">Back to Homepage</a>
+      </div>
+    </div>
+  </section>
 
   <script src="assets/config.js"></script>
   <script src="assets/gallery.js"></script>
