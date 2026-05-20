@@ -53,14 +53,14 @@
       .forEach((link) => link.href = url);
   }
 
-  function showAlert(message) {
+function showAlert(message) {
+  const alert = $('#loginAlert');
 
-    const alert = $('#loginAlert');
+  if (!alert) return;
 
-    if (!alert) return;
-
-    alert.textContent = message || '';
-  }
+  alert.textContent = message || '';
+  alert.classList.toggle('show', Boolean(message));
+}
 
   function showModal(id) {
 
