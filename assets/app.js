@@ -722,15 +722,112 @@
     });
   }
 
-  function init() {
-    ensureOneEvent();
-    renderCountries();
-    setWhatsappLinks();
-    initHeroSlider();
-    setCurrentYear();
-    updateStepUI();
-    bindEvents();
+  function renderHomepageReviews(reviews) {
+  const track = $('#reviewTrack');
+
+  if (!track) return;
+
+  if (!reviews || !reviews.length) {
+    track.innerHTML = `
+      <article class="review-card">
+        <div class="stars">★★★★★</div>
+        <p>No reviews available yet.</p>
+        <strong>MLK Photography</strong>
+      </article>
+    `;
+    return;
   }
+
+  track.innerHTML = reviews.map((review) => {
+    const stars = '★'.repeat(Number(review.rating || 5));
+
+    return `
+      <article class="review-card">
+        <div class="stars">${stars}</div>
+
+        <p>
+          ${escapeHtml(review.reviewMessage || '')}
+        </p>
+
+        <strong>
+          ${escapeHtml(review.customerName || 'Customer')}
+        </strong>
+
+        <div class="muted" style="margin-top:6px;">
+          ${escapeHtml(review.eventType || '')}
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function loadHomepageReviews() {
+  const track = $('#reviewTrack');
+
+  if (!track) return;
+
+  if (!hasScriptUrl) {
+    renderHomepageReviews([]);
+    return;
+  }
+
+  const callbackName =
+    `mlkReviewsCallback_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+  const url = new URL(scriptUrl);
+
+  url.searchParams.set('action', 'getApprovedReviews');
+  url.searchParams.set('callback', callbackName);
+
+  const script = document.createElement('script');
+
+  const timeout = setTimeout(() => {
+    cleanup();
+    renderHomepageReviews([]);
+  }, 12000);
+
+  function cleanup() {
+    clearTimeout(timeout);
+
+    delete window[callbackName];
+
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+  }
+
+  window[callbackName] = function (data) {
+    cleanup();
+
+    if (!data || data.ok === false) {
+      renderHomepageReviews([]);
+      return;
+    }
+
+    renderHomepageReviews(data.reviews || []);
+  };
+
+  script.onerror = function () {
+    cleanup();
+    renderHomepageReviews([]);
+  };
+
+  script.src = url.toString();
+
+  document.body.appendChild(script);
+}
+
+function init() {
+  ensureOneEvent();
+  renderCountries();
+  setWhatsappLinks();
+  initHeroSlider();
+  setCurrentYear();
+  updateStepUI();
+  bindEvents();
+
+  loadHomepageReviews();
+}
 
   document.addEventListener('DOMContentLoaded', init);
 })();
