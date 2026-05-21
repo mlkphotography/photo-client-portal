@@ -1,6 +1,5 @@
 body.gallery-page{
   margin:0;
-  min-height:100svh;
   background:#f7f3ee;
   color:#111;
   font-family:'Inter',sans-serif;
@@ -26,17 +25,21 @@ body.gallery-page{
 
 .gallery-login-header .btn-whatsapp{
   width:auto;
+  min-height:52px;
+  padding:0 28px;
   border-radius:999px;
+  font-weight:800;
 }
 
 /* LOGIN PAGE */
 
 .gallery-login-section{
-  min-height:calc(100svh - 90px);
+  min-height:calc(100vh - 92px);
   display:flex;
   align-items:center;
   justify-content:center;
   padding:24px;
+  box-sizing:border-box;
 }
 
 .gallery-login-card{
@@ -46,6 +49,7 @@ body.gallery-page{
   border-radius:28px;
   padding:38px;
   box-shadow:0 20px 60px rgba(0,0,0,.08);
+  box-sizing:border-box;
 }
 
 .gallery-login-card h1{
@@ -428,23 +432,19 @@ body.gallery-page{
   }
 
   .gallery-login-header .btn-whatsapp{
-    width:auto;
-    min-height:50px;
-    padding:0 24px;
-    border-radius:999px;
+    min-height:48px;
+    padding:0 22px;
     font-size:14px;
-    font-weight:800;
     flex-shrink:0;
   }
 
   .gallery-login-section{
-    min-height:calc(100svh - 76px);
-    align-items:center;
+    min-height:calc(100svh - 74px);
     padding:10px 20px 20px;
+    align-items:center;
   }
 
   .gallery-login-card{
-    max-width:520px;
     padding:26px 24px;
     border-radius:24px;
   }
