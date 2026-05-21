@@ -539,5 +539,41 @@ body.gallery-page{
   .lightbox-nav{
     width:44px;
     height:44px;
+
+  /* ===== FIX MOBILE LOGIN EXTRA WHITE SPACE ===== */
+
+@media (max-width:760px){
+
+  body.gallery-page{
+    min-height:100svh;
+    background:#f7f3ee;
+  }
+
+  .gallery-login-section{
+    min-height:auto;
+    padding:8px 20px 18px;
+  }
+
+  .gallery-login-card{
+    margin-bottom:0;
+  }
+
+  .gallery-login-card h1{
+    font-size:1.75rem;
+    line-height:1.08;
+  }
+
+  .login-copy{
+    margin-bottom:0;
+  }
+
+  .login-form{
+    margin-top:18px;
+  }
+
+  .expiry-note{
+    margin-bottom:0;
+  }
+}
   }
 }
