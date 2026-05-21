@@ -397,7 +397,7 @@ body.gallery-page{
   }
 }
 
-/* ===== MOBILE HEADER IMPROVEMENT ===== */
+/* ===== MOBILE GALLERY LOGIN FIX ===== */
 
 @media (max-width:760px){
 
@@ -405,10 +405,8 @@ body.gallery-page{
     display:flex;
     align-items:center;
     justify-content:space-between;
-
     gap:12px;
-
-    padding:18px;
+    padding:18px 22px 12px;
   }
 
   .gallery-login-header .brand{
@@ -428,43 +426,52 @@ body.gallery-page{
     white-space:nowrap;
   }
 
+  /* follow homepage pill style */
   .gallery-login-header .btn-whatsapp{
     width:auto;
-    min-height:44px;
-
-    padding:0 18px;
-
-    border-radius:16px;
-
+    min-height:50px;
+    padding:0 24px;
+    border-radius:999px;
     font-size:14px;
-    font-weight:700;
-
+    font-weight:800;
     flex-shrink:0;
   }
 
-  /* MOVE LOGIN CARD HIGHER */
-
   .gallery-login-section{
+    min-height:auto;
+    padding:18px 22px 24px;
     align-items:flex-start;
-    padding-top:18px;
   }
-
-  /* BETTER MOBILE CARD SPACING */
 
   .gallery-login-card{
-    padding:30px 26px;
-    border-radius:28px;
+    width:100%;
+    padding:30px 28px;
+    border-radius:26px;
   }
 
-  /* BETTER MOBILE HEADING */
-
   .gallery-login-card h1{
-    font-size:2.4rem;
-    line-height:1.1;
+    font-size:2.1rem;
+    line-height:1.12;
+    margin:10px 0 18px;
   }
 
   .login-copy{
     font-size:1rem;
-    line-height:1.7;
+    line-height:1.6;
+  }
+
+  .login-form{
+    gap:16px;
+    margin-top:24px;
+  }
+
+  .form-field input{
+    min-height:58px;
+  }
+
+  .expiry-note{
+    margin-top:18px;
+    font-size:.9rem;
+    line-height:1.5;
   }
 }
