@@ -1,18 +1,30 @@
-body.gallery-page{
+/* =========================================
+   GALLERY LOGIN PAGE
+========================================= */
+
+html,
+body{
   margin:0;
+  padding:0;
+  overflow-x:hidden;
+}
+
+body.gallery-page{
   min-height:100svh;
   background:#f7f3ee;
   color:#111;
   font-family:'Inter',sans-serif;
-  overflow-x:hidden;
 }
 
-/* LOGIN HEADER */
+/* =========================================
+   HEADER
+========================================= */
 
 .gallery-login-header{
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+
   padding:20px 24px;
 }
 
@@ -26,65 +38,103 @@ body.gallery-page{
 
 .gallery-login-header .btn-whatsapp{
   width:auto;
+
+  min-height:52px;
+
+  padding:0 28px;
+
   border-radius:999px;
+
+  font-weight:800;
 }
 
-/* LOGIN PAGE */
+/* =========================================
+   LOGIN SECTION
+========================================= */
 
 .gallery-login-section{
-  min-height:calc(100svh - 90px);
+
+  min-height:calc(100svh - 110px);
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   padding:24px;
+
+  box-sizing:border-box;
 }
 
 .gallery-login-card{
+
   width:100%;
   max-width:520px;
+
   background:#fff;
+
   border-radius:28px;
+
   padding:38px;
+
   box-shadow:0 20px 60px rgba(0,0,0,.08);
 }
 
+.gallery-login-card .eyebrow{
+
+  font-size:13px;
+
+  font-weight:700;
+
+  letter-spacing:.18em;
+
+  color:#c08d59;
+
+  margin-bottom:14px;
+}
+
 .gallery-login-card h1{
-  font-size:2rem;
-  line-height:1.15;
-  margin:12px 0;
+
+  font-size:3.2rem;
+
+  line-height:1.02;
+
+  margin:0 0 20px;
 }
 
 .login-copy{
+
   color:#666;
+
+  font-size:1.05rem;
+
   line-height:1.7;
 }
 
-.login-form{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-  margin-top:26px;
-}
-
-.expiry-note{
-  margin-top:22px;
-  font-size:.92rem;
-  color:#777;
-  line-height:1.6;
-}
-
-/* LOGIN ALERT */
+/* =========================================
+   ALERT
+========================================= */
 
 .alert{
+
   display:none;
-  margin:18px 0 0;
+
+  margin-top:18px;
+
   padding:16px 18px;
+
   background:#fff1f1;
+
   border:1px solid #f3c4c4;
+
   color:#c0392b;
+
   border-radius:18px;
+
   font-size:.96rem;
+
   font-weight:700;
+
   line-height:1.5;
 }
 
@@ -92,500 +142,232 @@ body.gallery-page{
   display:block;
 }
 
-/* GALLERY APP */
+/* =========================================
+   FORM
+========================================= */
 
-.gallery-app{
-  padding:24px;
-}
+.login-form{
 
-.gallery-app-head{
   display:flex;
-  justify-content:space-between;
-  gap:20px;
-  flex-wrap:wrap;
-  margin-bottom:28px;
-}
+  flex-direction:column;
 
-.gallery-head-actions{
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-}
-
-.gallery-toolbar-v2{
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-bottom:28px;
-}
-
-.gallery-search-field{
-  flex:1;
-  min-width:220px;
-}
-
-.gallery-sort{
-  border:none;
-  border-radius:14px;
-  padding:14px 18px;
-  background:#fff;
-  font-size:.95rem;
-}
-
-.photo-grid-v2{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:16px;
-}
-
-.photo-card-v2{
-  background:#fff;
-  border-radius:22px;
-  overflow:hidden;
-  box-shadow:0 12px 34px rgba(0,0,0,.08);
-  position:relative;
-  transition:.25s ease;
-}
-
-.photo-card-v2.selected{
-  outline:3px solid #d6a77a;
-}
-
-.photo-card-v2 img{
-  width:100%;
-  aspect-ratio:4/5;
-  object-fit:cover;
-  display:block;
-}
-
-.photo-info-v2{
-  padding:14px;
-}
-
-.photo-filename{
-  font-size:.92rem;
-  font-weight:700;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.photo-actions{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-}
-
-.photo-actions button,
-.photo-actions a{
-  flex:1;
-}
-
-.selection-bar-v2{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  background:#111;
-  color:#fff;
-  padding:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  z-index:300;
-  box-shadow:0 -10px 40px rgba(0,0,0,.25);
-}
-
-/* MODALS */
-
-.gallery-modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.72);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  padding:20px;
-}
-
-.gallery-modal.active{
-  display:flex;
-}
-
-.gallery-modal-panel{
-  background:#fff;
-  width:100%;
-  max-width:620px;
-  border-radius:28px;
-  padding:34px;
-  position:relative;
-  max-height:90vh;
-  overflow:auto;
-}
-
-.gallery-modal-panel.large{
-  max-width:1100px;
-}
-
-.gallery-modal-close{
-  position:absolute;
-  top:18px;
-  right:18px;
-  border:none;
-  background:none;
-  font-size:2rem;
-  cursor:pointer;
-}
-
-.selected-preview-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:18px;
-  margin-top:26px;
-}
 
-.selected-card{
-  background:#faf7f2;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.selected-card img{
-  width:100%;
-  aspect-ratio:4/5;
-  object-fit:cover;
-}
-
-.selected-card-body{
-  padding:14px;
-}
-
-/* LIGHTBOX */
-
-.gallery-lightbox{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:2000;
-}
-
-.gallery-lightbox.active{
-  display:flex;
-}
-
-.gallery-lightbox img{
-  max-width:100%;
-  max-height:100vh;
-  object-fit:contain;
-}
-
-.lightbox-topbar{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
-  color:#fff;
-}
-
-.lightbox-actions{
-  display:flex;
-  gap:10px;
-}
-
-.lightbox-close{
-  position:absolute;
-  top:18px;
-  right:18px;
-  z-index:10;
-  border:none;
-  background:none;
-  color:#fff;
-  font-size:2rem;
-  cursor:pointer;
-}
-
-.lightbox-nav{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  border:none;
-  background:rgba(255,255,255,.15);
-  color:#fff;
-  width:52px;
-  height:52px;
-  border-radius:50%;
-  font-size:2rem;
-  cursor:pointer;
-}
-
-.lightbox-nav.prev{
-  left:20px;
-}
-
-.lightbox-nav.next{
-  right:20px;
-}
-
-/* SUCCESS */
-
-.success-view{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-
-.success-card{
-  background:#fff;
-  border-radius:28px;
-  padding:42px;
-  max-width:620px;
-  width:100%;
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.08);
-}
-
-.success-icon{
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  background:#111;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 24px;
-  font-size:2rem;
-}
-
-.success-actions{
-  display:flex;
-  gap:14px;
-  justify-content:center;
-  flex-wrap:wrap;
   margin-top:24px;
 }
 
-/* RATING */
-
-.rating-row{
+.form-field{
   display:flex;
-  gap:8px;
-  margin:18px 0;
+  flex-direction:column;
+  gap:10px;
 }
 
-.rating-star{
-  font-size:2rem;
-  color:#ddd;
+.form-field label{
+
+  font-size:.95rem;
+
+  font-weight:700;
+}
+
+.form-field input{
+
+  width:100%;
+
+  min-height:64px;
+
+  padding:0 22px;
+
+  border:1px solid #ddd2c5;
+
+  border-radius:20px;
+
+  background:#fff;
+
+  font-size:1.05rem;
+
+  box-sizing:border-box;
+}
+
+.form-field input:focus{
+
+  outline:none;
+
+  border-color:#c08d59;
+
+  box-shadow:0 0 0 4px rgba(192,141,89,.12);
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.gallery-login-card .btn{
+
+  width:100%;
+
+  min-height:64px;
+
+  border:none;
+
+  border-radius:999px;
+
+  font-size:1rem;
+
+  font-weight:800;
+
   cursor:pointer;
 }
 
-.rating-star.active{
-  color:#d6a77a;
+/* =========================================
+   EXPIRY TEXT
+========================================= */
+
+.expiry-note{
+
+  margin-top:20px;
+
+  color:#777;
+
+  font-size:.95rem;
+
+  line-height:1.6;
 }
 
-.locked-notice{
-  background:#fff2e6;
-  color:#9a5c10;
-  padding:18px;
-  border-radius:18px;
-  margin-bottom:24px;
-  font-weight:600;
-}
-
-/* MOBILE */
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width:760px){
 
   .gallery-login-header{
+
     padding:16px 20px 10px;
+
     gap:12px;
   }
 
   .gallery-login-header .brand{
+
     gap:10px;
   }
 
   .gallery-login-header .brand-mark{
+
     width:40px;
     height:40px;
+
     flex-shrink:0;
   }
 
   .gallery-login-header .brand-text{
+
     font-size:11px;
+
     letter-spacing:.08em;
   }
 
   .gallery-login-header .btn-whatsapp{
-    width:auto;
+
     min-height:50px;
+
     padding:0 24px;
+
     border-radius:999px;
+
     font-size:14px;
-    font-weight:800;
-    flex-shrink:0;
   }
 
   .gallery-login-section{
-    min-height:calc(100svh - 76px);
-    align-items:center;
+
+    min-height:calc(100svh - 82px);
+
     padding:10px 20px 20px;
   }
 
   .gallery-login-card{
-    max-width:520px;
+
     padding:26px 24px;
+
     border-radius:24px;
   }
 
   .gallery-login-card .eyebrow{
+
     font-size:11px;
+
     letter-spacing:.16em;
+
     margin-bottom:10px;
   }
 
   .gallery-login-card h1{
+
     font-size:1.75rem;
+
     line-height:1.08;
-    margin:8px 0 14px;
+
+    margin-bottom:14px;
   }
 
   .login-copy{
+
     font-size:1rem;
+
     line-height:1.55;
   }
 
+  .alert{
+
+    margin-top:14px;
+
+    padding:14px 16px;
+
+    border-radius:16px;
+
+    font-size:.95rem;
+  }
+
   .login-form{
+
     gap:14px;
+
     margin-top:20px;
   }
 
   .form-field{
+
     gap:8px;
   }
 
   .form-field label{
+
     font-size:13px;
   }
 
   .form-field input{
+
     min-height:54px;
+
     padding:0 18px;
-    font-size:16px;
+
     border-radius:16px;
+
+    font-size:16px;
   }
 
   .gallery-login-card .btn{
+
     min-height:56px;
-    border-radius:999px;
+
     font-size:15px;
   }
 
   .expiry-note{
+
     margin-top:16px;
+
     font-size:.9rem;
+
     line-height:1.5;
-  }
-
-  .alert{
-    margin-top:14px;
-    padding:14px 16px;
-    border-radius:16px;
-    font-size:.95rem;
-  }
-
-  .gallery-app{
-    padding:18px;
-  }
-
-  .gallery-app-head{
-    gap:16px;
-  }
-
-  .gallery-head-actions{
-    width:100%;
-    flex-direction:column;
-  }
-
-  .gallery-head-actions .btn{
-    width:100%;
-  }
-
-  .gallery-toolbar-v2{
-    gap:12px;
-  }
-
-  .gallery-search-field{
-    min-width:100%;
-  }
-
-  .gallery-sort{
-    width:100%;
-  }
-
-  .photo-grid-v2{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-  }
-
-  .photo-actions{
-    flex-direction:column;
-  }
-
-  .gallery-modal{
-    padding:14px;
-  }
-
-  .gallery-modal-panel{
-    padding:26px;
-    border-radius:24px;
-  }
-
-  .selected-preview-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:12px;
-  }
-
-  .selection-bar-v2{
-    flex-direction:column;
-    gap:12px;
-  }
-
-  .selection-bar-v2 .btn{
-    width:100%;
-  }
-
-  .lightbox-topbar{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
-  }
-
-  .lightbox-actions{
-    width:100%;
-  }
-
-  .lightbox-actions .btn{
-    flex:1;
-  }
-
-  .lightbox-nav{
-    width:44px;
-    height:44px;
-  }
-
-  .success-card{
-    padding:32px 24px;
   }
 }
