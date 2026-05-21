@@ -396,3 +396,75 @@ body.gallery-page{
     height:44px;
   }
 }
+
+/* ===== MOBILE HEADER IMPROVEMENT ===== */
+
+@media (max-width:760px){
+
+  .gallery-login-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:12px;
+
+    padding:18px;
+  }
+
+  .gallery-login-header .brand{
+    min-width:0;
+    gap:10px;
+  }
+
+  .gallery-login-header .brand-mark{
+    width:40px;
+    height:40px;
+    flex-shrink:0;
+  }
+
+  .gallery-login-header .brand-text{
+    font-size:11px;
+    letter-spacing:.08em;
+    white-space:nowrap;
+  }
+
+  .gallery-login-header .btn-whatsapp{
+    width:auto;
+    min-height:44px;
+
+    padding:0 18px;
+
+    border-radius:16px;
+
+    font-size:14px;
+    font-weight:700;
+
+    flex-shrink:0;
+  }
+
+  /* MOVE LOGIN CARD HIGHER */
+
+  .gallery-login-section{
+    align-items:flex-start;
+    padding-top:18px;
+  }
+
+  /* BETTER MOBILE CARD SPACING */
+
+  .gallery-login-card{
+    padding:30px 26px;
+    border-radius:28px;
+  }
+
+  /* BETTER MOBILE HEADING */
+
+  .gallery-login-card h1{
+    font-size:2.4rem;
+    line-height:1.1;
+  }
+
+  .login-copy{
+    font-size:1rem;
+    line-height:1.7;
+  }
+}
