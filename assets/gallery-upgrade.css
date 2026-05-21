@@ -406,7 +406,7 @@ body.gallery-page{
     align-items:center;
     justify-content:space-between;
     gap:12px;
-    padding:18px 22px 12px;
+    padding:16px 20px 10px;
   }
 
   .gallery-login-header .brand{
@@ -426,7 +426,6 @@ body.gallery-page{
     white-space:nowrap;
   }
 
-  /* follow homepage pill style */
   .gallery-login-header .btn-whatsapp{
     width:auto;
     min-height:50px;
@@ -439,39 +438,106 @@ body.gallery-page{
 
   .gallery-login-section{
     min-height:auto;
-    padding:18px 22px 24px;
+    display:flex;
     align-items:flex-start;
+    justify-content:center;
+    padding:10px 20px 24px;
   }
 
   .gallery-login-card{
     width:100%;
-    padding:30px 28px;
-    border-radius:26px;
+    max-width:520px;
+    padding:26px 24px;
+    border-radius:24px;
+  }
+
+  .gallery-login-card .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    margin-bottom:12px;
   }
 
   .gallery-login-card h1{
-    font-size:2.1rem;
-    line-height:1.12;
-    margin:10px 0 18px;
+    font-size:1.9rem;
+    line-height:1.08;
+    margin:8px 0 14px;
   }
 
   .login-copy{
     font-size:1rem;
-    line-height:1.6;
+    line-height:1.55;
   }
 
   .login-form{
-    gap:16px;
-    margin-top:24px;
+    gap:14px;
+    margin-top:22px;
+  }
+
+  .form-field{
+    gap:8px;
+  }
+
+  .form-field label{
+    font-size:13px;
   }
 
   .form-field input{
-    min-height:58px;
+    min-height:54px;
+    padding:0 18px;
+    font-size:16px;
+    border-radius:16px;
+  }
+
+  .gallery-login-card .btn{
+    min-height:56px;
+    border-radius:999px;
+    font-size:15px;
   }
 
   .expiry-note{
-    margin-top:18px;
-    font-size:.9rem;
+    margin-top:16px;
+    font-size:.92rem;
     line-height:1.5;
+  }
+
+  .alert{
+    margin-top:16px;
+    padding:16px 18px;
+    border-radius:18px;
+    font-size:1rem;
+    line-height:1.4;
+  }
+
+  .photo-grid-v2{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+
+  .gallery-app{
+    padding:18px;
+  }
+
+  .gallery-modal-panel{
+    padding:26px;
+  }
+
+  .selected-preview-grid{
+    gap:12px;
+  }
+
+  .selection-bar-v2{
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .lightbox-topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+
+  .lightbox-nav{
+    width:44px;
+    height:44px;
   }
 }
