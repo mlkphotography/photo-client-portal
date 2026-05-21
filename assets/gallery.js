@@ -39,8 +39,18 @@
       .replaceAll("'", '&#039;');
   }
 
-  function setWhatsappLink() {
+  function setButtonLoading(isLoading) {
+    const button = $('#openGalleryBtn');
 
+    if (!button) return;
+
+    button.disabled = isLoading;
+    button.textContent = isLoading
+      ? 'Opening Gallery...'
+      : 'View My Gallery';
+  }
+
+  function setWhatsappLink() {
     if (!whatsappNumber) return;
 
     const text =
@@ -50,20 +60,21 @@
       `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
 
     $$('.js-whatsapp-link')
-      .forEach((link) => link.href = url);
+      .forEach((link) => {
+        link.href = url;
+      });
   }
 
-function showAlert(message) {
-  const alert = $('#loginAlert');
+  function showAlert(message) {
+    const alert = $('#loginAlert');
 
-  if (!alert) return;
+    if (!alert) return;
 
-  alert.textContent = message || '';
-  alert.classList.toggle('show', Boolean(message));
-}
+    alert.textContent = message || '';
+    alert.classList.toggle('show', Boolean(message));
+  }
 
   function showModal(id) {
-
     const modal = document.getElementById(id);
 
     if (!modal) return;
@@ -72,7 +83,6 @@ function showAlert(message) {
   }
 
   function closeModal(id) {
-
     const modal = document.getElementById(id);
 
     if (!modal) return;
@@ -81,17 +91,14 @@ function showAlert(message) {
   }
 
   function driveThumbnail(fileId) {
-
     return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w1200`;
   }
 
   function driveDownload(fileId) {
-
     return `https://drive.google.com/uc?export=download&id=${encodeURIComponent(fileId)}`;
   }
 
   function jsonp(action, params, onSuccess, onError) {
-
     if (!hasScriptUrl) {
       if (onError) onError();
       return;
@@ -114,11 +121,11 @@ function showAlert(message) {
 
     const timer = setTimeout(() => {
       cleanup();
+
       if (onError) onError();
     }, 12000);
 
     function cleanup() {
-
       clearTimeout(timer);
 
       delete window[callbackName];
@@ -129,14 +136,12 @@ function showAlert(message) {
     }
 
     window[callbackName] = function (data) {
-
       cleanup();
 
       onSuccess(data);
     };
 
     script.onerror = function () {
-
       cleanup();
 
       if (onError) onError();
@@ -148,12 +153,17 @@ function showAlert(message) {
   }
 
   function loginGallery() {
-
     const email =
-      $('#clientEmail').value.trim();
+      $('#clientEmail')
+        .value
+        .trim()
+        .toLowerCase();
 
     const galleryCode =
-      $('#galleryCode').value.trim();
+      $('#galleryCode')
+        .value
+        .trim()
+        .toUpperCase();
 
     if (!email || !galleryCode) {
       showAlert('Please enter your email and gallery code.');
@@ -161,6 +171,7 @@ function showAlert(message) {
     }
 
     showAlert('');
+    setButtonLoading(true);
 
     jsonp(
       'loginGallery',
@@ -168,19 +179,25 @@ function showAlert(message) {
         email,
         galleryCode
       },
-      handleGalleryLogin,
+      (data) => {
+        setButtonLoading(false);
+        handleGalleryLogin(data);
+      },
       () => {
-        showAlert('Could not load gallery.');
+        setButtonLoading(false);
+
+        showAlert(
+          'Could not connect to gallery server. Please try again or WhatsApp us.'
+        );
       }
     );
   }
 
   function handleGalleryLogin(data) {
-
     if (!data || data.ok === false) {
-
       showAlert(
-        data?.message || 'Invalid gallery login.'
+        data?.message ||
+        'We couldn’t find a gallery with this email and code. Please check your details or WhatsApp us.'
       );
 
       return;
@@ -199,7 +216,6 @@ function showAlert(message) {
       String(state.gallery.locked || '').toLowerCase() === 'yes';
 
     $('#loginView').style.display = 'none';
-
     $('#galleryView').style.display = 'block';
 
     $('#galleryTitle').textContent =
@@ -225,13 +241,11 @@ function showAlert(message) {
   }
 
   function renderGallery() {
-
     const grid = $('#photoGrid');
 
     if (!grid) return;
 
     if (!state.filteredPhotos.length) {
-
       grid.innerHTML = '';
 
       $('#emptyGallery').style.display = 'block';
@@ -243,7 +257,6 @@ function showAlert(message) {
 
     grid.innerHTML =
       state.filteredPhotos.map((photo, index) => {
-
         const selected =
           state.selected.has(photo.fileId);
 
@@ -252,7 +265,6 @@ function showAlert(message) {
             class="photo-card-v2 ${selected ? 'selected' : ''}"
             data-photo-index="${index}"
           >
-
             <img
               src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
               alt="${escapeHtml(photo.name)}"
@@ -260,13 +272,11 @@ function showAlert(message) {
             >
 
             <div class="photo-info-v2">
-
               <div class="photo-filename">
                 ${escapeHtml(photo.name)}
               </div>
 
               <div class="photo-actions">
-
                 <button
                   class="btn btn-primary favorite-btn"
                   data-favorite="${escapeHtml(photo.fileId)}"
@@ -283,31 +293,23 @@ function showAlert(message) {
                 >
                   Download
                 </a>
-
               </div>
-
             </div>
-
           </article>
         `;
-
       }).join('');
 
     updateSelectionBar();
   }
 
   function updateSelectionBar() {
-
     const count = state.selected.size;
-
     const bar = $('#selectionBar');
 
     if (!bar) return;
 
     if (!count || state.locked) {
-
       bar.style.display = 'none';
-
       return;
     }
 
@@ -318,22 +320,16 @@ function showAlert(message) {
   }
 
   function toggleFavorite(fileId) {
-
     if (state.locked) return;
 
     if (state.selected.has(fileId)) {
-
       state.selected.delete(fileId);
-
     } else {
-
       const limit =
         Number(state.gallery.selectionLimit || 0);
 
       if (limit && state.selected.size >= limit) {
-
         alert('You have reached your selection limit.');
-
         return;
       }
 
@@ -344,7 +340,6 @@ function showAlert(message) {
   }
 
   function openLightbox(index) {
-
     state.lightboxIndex = index;
 
     const photo =
@@ -369,18 +364,14 @@ function showAlert(message) {
     $('#lightboxFavorite').dataset.fileId =
       photo.fileId;
 
-    $('#lightboxModal')
-      .classList.add('active');
+    $('#lightboxModal').classList.add('active');
   }
 
   function closeLightbox() {
-
-    $('#lightboxModal')
-      .classList.remove('active');
+    $('#lightboxModal').classList.remove('active');
   }
 
   function changeLightbox(direction) {
-
     let next =
       state.lightboxIndex + direction;
 
@@ -396,7 +387,6 @@ function showAlert(message) {
   }
 
   function renderSelectedPreview() {
-
     const wrap =
       $('#selectedPreviewGrid');
 
@@ -407,23 +397,19 @@ function showAlert(message) {
 
     wrap.innerHTML =
       selectedPhotos.map((photo) => {
-
         return `
           <article class="selected-card">
-
             <img
               src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
               alt="${escapeHtml(photo.name)}"
             >
 
             <div class="selected-card-body">
-
               <strong>
                 ${escapeHtml(photo.name)}
               </strong>
 
               <div style="margin-top:12px">
-
                 <button
                   class="btn btn-secondary dark-btn remove-selected-btn"
                   data-remove="${escapeHtml(photo.fileId)}"
@@ -431,23 +417,16 @@ function showAlert(message) {
                 >
                   Remove
                 </button>
-
               </div>
-
             </div>
-
           </article>
         `;
-
       }).join('');
   }
 
   function submitFinalSelection() {
-
     if (!state.selected.size) {
-
       alert('Please select at least one photo.');
-
       return;
     }
 
@@ -461,28 +440,22 @@ function showAlert(message) {
         )
       },
       () => {
-
         closeModal('reviewSelectionModal');
-
         showModal('testimonialModal');
-
       },
       () => {
-
         alert('Could not save selection.');
       }
     );
   }
 
   function submitTestimonial() {
-
     const message =
       $('#testimonialMessage')
         .value
         .trim();
 
     if (!message) {
-
       $('#testimonialAlert').textContent =
         'Please write your testimonial.';
 
@@ -498,16 +471,12 @@ function showAlert(message) {
         testimonial: message
       },
       () => {
-
         closeModal('testimonialModal');
 
         $('#galleryView').style.display = 'none';
-
         $('#successView').style.display = 'flex';
-
       },
       () => {
-
         $('#testimonialAlert').textContent =
           'Could not submit testimonial.';
       }
@@ -515,10 +484,8 @@ function showAlert(message) {
   }
 
   function initSearch() {
-
     $('#photoSearch')
       ?.addEventListener('input', (event) => {
-
         const value =
           event.target.value
             .trim()
@@ -526,7 +493,6 @@ function showAlert(message) {
 
         state.filteredPhotos =
           state.photos.filter((photo) => {
-
             return String(photo.name || '')
               .toLowerCase()
               .includes(value);
@@ -537,9 +503,34 @@ function showAlert(message) {
   }
 
   function initEvents() {
-
     $('#openGalleryBtn')
       ?.addEventListener('click', loginGallery);
+
+    $('#clientEmail')
+      ?.addEventListener('input', (event) => {
+        event.target.value =
+          event.target.value.trim().toLowerCase();
+      });
+
+    $('#galleryCode')
+      ?.addEventListener('input', (event) => {
+        event.target.value =
+          event.target.value.trim().toUpperCase();
+      });
+
+    $('#clientEmail')
+      ?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          loginGallery();
+        }
+      });
+
+    $('#galleryCode')
+      ?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          loginGallery();
+        }
+      });
 
     $('#logoutGalleryBtn')
       ?.addEventListener('click', () => {
@@ -548,12 +539,10 @@ function showAlert(message) {
 
     $('#photoGrid')
       ?.addEventListener('click', (event) => {
-
         const favorite =
           event.target.closest('[data-favorite]');
 
         if (favorite) {
-
           toggleFavorite(
             favorite.dataset.favorite
           );
@@ -573,7 +562,6 @@ function showAlert(message) {
 
     $('#lightboxFavorite')
       ?.addEventListener('click', (event) => {
-
         const fileId =
           event.target.dataset.fileId;
 
@@ -599,15 +587,12 @@ function showAlert(message) {
 
     $('#reviewSelectedBtn')
       ?.addEventListener('click', () => {
-
         renderSelectedPreview();
-
         showModal('reviewSelectionModal');
       });
 
     $('#selectedPreviewGrid')
       ?.addEventListener('click', (event) => {
-
         const remove =
           event.target.closest('[data-remove]');
 
@@ -618,18 +603,17 @@ function showAlert(message) {
         );
 
         renderSelectedPreview();
-
         renderGallery();
       });
 
     $('#submitFinalSelectionBtn')
-      ?.addEventListener('click',
+      ?.addEventListener(
+        'click',
         submitFinalSelection
       );
 
     $('#testimonialStars')
       ?.addEventListener('click', (event) => {
-
         const star =
           event.target.closest('[data-rating]');
 
@@ -640,25 +624,22 @@ function showAlert(message) {
 
         $$('.rating-star')
           .forEach((item) => {
-
             item.classList.toggle(
               'active',
-              Number(item.dataset.rating)
-                <= state.rating
+              Number(item.dataset.rating) <= state.rating
             );
           });
       });
 
     $('#submitTestimonialBtn')
-      ?.addEventListener('click',
+      ?.addEventListener(
+        'click',
         submitTestimonial
       );
 
     $$('[data-close-modal]')
       .forEach((button) => {
-
         button.addEventListener('click', () => {
-
           closeModal(
             button.dataset.closeModal
           );
@@ -667,7 +648,6 @@ function showAlert(message) {
 
     $('#showSelectedBtn')
       ?.addEventListener('click', () => {
-
         state.filteredPhotos =
           state.photos.filter((photo) =>
             state.selected.has(photo.fileId)
@@ -678,18 +658,13 @@ function showAlert(message) {
 
     $('#sortPhotos')
       ?.addEventListener('change', (event) => {
-
         const value =
           event.target.value;
 
         if (value === 'newest') {
-
           state.filteredPhotos.reverse();
-
         } else {
-
-          state.filteredPhotos =
-            [...state.photos];
+          state.filteredPhotos = [...state.photos];
         }
 
         renderGallery();
@@ -699,9 +674,8 @@ function showAlert(message) {
   }
 
   function init() {
-
     setWhatsappLink();
-
+    setButtonLoading(false);
     initEvents();
   }
 
