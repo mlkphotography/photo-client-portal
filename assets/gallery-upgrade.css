@@ -1,18 +1,38 @@
 body.gallery-page{
+  margin:0;
+  min-height:100svh;
   background:#f7f3ee;
   color:#111;
   font-family:'Inter',sans-serif;
+  overflow-x:hidden;
 }
+
+/* LOGIN HEADER */
 
 .gallery-login-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:20px;
+  padding:20px 24px;
 }
 
+.gallery-login-header .brand{
+  min-width:0;
+}
+
+.gallery-login-header .brand-text{
+  white-space:nowrap;
+}
+
+.gallery-login-header .btn-whatsapp{
+  width:auto;
+  border-radius:999px;
+}
+
+/* LOGIN PAGE */
+
 .gallery-login-section{
-  min-height:90vh;
+  min-height:calc(100svh - 90px);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -30,6 +50,7 @@ body.gallery-page{
 
 .gallery-login-card h1{
   font-size:2rem;
+  line-height:1.15;
   margin:12px 0;
 }
 
@@ -49,7 +70,29 @@ body.gallery-page{
   margin-top:22px;
   font-size:.92rem;
   color:#777;
+  line-height:1.6;
 }
+
+/* LOGIN ALERT */
+
+.alert{
+  display:none;
+  margin:18px 0 0;
+  padding:16px 18px;
+  background:#fff1f1;
+  border:1px solid #f3c4c4;
+  color:#c0392b;
+  border-radius:18px;
+  font-size:.96rem;
+  font-weight:700;
+  line-height:1.5;
+}
+
+.alert.show{
+  display:block;
+}
+
+/* GALLERY APP */
 
 .gallery-app{
   padding:24px;
@@ -153,6 +196,8 @@ body.gallery-page{
   box-shadow:0 -10px 40px rgba(0,0,0,.25);
 }
 
+/* MODALS */
+
 .gallery-modal{
   position:fixed;
   inset:0;
@@ -215,6 +260,8 @@ body.gallery-page{
 .selected-card-body{
   padding:14px;
 }
+
+/* LIGHTBOX */
 
 .gallery-lightbox{
   position:fixed;
@@ -288,6 +335,8 @@ body.gallery-page{
   right:20px;
 }
 
+/* SUCCESS */
+
 .success-view{
   min-height:100vh;
   display:flex;
@@ -327,6 +376,8 @@ body.gallery-page{
   margin-top:24px;
 }
 
+/* RATING */
+
 .rating-row{
   display:flex;
   gap:8px;
@@ -352,65 +403,16 @@ body.gallery-page{
   font-weight:600;
 }
 
-.alert{
-  margin-top:16px;
-  color:#c0392b;
-  font-weight:600;
-}
-
-@media (max-width:760px){
-
-  .gallery-app{
-    padding:18px;
-  }
-
-  .gallery-login-card{
-    padding:28px;
-  }
-
-  .photo-grid-v2{
-    gap:12px;
-  }
-
-  .gallery-modal-panel{
-    padding:26px;
-  }
-
-  .selected-preview-grid{
-    gap:12px;
-  }
-
-  .selection-bar-v2{
-    flex-direction:column;
-    gap:12px;
-  }
-
-  .lightbox-topbar{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
-  }
-
-  .lightbox-nav{
-    width:44px;
-    height:44px;
-  }
-}
-
-/* ===== MOBILE GALLERY LOGIN FIX ===== */
+/* MOBILE */
 
 @media (max-width:760px){
 
   .gallery-login-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
     padding:16px 20px 10px;
+    gap:12px;
   }
 
   .gallery-login-header .brand{
-    min-width:0;
     gap:10px;
   }
 
@@ -423,7 +425,6 @@ body.gallery-page{
   .gallery-login-header .brand-text{
     font-size:11px;
     letter-spacing:.08em;
-    white-space:nowrap;
   }
 
   .gallery-login-header .btn-whatsapp{
@@ -437,28 +438,25 @@ body.gallery-page{
   }
 
   .gallery-login-section{
-    min-height:auto;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:10px 20px 24px;
+    min-height:calc(100svh - 76px);
+    align-items:center;
+    padding:10px 20px 20px;
   }
 
   .gallery-login-card{
-    width:100%;
     max-width:520px;
     padding:26px 24px;
     border-radius:24px;
   }
 
   .gallery-login-card .eyebrow{
-    font-size:12px;
-    letter-spacing:.18em;
-    margin-bottom:12px;
+    font-size:11px;
+    letter-spacing:.16em;
+    margin-bottom:10px;
   }
 
   .gallery-login-card h1{
-    font-size:1.9rem;
+    font-size:1.75rem;
     line-height:1.08;
     margin:8px 0 14px;
   }
@@ -470,7 +468,7 @@ body.gallery-page{
 
   .login-form{
     gap:14px;
-    margin-top:22px;
+    margin-top:20px;
   }
 
   .form-field{
@@ -496,16 +494,44 @@ body.gallery-page{
 
   .expiry-note{
     margin-top:16px;
-    font-size:.92rem;
+    font-size:.9rem;
     line-height:1.5;
   }
 
   .alert{
-    margin-top:16px;
-    padding:16px 18px;
-    border-radius:18px;
-    font-size:1rem;
-    line-height:1.4;
+    margin-top:14px;
+    padding:14px 16px;
+    border-radius:16px;
+    font-size:.95rem;
+  }
+
+  .gallery-app{
+    padding:18px;
+  }
+
+  .gallery-app-head{
+    gap:16px;
+  }
+
+  .gallery-head-actions{
+    width:100%;
+    flex-direction:column;
+  }
+
+  .gallery-head-actions .btn{
+    width:100%;
+  }
+
+  .gallery-toolbar-v2{
+    gap:12px;
+  }
+
+  .gallery-search-field{
+    min-width:100%;
+  }
+
+  .gallery-sort{
+    width:100%;
   }
 
   .photo-grid-v2{
@@ -513,15 +539,21 @@ body.gallery-page{
     gap:12px;
   }
 
-  .gallery-app{
-    padding:18px;
+  .photo-actions{
+    flex-direction:column;
+  }
+
+  .gallery-modal{
+    padding:14px;
   }
 
   .gallery-modal-panel{
     padding:26px;
+    border-radius:24px;
   }
 
   .selected-preview-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
     gap:12px;
   }
 
@@ -530,50 +562,30 @@ body.gallery-page{
     gap:12px;
   }
 
+  .selection-bar-v2 .btn{
+    width:100%;
+  }
+
   .lightbox-topbar{
     flex-direction:column;
     align-items:flex-start;
     gap:12px;
   }
 
+  .lightbox-actions{
+    width:100%;
+  }
+
+  .lightbox-actions .btn{
+    flex:1;
+  }
+
   .lightbox-nav{
     width:44px;
     height:44px;
-
-  /* ===== FIX MOBILE LOGIN EXTRA WHITE SPACE ===== */
-
-@media (max-width:760px){
-
-  body.gallery-page{
-    min-height:100svh;
-    background:#f7f3ee;
   }
 
-  .gallery-login-section{
-    min-height:auto;
-    padding:8px 20px 18px;
-  }
-
-  .gallery-login-card{
-    margin-bottom:0;
-  }
-
-  .gallery-login-card h1{
-    font-size:1.75rem;
-    line-height:1.08;
-  }
-
-  .login-copy{
-    margin-bottom:0;
-  }
-
-  .login-form{
-    margin-top:18px;
-  }
-
-  .expiry-note{
-    margin-bottom:0;
-  }
-}
+  .success-card{
+    padding:32px 24px;
   }
 }
