@@ -24,11 +24,8 @@
     locked: false
   };
 
-  const $ = (selector) =>
-    document.querySelector(selector);
-
-  const $$ = (selector) =>
-    Array.from(document.querySelectorAll(selector));
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
   function escapeHtml(value) {
     return String(value || '')
@@ -59,10 +56,9 @@
     const url =
       `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
 
-    $$('.js-whatsapp-link')
-      .forEach((link) => {
-        link.href = url;
-      });
+    $$('.js-whatsapp-link').forEach((link) => {
+      link.href = url;
+    });
   }
 
   function showAlert(message) {
@@ -112,10 +108,9 @@
     url.searchParams.set('action', action);
     url.searchParams.set('callback', callbackName);
 
-    Object.entries(params || {})
-      .forEach(([key, value]) => {
-        url.searchParams.set(key, value);
-      });
+    Object.entries(params || {}).forEach(([key, value]) => {
+      url.searchParams.set(key, value);
+    });
 
     const script = document.createElement('script');
 
@@ -137,7 +132,6 @@
 
     window[callbackName] = function (data) {
       cleanup();
-
       onSuccess(data);
     };
 
@@ -150,6 +144,24 @@
     script.src = url.toString();
 
     document.body.appendChild(script);
+  }
+
+  function updateGalleryStats() {
+    const meta = $('#galleryMeta');
+
+    if (!meta) return;
+
+    let stats = $('#galleryStats');
+
+    if (!stats) {
+      stats = document.createElement('div');
+      stats.id = 'galleryStats';
+      stats.className = 'gallery-stats';
+      meta.insertAdjacentElement('afterend', stats);
+    }
+
+    stats.textContent =
+      `${state.photos.length} Photo${state.photos.length === 1 ? '' : 's'} • ${state.selected.size} Selected`;
   }
 
   function loginGallery() {
@@ -237,6 +249,7 @@
       $('#lockedNotice').style.display = 'block';
     }
 
+    updateGalleryStats();
     renderGallery();
   }
 
@@ -250,6 +263,7 @@
 
       $('#emptyGallery').style.display = 'block';
 
+      updateGalleryStats();
       return;
     }
 
@@ -265,6 +279,8 @@
             class="photo-card-v2 ${selected ? 'selected' : ''}"
             data-photo-index="${index}"
           >
+            ${selected ? '<div class="photo-selected-check">✓</div>' : ''}
+
             <img
               src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
               alt="${escapeHtml(photo.name)}"
@@ -300,6 +316,7 @@
       }).join('');
 
     updateSelectionBar();
+    updateGalleryStats();
   }
 
   function updateSelectionBar() {
@@ -310,6 +327,7 @@
 
     if (!count || state.locked) {
       bar.style.display = 'none';
+      updateGalleryStats();
       return;
     }
 
@@ -317,6 +335,8 @@
 
     $('#selectionCounter').textContent =
       `${count} Photo${count === 1 ? '' : 's'} Selected`;
+
+    updateGalleryStats();
   }
 
   function toggleFavorite(fileId) {
