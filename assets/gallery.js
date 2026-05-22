@@ -666,15 +666,6 @@
         });
       });
 
-    $('#showSelectedBtn')
-      ?.addEventListener('click', () => {
-        state.filteredPhotos =
-          state.photos.filter((photo) =>
-            state.selected.has(photo.fileId)
-          );
-
-        renderGallery();
-      });
 
     $('#sortPhotos')
       ?.addEventListener('change', (event) => {
