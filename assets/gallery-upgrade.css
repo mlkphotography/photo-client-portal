@@ -667,3 +667,232 @@ body.gallery-page{
     line-height:1.35 !important;
   }
 }
+
+/* ===== APPLE STYLE CLIENT GALLERY ===== */
+
+#galleryView.gallery-app{
+  min-height:100vh;
+  padding:32px;
+  background:#f7f3ee;
+}
+
+.gallery-app-head{
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:28px;
+  padding:26px;
+  box-shadow:0 20px 60px rgba(0,0,0,.06);
+}
+
+.gallery-app-head h1{
+  font-size:clamp(32px,4vw,54px);
+  line-height:1;
+  letter-spacing:-.04em;
+  margin:4px 0 8px;
+}
+
+#galleryMeta{
+  text-transform:capitalize;
+}
+
+.gallery-stats{
+  margin-top:8px;
+  color:#777;
+  font-size:15px;
+  font-weight:600;
+}
+
+#galleryExpiry{
+  margin-top:8px;
+  color:#777;
+}
+
+.gallery-head-actions .btn,
+#showSelectedBtn{
+  min-height:46px;
+  padding:0 18px;
+  border-radius:999px;
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
+.gallery-head-actions .btn:hover,
+#showSelectedBtn:hover{
+  background:#f3f3f3!important;
+  transform:none;
+}
+
+.gallery-toolbar-v2{
+  margin:22px 0 26px;
+  padding:14px;
+  background:rgba(255,255,255,.68);
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:24px;
+  align-items:end;
+}
+
+.gallery-search-field input{
+  min-height:52px;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,.08);
+  background:#fff;
+}
+
+.gallery-sort{
+  min-height:52px;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:none;
+}
+
+.photo-grid-v2{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+
+.photo-card-v2{
+  background:transparent;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:none;
+  cursor:pointer;
+}
+
+.photo-card-v2 img{
+  aspect-ratio:4/5;
+  border-radius:18px;
+  transition:transform .35s ease, filter .35s ease;
+}
+
+.photo-card-v2:hover img{
+  transform:scale(1.025);
+  filter:brightness(.96);
+}
+
+.photo-info-v2{
+  padding:10px 2px 0;
+}
+
+.photo-filename{
+  color:#666;
+  font-size:13px;
+  font-weight:600;
+}
+
+.photo-actions{
+  margin-top:8px;
+}
+
+.photo-actions .btn{
+  min-height:38px;
+  border-radius:999px;
+  font-size:13px;
+}
+
+.photo-actions .favorite-btn{
+  background:#fff!important;
+  color:#111!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+}
+
+.photo-actions .dark-btn{
+  background:rgba(255,255,255,.75)!important;
+  color:#111!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+}
+
+.photo-card-v2.selected{
+  outline:none;
+}
+
+.photo-card-v2.selected img{
+  box-shadow:0 0 0 4px #fff, 0 0 0 7px #007aff;
+}
+
+.photo-selected-check{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:30px;
+  height:30px;
+  border-radius:999px;
+  background:#007aff;
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:16px;
+  font-weight:900;
+  box-shadow:0 8px 20px rgba(0,122,255,.35);
+}
+
+.selection-bar-v2{
+  left:50%;
+  right:auto;
+  bottom:22px;
+  transform:translateX(-50%);
+  width:min(520px,calc(100% - 32px));
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  color:#111;
+  border:1px solid rgba(0,0,0,.08);
+  backdrop-filter:blur(18px);
+  box-shadow:0 20px 60px rgba(0,0,0,.18);
+}
+
+.selection-bar-v2 .btn{
+  width:auto;
+  min-height:44px;
+  border-radius:999px;
+}
+
+@media(max-width:1100px){
+  .photo-grid-v2{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+
+@media(max-width:760px){
+  #galleryView.gallery-app{
+    padding:18px;
+  }
+
+  .gallery-app-head{
+    padding:22px;
+    border-radius:24px;
+  }
+
+  .gallery-head-actions{
+    width:100%;
+    flex-direction:row;
+  }
+
+  .gallery-head-actions .btn{
+    flex:1;
+    font-size:13px;
+  }
+
+  .gallery-toolbar-v2{
+    padding:12px;
+  }
+
+  .photo-grid-v2{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+
+  .photo-actions{
+    display:none;
+  }
+
+  .selection-bar-v2{
+    border-radius:24px;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .selection-bar-v2 .btn{
+    width:100%;
+  }
+}
