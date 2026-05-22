@@ -294,12 +294,13 @@
 
               <div class="photo-actions">
                 <button
-                  class="btn btn-primary favorite-btn"
-                  data-favorite="${escapeHtml(photo.fileId)}"
-                  type="button"
-                >
-                  ${selected ? '♥ Selected' : '♡ Favorite'}
-                </button>
+  class="favorite-icon-btn ${selected ? 'active' : ''}"
+  data-favorite="${escapeHtml(photo.fileId)}"
+  type="button"
+  aria-label="Select Photo"
+>
+  ${selected ? '♥' : '♡'}
+</button>
 
                 <a
                   class="btn btn-secondary dark-btn"
