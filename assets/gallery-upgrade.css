@@ -590,7 +590,7 @@ body.gallery-page{
   }
 }
 
-/* ===== LAPTOP ONLY FIX - REMOVE SCROLLBAR ===== */
+/* ===== LAPTOP ONLY FIX - COMPACT ===== */
 
 @media (min-width:761px) and (max-height:820px){
 
@@ -601,62 +601,69 @@ body.gallery-page{
   }
 
   .gallery-login-header{
-    height:82px;
-    padding:14px 24px !important;
+    height:72px;
+    padding:10px 24px !important;
     box-sizing:border-box;
   }
 
   .gallery-login-section{
-    height:calc(100vh - 82px) !important;
+    height:calc(100vh - 72px) !important;
     min-height:0 !important;
-    padding:12px 24px 18px !important;
+    padding:6px 24px 10px !important;
     align-items:center !important;
     box-sizing:border-box;
   }
 
   .gallery-login-card{
-    max-width:520px;
-    padding:28px 34px !important;
-    border-radius:26px;
+    max-width:500px;
+    padding:22px 30px !important;
+    border-radius:24px;
   }
 
   .gallery-login-card .eyebrow{
-    margin-bottom:10px !important;
-    font-size:12px !important;
+    margin-bottom:6px !important;
+    font-size:11px !important;
   }
 
   .gallery-login-card h1{
-    font-size:2.35rem !important;
-    line-height:1.05 !important;
-    margin:0 0 14px !important;
+    font-size:2rem !important;
+    line-height:1.02 !important;
+    margin:0 0 10px !important;
   }
 
   .login-copy{
-    font-size:1rem !important;
-    line-height:1.55 !important;
+    font-size:.95rem !important;
+    line-height:1.45 !important;
   }
 
   .login-form{
-    margin-top:18px !important;
-    gap:14px !important;
+    margin-top:14px !important;
+    gap:10px !important;
   }
 
   .form-field{
-    gap:7px !important;
+    gap:5px !important;
+  }
+
+  .form-field label{
+    font-size:13px !important;
   }
 
   .form-field input{
-    min-height:54px !important;
-    border-radius:18px !important;
+    min-height:46px !important;
+    padding:0 18px !important;
+    border-radius:16px !important;
+    font-size:.95rem !important;
   }
 
   .gallery-login-card .btn{
-    min-height:54px !important;
+    min-height:48px !important;
+    font-size:.95rem !important;
   }
 
   .expiry-note{
-    margin-top:14px !important;
-    font-size:.88rem !important;
-    line-height:1.45 !important;
+    margin-top:10px !important;
+    font-size:.82rem !important;
+    line-height:1.35 !important;
   }
 }
