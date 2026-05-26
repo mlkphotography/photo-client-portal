@@ -287,35 +287,80 @@ body.gallery-page{
   object-fit:contain;
 }
 
+/* TOP BAR */
+
 .lightbox-topbar{
   position:absolute;
   top:0;
   left:0;
   right:0;
-  padding:18px;
+  padding:18px 72px 18px 24px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:20px;
   background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
   color:#fff;
 }
 
+#lightboxName{
+  max-width:45%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* ACTION BUTTONS */
+
 .lightbox-actions{
   display:flex;
-  gap:10px;
+  align-items:center;
+  gap:14px;
 }
+
+.lightbox-actions .btn{
+  min-height:46px;
+  padding:0 20px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:800;
+}
+
+/* FAVORITE BUTTON */
+
+#lightboxFavorite{
+  background:#c89a66 !important;
+  color:#111 !important;
+  border:none !important;
+}
+
+/* DOWNLOAD BUTTON */
+
+#lightboxDownload{
+  background:#fff !important;
+  color:#111 !important;
+  border:none !important;
+}
+
+/* CLOSE BUTTON */
 
 .lightbox-close{
   position:absolute;
   top:18px;
   right:18px;
-  z-index:10;
+  z-index:20;
+  width:44px;
+  height:44px;
   border:none;
-  background:none;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
   color:#fff;
-  font-size:2rem;
+  font-size:28px;
+  line-height:1;
   cursor:pointer;
 }
+
+/* NAVIGATION BUTTONS */
 
 .lightbox-nav{
   position:absolute;
