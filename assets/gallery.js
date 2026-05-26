@@ -299,7 +299,7 @@
   type="button"
   aria-label="Select Photo"
 >
-  ${selected ? '♥' : '♡'}
+  ${selected ? '✓' : '+'}
 </button>
 
                 <a
