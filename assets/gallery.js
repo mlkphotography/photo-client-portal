@@ -378,9 +378,9 @@
       driveDownload(photo.fileId);
 
     $('#lightboxFavorite').textContent =
-      state.selected.has(photo.fileId)
-        ? '♥ Selected'
-        : '♡ Favorite';
+  state.selected.has(photo.fileId)
+    ? '✓ Selected'
+    : '+ Select';
 
     $('#lightboxFavorite').dataset.fileId =
       photo.fileId;
