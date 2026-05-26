@@ -943,38 +943,55 @@ body.gallery-page{
     width:100%;
   }
 
-/* LIGHTBOX */
+/* =========================================
+   LIGHTBOX
+========================================= */
 
 .gallery-lightbox{
   position:fixed;
   inset:0;
   background:#000;
   display:none;
+  flex-direction:column;
   z-index:2000;
 }
 
 .gallery-lightbox.active{
   display:flex;
-  flex-direction:column;
 }
 
-/* TOP BAR */
+/* =========================================
+   TOP BAR
+========================================= */
 
-.lightbox-mobile-topbar{
+.lightbox-topbar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+
   height:76px;
-  padding:18px 22px;
+
+  padding:16px 22px;
 
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:16px;
+
+  z-index:30;
+
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.72),
+    rgba(0,0,0,0)
+  );
 
   color:#fff;
-  z-index:20;
 }
 
 #lightboxName{
-  max-width:calc(100% - 64px);
+  max-width:calc(100% - 80px);
+
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -983,95 +1000,118 @@ body.gallery-page{
   font-weight:800;
 }
 
-/* CLOSE BUTTON */
+/* =========================================
+   CLOSE BUTTON
+========================================= */
 
 .lightbox-close{
-  width:44px;
-  height:44px;
+  width:46px;
+  height:46px;
 
   border:none;
   border-radius:999px;
 
   background:rgba(255,255,255,.14);
+
   color:#fff;
 
   font-size:28px;
   line-height:1;
+
   cursor:pointer;
 }
 
-/* IMAGE STAGE */
+/* =========================================
+   IMAGE STAGE
+========================================= */
 
 .lightbox-image-stage{
   position:relative;
+
   flex:1;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  min-height:0;
   overflow:hidden;
 }
 
 .lightbox-image-stage img{
   max-width:100%;
   max-height:100%;
+
   object-fit:contain;
 }
 
-/* ARROWS */
+/* =========================================
+   NAVIGATION
+========================================= */
 
 .lightbox-nav{
   position:absolute;
+
   top:50%;
   transform:translateY(-50%);
 
-  width:48px;
-  height:48px;
+  width:52px;
+  height:52px;
 
   border:none;
   border-radius:999px;
 
-  background:rgba(0,0,0,.38);
+  background:rgba(255,255,255,.12);
+
   color:#fff;
 
   font-size:32px;
   line-height:1;
+
   cursor:pointer;
 
-  z-index:10;
+  z-index:20;
+
+  backdrop-filter:blur(10px);
 }
 
 .lightbox-nav.prev{
-  left:18px;
+  left:20px;
 }
 
 .lightbox-nav.next{
-  right:18px;
+  right:20px;
 }
 
-/* BOTTOM ACTION BAR */
+/* =========================================
+   ACTION BAR
+========================================= */
 
-.lightbox-bottom-actions{
-  padding:16px 18px 22px;
+.lightbox-actions{
+  position:absolute;
 
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+  left:50%;
+  bottom:24px;
 
-  background:linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,0));
-  z-index:20;
+  transform:translateX(-50%);
+
+  display:flex;
+  gap:14px;
+
+  z-index:30;
 }
 
-.lightbox-bottom-actions .btn{
-  width:100%;
-  min-height:54px;
+.lightbox-actions .btn{
+  min-height:52px;
+
+  padding:0 22px;
+
   border-radius:999px;
 
   font-size:15px;
   font-weight:800;
 }
+
+/* SELECT BUTTON */
 
 #lightboxFavorite{
   background:#c89a66 !important;
@@ -1079,79 +1119,78 @@ body.gallery-page{
   border:none !important;
 }
 
+/* DOWNLOAD BUTTON */
+
 #lightboxDownload{
   background:#fff !important;
   color:#111 !important;
   border:none !important;
 }
 
-/* DESKTOP */
+/* =========================================
+   MOBILE
+========================================= */
 
-@media(min-width:761px){
+@media(max-width:760px){
 
-  .gallery-lightbox.active{
-    display:flex;
+  .lightbox-topbar{
+    height:72px;
+    padding:16px 18px;
   }
 
-  .lightbox-mobile-topbar{
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-
-    height:auto;
-    padding:18px 24px;
-
-    background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
-  }
-
-  .lightbox-image-stage{
-    width:100%;
-    height:100%;
-  }
-
-  .lightbox-image-stage img{
-    max-width:100%;
-    max-height:100vh;
-  }
-
-  .lightbox-bottom-actions{
-    position:absolute;
-    top:18px;
-    right:84px;
-
-    width:auto;
-    padding:0;
-
-    display:flex;
-    gap:14px;
-
-    background:none;
-  }
-
-  .lightbox-bottom-actions .btn{
-    width:auto;
-    min-height:46px;
-    padding:0 20px;
-    font-size:14px;
+  #lightboxName{
+    font-size:16px;
   }
 
   .lightbox-close{
     width:44px;
     height:44px;
+    font-size:26px;
+  }
+
+  .lightbox-image-stage{
+    padding-top:50px;
+    padding-bottom:110px;
+    box-sizing:border-box;
+  }
+
+  .lightbox-image-stage img{
+    max-width:100%;
+    max-height:100%;
   }
 
   .lightbox-nav{
-    width:52px;
-    height:52px;
+    width:48px;
+    height:48px;
+    font-size:30px;
   }
 
   .lightbox-nav.prev{
-    left:20px;
+    left:16px;
   }
 
   .lightbox-nav.next{
-    right:20px;
+    right:16px;
+  }
+
+  .lightbox-actions{
+    left:18px;
+    right:18px;
+    bottom:18px;
+
+    transform:none;
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+
+    gap:12px;
+  }
+
+  .lightbox-actions .btn{
+    width:100%;
+    min-height:56px;
+
+    font-size:16px;
   }
 }
 
