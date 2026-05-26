@@ -5,22 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MLK Photography | Private Gallery</title>
   <meta name="description" content="Private client gallery, photo selection and testimonial for MLK Photography.">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="assets/styles.css">
   <link rel="stylesheet" href="assets/gallery-upgrade.css">
 </head>
+
 <body class="gallery-page">
+
   <header class="gallery-login-header">
     <a class="brand" href="index.html" aria-label="MLK Photography home">
-      <span class="brand-mark"><img src="images/logo.jpg" alt="MLK Photography Logo"></span>
+      <span class="brand-mark">
+        <img src="images/logo.jpg" alt="MLK Photography Logo">
+      </span>
       <span class="brand-text">MLK Photography</span>
     </a>
-    <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">WhatsApp</a>
+
+    <a class="btn btn-whatsapp js-whatsapp-link" href="#" target="_blank" rel="noopener">
+      WhatsApp
+    </a>
   </header>
 
   <main>
+
     <section id="loginView" class="gallery-login-section">
       <div class="gallery-login-card">
         <p class="eyebrow">Private Client Gallery</p>
@@ -40,7 +50,9 @@
             <input id="galleryCode" type="text" placeholder="Example: MLK2026" autocomplete="off" required>
           </div>
 
-          <button id="openGalleryBtn" class="btn btn-primary" type="button">Open Gallery</button>
+          <button id="openGalleryBtn" class="btn btn-primary" type="button">
+            Open Gallery
+          </button>
         </div>
 
         <p class="expiry-note">Gallery expires 30 days after delivery. Please download your photos before expiry.</p>
@@ -48,6 +60,7 @@
     </section>
 
     <section id="galleryView" class="gallery-app" style="display:none">
+
       <div class="gallery-app-head">
         <div>
           <p class="eyebrow">Client Gallery</p>
@@ -55,9 +68,15 @@
           <p id="galleryMeta" class="muted"></p>
           <p id="galleryExpiry" class="gallery-expiry-text"></p>
         </div>
+
         <div class="gallery-head-actions">
-          <a id="downloadAllBtn" class="btn btn-secondary dark-btn" href="#" target="_blank" rel="noopener">Download All Photos</a>
-          <button id="logoutGalleryBtn" class="btn btn-secondary dark-btn" type="button">Logout</button>
+          <a id="downloadAllBtn" class="btn btn-secondary dark-btn" href="#" target="_blank" rel="noopener">
+            Download All Photos
+          </a>
+
+          <button id="logoutGalleryBtn" class="btn btn-secondary dark-btn" type="button">
+            Logout
+          </button>
         </div>
       </div>
 
@@ -66,6 +85,7 @@
           <label for="photoSearch">Search Photo</label>
           <input id="photoSearch" type="search" placeholder="Search by filename...">
         </div>
+
         <select id="sortPhotos" class="gallery-sort" aria-label="Sort photos">
           <option value="oldest">Oldest First</option>
           <option value="newest">Newest First</option>
@@ -85,21 +105,33 @@
 
       <div id="selectionBar" class="selection-bar-v2" style="display:none">
         <strong id="selectionCounter">0 Photos Selected</strong>
-        <button id="reviewSelectedBtn" class="btn btn-primary" type="button">Review Selected Photos</button>
+        <button id="reviewSelectedBtn" class="btn btn-primary" type="button">
+          Review Selected Photos
+        </button>
       </div>
+
     </section>
+
   </main>
 
   <div id="reviewSelectionModal" class="gallery-modal" aria-hidden="true">
     <div class="gallery-modal-panel large">
       <button class="gallery-modal-close" data-close-modal="reviewSelectionModal" type="button">×</button>
+
       <p class="eyebrow">Review Selected Photos</p>
-      <h2>Confirm your favorites</h2>
+      <h2>Confirm your selected photos</h2>
       <p class="muted">Remove any photo before submitting your final selection.</p>
+
       <div id="selectedPreviewGrid" class="selected-preview-grid"></div>
+
       <div class="modal-actions">
-        <button class="btn btn-secondary dark-btn" data-close-modal="reviewSelectionModal" type="button">Back to Gallery</button>
-        <button id="submitFinalSelectionBtn" class="btn btn-primary" type="button">Submit Final Selection</button>
+        <button class="btn btn-secondary dark-btn" data-close-modal="reviewSelectionModal" type="button">
+          Back to Gallery
+        </button>
+
+        <button id="submitFinalSelectionBtn" class="btn btn-primary" type="button">
+          Submit Final Selection
+        </button>
       </div>
     </div>
   </div>
@@ -109,6 +141,7 @@
       <p class="eyebrow">Testimonial</p>
       <h2>Share your experience</h2>
       <p class="muted">Please write a short testimonial for MLK Photography.</p>
+
       <div id="testimonialStars" class="rating-row testimonial-stars" aria-label="Rating stars">
         <span class="rating-star active" data-rating="1">★</span>
         <span class="rating-star active" data-rating="2">★</span>
@@ -116,96 +149,94 @@
         <span class="rating-star active" data-rating="4">★</span>
         <span class="rating-star active" data-rating="5">★</span>
       </div>
+
       <div class="form-field full">
         <label for="testimonialMessage">Your Testimonial</label>
         <textarea id="testimonialMessage" rows="5" placeholder="Tell us about your experience..."></textarea>
       </div>
-      <button id="submitTestimonialBtn" class="btn btn-primary" type="button">Submit Testimonial</button>
+
+      <button id="submitTestimonialBtn" class="btn btn-primary" type="button">
+        Submit Testimonial
+      </button>
+
       <div id="testimonialAlert" class="alert"></div>
     </div>
   </div>
 
-<div id="lightboxModal"
-     class="gallery-lightbox"
-     aria-hidden="true">
+  <!-- LIGHTBOX -->
 
-  <!-- TOP BAR -->
+  <div id="lightboxModal" class="gallery-lightbox" aria-hidden="true">
 
-  <div class="lightbox-mobile-topbar">
+    <div class="lightbox-topbar">
+      <strong id="lightboxName">Photo</strong>
 
-    <strong id="lightboxName">
-      Photo
-    </strong>
+      <button id="closeLightbox"
+              class="lightbox-close"
+              type="button"
+              aria-label="Close preview">
+        ×
+      </button>
+    </div>
 
-    <button id="closeLightbox"
-            class="lightbox-close"
-            type="button"
-            aria-label="Close preview">
-      ×
-    </button>
+    <div class="lightbox-image-stage">
+      <button id="prevPhoto"
+              class="lightbox-nav prev"
+              type="button"
+              aria-label="Previous photo">
+        ‹
+      </button>
 
-  </div>
+      <img id="lightboxImage" alt="Selected photo preview">
 
-  <!-- IMAGE STAGE -->
+      <button id="nextPhoto"
+              class="lightbox-nav next"
+              type="button"
+              aria-label="Next photo">
+        ›
+      </button>
+    </div>
 
-  <div class="lightbox-image-stage">
+    <div class="lightbox-actions">
+      <button id="lightboxFavorite"
+              class="btn btn-primary"
+              type="button">
+        + Select
+      </button>
 
-    <button id="prevPhoto"
-            class="lightbox-nav prev"
-            type="button"
-            aria-label="Previous photo">
-      ‹
-    </button>
-
-    <img id="lightboxImage"
-         alt="Selected photo preview">
-
-    <button id="nextPhoto"
-            class="lightbox-nav next"
-            type="button"
-            aria-label="Next photo">
-      ›
-    </button>
-
-  </div>
-
-  <!-- BOTTOM ACTION BAR -->
-
-  <div class="lightbox-bottom-actions">
-
-    <button id="lightboxFavorite"
-            class="btn btn-primary"
-            type="button">
-      + Select
-    </button>
-
-    <a id="lightboxDownload"
-       class="btn btn-secondary dark-btn"
-       href="#"
-       target="_blank"
-       rel="noopener">
-      Download
-    </a>
+      <a id="lightboxDownload"
+         class="btn btn-secondary dark-btn"
+         href="#"
+         target="_blank"
+         rel="noopener">
+        Download
+      </a>
+    </div>
 
   </div>
-
-</div>
 
   <section id="successView" class="success-view" style="display:none">
     <div class="success-card">
       <div class="success-icon">✔</div>
+
       <h1>Selection Submitted Successfully</h1>
       <p>Thank you for choosing MLK Photography.</p>
       <p>Your selected photos have been saved.</p>
       <p class="expiry-note">This gallery will expire in 30 days. Please download your photos before expiry.</p>
+
       <div class="success-actions">
-        <a id="successDownloadAll" class="btn btn-primary" href="#" target="_blank" rel="noopener">Download All Photos</a>
-        <a class="btn btn-secondary dark-btn" href="index.html">Back to Homepage</a>
+        <a id="successDownloadAll" class="btn btn-primary" href="#" target="_blank" rel="noopener">
+          Download All Photos
+        </a>
+
+        <a class="btn btn-secondary dark-btn" href="index.html">
+          Back to Homepage
+        </a>
       </div>
     </div>
   </section>
 
   <script src="assets/config.js"></script>
   <script src="assets/gallery.js"></script>
+
 </body>
 </html>
