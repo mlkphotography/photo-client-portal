@@ -943,9 +943,7 @@ body.gallery-page{
     width:100%;
   }
 
-/* =========================================
-   LIGHTBOX
-========================================= */
+/* LIGHTBOX */
 
 .gallery-lightbox{
   position:fixed;
@@ -960,117 +958,114 @@ body.gallery-page{
   display:flex;
 }
 
-/* =========================================
-   TOP BAR
-========================================= */
+/* TOP BAR */
 
 .lightbox-topbar{
   position:absolute;
   top:0;
   left:0;
   right:0;
-
   height:76px;
-
   padding:16px 22px;
-
   display:flex;
   align-items:center;
   justify-content:space-between;
-
+  gap:20px;
   z-index:30;
-
-  background:linear-gradient(
-    to bottom,
-    rgba(0,0,0,.72),
-    rgba(0,0,0,0)
-  );
-
   color:#fff;
+  background:linear-gradient(to bottom,rgba(0,0,0,.72),rgba(0,0,0,0));
 }
 
 #lightboxName{
-  max-width:calc(100% - 80px);
-
+  max-width:45%;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-
   font-size:17px;
   font-weight:800;
 }
 
-/* =========================================
-   CLOSE BUTTON
-========================================= */
+.lightbox-topbar-controls{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+/* ACTION BUTTONS */
+
+.lightbox-actions{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.lightbox-actions .btn{
+  min-height:46px;
+  padding:0 20px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:800;
+}
+
+#lightboxFavorite{
+  background:#c89a66 !important;
+  color:#111 !important;
+  border:none !important;
+}
+
+#lightboxDownload{
+  background:#fff !important;
+  color:#111 !important;
+  border:none !important;
+}
+
+/* CLOSE BUTTON */
 
 .lightbox-close{
-  width:46px;
-  height:46px;
-
+  width:44px;
+  height:44px;
   border:none;
   border-radius:999px;
-
   background:rgba(255,255,255,.14);
-
   color:#fff;
-
   font-size:28px;
   line-height:1;
-
   cursor:pointer;
 }
 
-/* =========================================
-   IMAGE STAGE
-========================================= */
+/* IMAGE STAGE */
 
 .lightbox-image-stage{
   position:relative;
-
   flex:1;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   overflow:hidden;
 }
 
 .lightbox-image-stage img{
   max-width:100%;
   max-height:100%;
-
   object-fit:contain;
 }
 
-/* =========================================
-   NAVIGATION
-========================================= */
+/* ARROWS */
 
 .lightbox-nav{
   position:absolute;
-
   top:50%;
   transform:translateY(-50%);
-
   width:52px;
   height:52px;
-
   border:none;
   border-radius:999px;
-
-  background:rgba(255,255,255,.12);
-
+  background:rgba(255,255,255,.14);
   color:#fff;
-
   font-size:32px;
   line-height:1;
-
   cursor:pointer;
-
   z-index:20;
-
   backdrop-filter:blur(10px);
 }
 
@@ -1082,50 +1077,7 @@ body.gallery-page{
   right:20px;
 }
 
-/* =========================================
-   ACTION BAR
-========================================= */
-
-..lightbox-actions{
-  position:absolute;
-
-  top:18px;
-  right:84px;
-
-  display:flex;
-  align-items:center;
-  gap:14px;
-
-  z-index:30;
-}
-
-.lightbox-actions .btn{
-  min-height:46px;
-  padding:0 20px;
-  border-radius:999px;
-  font-size:14px;
-  font-weight:800;
-}
-
-/* SELECT BUTTON */
-
-#lightboxFavorite{
-  background:#c89a66 !important;
-  color:#111 !important;
-  border:none !important;
-}
-
-/* DOWNLOAD BUTTON */
-
-#lightboxDownload{
-  background:#fff !important;
-  color:#111 !important;
-  border:none !important;
-}
-
-/* =========================================
-   MOBILE
-========================================= */
+/* MOBILE LIGHTBOX */
 
 @media(max-width:760px){
 
@@ -1135,7 +1087,12 @@ body.gallery-page{
   }
 
   #lightboxName{
+    max-width:calc(100% - 64px);
     font-size:16px;
+  }
+
+  .lightbox-topbar-controls{
+    gap:0;
   }
 
   .lightbox-close{
@@ -1145,14 +1102,9 @@ body.gallery-page{
   }
 
   .lightbox-image-stage{
-    padding-top:50px;
-    padding-bottom:110px;
+    padding-top:72px;
+    padding-bottom:112px;
     box-sizing:border-box;
-  }
-
-  .lightbox-image-stage img{
-    max-width:100%;
-    max-height:100%;
   }
 
   .lightbox-nav{
@@ -1169,30 +1121,28 @@ body.gallery-page{
     right:16px;
   }
 
-.lightbox-actions{
-  position:absolute;
+  .lightbox-actions{
+    position:fixed;
+    left:50%;
+    bottom:22px;
+    transform:translateX(-50%);
 
-  left:18px;
-  right:18px;
-  bottom:18px;
-  top:auto;
+    width:min(340px, calc(100% - 36px));
 
-  transform:none;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
 
-  display:grid;
-  grid-template-columns:1fr 1fr;
-
-  gap:12px;
-}
+    z-index:40;
+  }
 
   .lightbox-actions .btn{
     width:100%;
     min-height:56px;
-
+    padding:0 16px;
     font-size:16px;
   }
 }
-
 /* ===== APPLE HEART BUTTON ===== */
 
 .favorite-icon-btn{
