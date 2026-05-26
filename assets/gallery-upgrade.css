@@ -272,8 +272,7 @@ body.gallery-page{
   inset:0;
   background:#000;
   display:none;
-  align-items:center;
-  justify-content:center;
+  flex-direction:column;
   z-index:2000;
 }
 
@@ -281,26 +280,20 @@ body.gallery-page{
   display:flex;
 }
 
-.gallery-lightbox img{
-  max-width:100%;
-  max-height:100vh;
-  object-fit:contain;
-}
-
-/* TOP BAR */
-
 .lightbox-topbar{
   position:absolute;
   top:0;
   left:0;
   right:0;
-  padding:18px 72px 18px 24px;
+  height:76px;
+  padding:16px 22px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
   gap:20px;
-  background:linear-gradient(to bottom,rgba(0,0,0,.75),transparent);
+  z-index:30;
   color:#fff;
+  background:linear-gradient(to bottom,rgba(0,0,0,.72),rgba(0,0,0,0));
 }
 
 #lightboxName{
@@ -308,9 +301,15 @@ body.gallery-page{
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  font-size:17px;
+  font-weight:800;
 }
 
-/* ACTION BUTTONS */
+.lightbox-topbar-controls{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
 
 .lightbox-actions{
   display:flex;
@@ -326,15 +325,11 @@ body.gallery-page{
   font-weight:800;
 }
 
-/* FAVORITE BUTTON */
-
 #lightboxFavorite{
   background:#c89a66 !important;
   color:#111 !important;
   border:none !important;
 }
-
-/* DOWNLOAD BUTTON */
 
 #lightboxDownload{
   background:#fff !important;
@@ -342,13 +337,7 @@ body.gallery-page{
   border:none !important;
 }
 
-/* CLOSE BUTTON */
-
 .lightbox-close{
-  position:absolute;
-  top:18px;
-  right:18px;
-  z-index:20;
   width:44px;
   height:44px;
   border:none;
@@ -360,20 +349,36 @@ body.gallery-page{
   cursor:pointer;
 }
 
-/* NAVIGATION BUTTONS */
+.lightbox-image-stage{
+  position:relative;
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.lightbox-image-stage img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+}
 
 .lightbox-nav{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
-  border:none;
-  background:rgba(255,255,255,.15);
-  color:#fff;
   width:52px;
   height:52px;
-  border-radius:50%;
-  font-size:2rem;
+  border:none;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font-size:32px;
+  line-height:1;
   cursor:pointer;
+  z-index:20;
+  backdrop-filter:blur(10px);
 }
 
 .lightbox-nav.prev{
@@ -612,22 +617,62 @@ body.gallery-page{
   }
 
   .lightbox-topbar{
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
+    height:72px;
+    padding:16px 18px;
   }
 
-  .lightbox-actions{
-    width:100%;
+  #lightboxName{
+    max-width:calc(100% - 64px);
+    font-size:16px;
   }
 
-  .lightbox-actions .btn{
-    flex:1;
+  .lightbox-topbar-controls{
+    gap:0;
+  }
+
+  .lightbox-close{
+    width:44px;
+    height:44px;
+    font-size:26px;
+  }
+
+  .lightbox-image-stage{
+    padding-top:72px;
+    padding-bottom:112px;
+    box-sizing:border-box;
   }
 
   .lightbox-nav{
-    width:44px;
-    height:44px;
+    width:48px;
+    height:48px;
+    font-size:30px;
+  }
+
+  .lightbox-nav.prev{
+    left:16px;
+  }
+
+  .lightbox-nav.next{
+    right:16px;
+  }
+
+  .lightbox-actions{
+    position:fixed;
+    left:50%;
+    bottom:22px;
+    transform:translateX(-50%);
+    width:min(340px, calc(100% - 36px));
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    z-index:40;
+  }
+
+  .lightbox-actions .btn{
+    width:100%;
+    min-height:56px;
+    padding:0 16px;
+    font-size:16px;
   }
 
   .success-card{
@@ -635,7 +680,7 @@ body.gallery-page{
   }
 }
 
-/* ===== LAPTOP ONLY FIX - COMPACT ===== */
+/* LAPTOP ONLY FIX */
 
 @media (min-width:761px) and (max-height:820px){
 
@@ -714,7 +759,7 @@ body.gallery-page{
   }
 }
 
-/* ===== APPLE STYLE CLIENT GALLERY ===== */
+/* APPLE STYLE CLIENT GALLERY */
 
 #galleryView.gallery-app{
   min-height:100vh;
@@ -837,12 +882,6 @@ body.gallery-page{
   font-size:13px;
 }
 
-.photo-actions .favorite-btn{
-  background:#fff!important;
-  color:#111!important;
-  border:1px solid rgba(0,0,0,.08)!important;
-}
-
 .photo-actions .dark-btn{
   background:rgba(255,255,255,.75)!important;
   color:#111!important;
@@ -942,230 +981,24 @@ body.gallery-page{
   .selection-bar-v2 .btn{
     width:100%;
   }
-
-/* LIGHTBOX */
-
-.gallery-lightbox{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  flex-direction:column;
-  z-index:2000;
 }
 
-.gallery-lightbox.active{
-  display:flex;
-}
-
-/* TOP BAR */
-
-.lightbox-topbar{
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  height:76px;
-  padding:16px 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  z-index:30;
-  color:#fff;
-  background:linear-gradient(to bottom,rgba(0,0,0,.72),rgba(0,0,0,0));
-}
-
-#lightboxName{
-  max-width:45%;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  font-size:17px;
-  font-weight:800;
-}
-
-.lightbox-topbar-controls{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-/* ACTION BUTTONS */
-
-.lightbox-actions{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.lightbox-actions .btn{
-  min-height:46px;
-  padding:0 20px;
-  border-radius:999px;
-  font-size:14px;
-  font-weight:800;
-}
-
-#lightboxFavorite{
-  background:#c89a66 !important;
-  color:#111 !important;
-  border:none !important;
-}
-
-#lightboxDownload{
-  background:#fff !important;
-  color:#111 !important;
-  border:none !important;
-}
-
-/* CLOSE BUTTON */
-
-.lightbox-close{
-  width:44px;
-  height:44px;
-  border:none;
-  border-radius:999px;
-  background:rgba(255,255,255,.14);
-  color:#fff;
-  font-size:28px;
-  line-height:1;
-  cursor:pointer;
-}
-
-/* IMAGE STAGE */
-
-.lightbox-image-stage{
-  position:relative;
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-.lightbox-image-stage img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-}
-
-/* ARROWS */
-
-.lightbox-nav{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:52px;
-  height:52px;
-  border:none;
-  border-radius:999px;
-  background:rgba(255,255,255,.14);
-  color:#fff;
-  font-size:32px;
-  line-height:1;
-  cursor:pointer;
-  z-index:20;
-  backdrop-filter:blur(10px);
-}
-
-.lightbox-nav.prev{
-  left:20px;
-}
-
-.lightbox-nav.next{
-  right:20px;
-}
-
-/* MOBILE LIGHTBOX */
-
-@media(max-width:760px){
-
-  .lightbox-topbar{
-    height:72px;
-    padding:16px 18px;
-  }
-
-  #lightboxName{
-    max-width:calc(100% - 64px);
-    font-size:16px;
-  }
-
-  .lightbox-topbar-controls{
-    gap:0;
-  }
-
-  .lightbox-close{
-    width:44px;
-    height:44px;
-    font-size:26px;
-  }
-
-  .lightbox-image-stage{
-    padding-top:72px;
-    padding-bottom:112px;
-    box-sizing:border-box;
-  }
-
-  .lightbox-nav{
-    width:48px;
-    height:48px;
-    font-size:30px;
-  }
-
-  .lightbox-nav.prev{
-    left:16px;
-  }
-
-  .lightbox-nav.next{
-    right:16px;
-  }
-
-  .lightbox-actions{
-    position:fixed;
-    left:50%;
-    bottom:22px;
-    transform:translateX(-50%);
-
-    width:min(340px, calc(100% - 36px));
-
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-
-    z-index:40;
-  }
-
-  .lightbox-actions .btn{
-    width:100%;
-    min-height:56px;
-    padding:0 16px;
-    font-size:16px;
-  }
-}
-/* ===== APPLE HEART BUTTON ===== */
+/* SELECT BUTTON IN PHOTO CARD */
 
 .favorite-icon-btn{
   width:42px;
   height:42px;
-
   border:none;
   border-radius:999px;
-
   background:#fff;
   color:#111;
-
   font-size:20px;
   font-weight:800;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   cursor:pointer;
-
   transition:.2s ease;
-
   box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
 
