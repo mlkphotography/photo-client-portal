@@ -946,37 +946,35 @@ body.gallery-page{
 /* ===== APPLE HEART BUTTON ===== */
 
 .favorite-icon-btn{
-
   width:42px;
   height:42px;
 
   border:none;
-
   border-radius:999px;
 
-  background:rgba(255,255,255,.92);
-
-  backdrop-filter:blur(12px);
-
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-
-  display:grid;
-  place-items:center;
+  background:#fff;
+  color:#111;
 
   font-size:20px;
+  font-weight:800;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
   cursor:pointer;
 
-  transition:.25s ease;
+  transition:.2s ease;
+
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
 }
 
 .favorite-icon-btn:hover{
   transform:scale(1.05);
+  background:#f3f3f3;
 }
 
 .favorite-icon-btn.active{
-
-  background:#ffedf1;
-
-  color:#ff2d55;
+  background:#c89a66;
+  color:#111;
 }
