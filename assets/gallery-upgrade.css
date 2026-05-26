@@ -1086,28 +1086,24 @@ body.gallery-page{
    ACTION BAR
 ========================================= */
 
-.lightbox-actions{
+..lightbox-actions{
   position:absolute;
 
-  left:50%;
-  bottom:24px;
-
-  transform:translateX(-50%);
+  top:18px;
+  right:84px;
 
   display:flex;
+  align-items:center;
   gap:14px;
 
   z-index:30;
 }
 
 .lightbox-actions .btn{
-  min-height:52px;
-
-  padding:0 22px;
-
+  min-height:46px;
+  padding:0 20px;
   border-radius:999px;
-
-  font-size:15px;
+  font-size:14px;
   font-weight:800;
 }
 
@@ -1173,18 +1169,21 @@ body.gallery-page{
     right:16px;
   }
 
-  .lightbox-actions{
-    left:18px;
-    right:18px;
-    bottom:18px;
+.lightbox-actions{
+  position:absolute;
 
-    transform:none;
+  left:18px;
+  right:18px;
+  bottom:18px;
+  top:auto;
 
-    display:grid;
-    grid-template-columns:1fr 1fr;
+  transform:none;
 
-    gap:12px;
-  }
+  display:grid;
+  grid-template-columns:1fr 1fr;
+
+  gap:12px;
+}
 
   .lightbox-actions .btn{
     width:100%;
