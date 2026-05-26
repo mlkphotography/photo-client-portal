@@ -596,8 +596,9 @@ body.gallery-page{
 
   html,
   body.gallery-page{
-    height:100vh;
-    overflow:hidden;
+    min-height:100vh;
+    overflow-x:hidden;
+    overflow-y:auto;
   }
 
   .gallery-login-header{
@@ -607,8 +608,8 @@ body.gallery-page{
   }
 
   .gallery-login-section{
-    height:calc(100vh - 72px) !important;
-    min-height:0 !important;
+    min-height:calc(100vh - 72px) !important;
+    height:auto !important;
     padding:6px 24px 10px !important;
     align-items:center !important;
     box-sizing:border-box;
