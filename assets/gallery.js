@@ -21,7 +21,9 @@
     selected: new Set(),
     rating: 5,
     lightboxIndex: 0,
-    locked: false
+    locked: false,
+    zoomed: false,
+    lastTapAt: 0
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -253,6 +255,27 @@
     renderGallery();
   }
 
+  function applyGalleryFilters() {
+    const searchValue =
+      $('#photoSearch')?.value.trim().toLowerCase() || '';
+
+    const sortValue =
+      $('#sortPhotos')?.value || 'oldest';
+
+    let photos = state.photos.filter((photo) => {
+      return String(photo.name || '')
+        .toLowerCase()
+        .includes(searchValue);
+    });
+
+    if (sortValue === 'newest') {
+      photos = [...photos].reverse();
+    }
+
+    state.filteredPhotos = photos;
+    renderGallery();
+  }
+
   function renderGallery() {
     const grid = $('#photoGrid');
 
@@ -360,6 +383,39 @@
     renderGallery();
   }
 
+  function updateLightboxCounter() {
+    const counter = $('#lightboxCounter');
+
+    if (!counter) return;
+
+    if (!state.filteredPhotos.length) {
+      counter.textContent = '0 / 0';
+      return;
+    }
+
+    counter.textContent =
+      `${state.lightboxIndex + 1} / ${state.filteredPhotos.length}`;
+  }
+
+  function resetZoom() {
+    state.zoomed = false;
+
+    const image = $('#lightboxImage');
+
+    if (!image) return;
+
+    image.classList.remove('zoomed');
+  }
+
+  function toggleZoom() {
+    const image = $('#lightboxImage');
+
+    if (!image) return;
+
+    state.zoomed = !state.zoomed;
+    image.classList.toggle('zoomed', state.zoomed);
+  }
+
   function openLightbox(index) {
     state.lightboxIndex = index;
 
@@ -367,6 +423,8 @@
       state.filteredPhotos[index];
 
     if (!photo) return;
+
+    resetZoom();
 
     $('#lightboxImage').src =
       photo.thumbnailUrl || driveThumbnail(photo.fileId);
@@ -378,21 +436,29 @@
       driveDownload(photo.fileId);
 
     $('#lightboxFavorite').textContent =
-  state.selected.has(photo.fileId)
-    ? '✓ Selected'
-    : '+ Select';
+      state.selected.has(photo.fileId)
+        ? '✓ Selected'
+        : '+ Select';
 
     $('#lightboxFavorite').dataset.fileId =
       photo.fileId;
 
+    updateLightboxCounter();
+
     $('#lightboxModal').classList.add('active');
+    $('#lightboxModal').setAttribute('aria-hidden', 'false');
   }
 
   function closeLightbox() {
+    resetZoom();
+
     $('#lightboxModal').classList.remove('active');
+    $('#lightboxModal').setAttribute('aria-hidden', 'true');
   }
 
   function changeLightbox(direction) {
+    if (!state.filteredPhotos.length) return;
+
     let next =
       state.lightboxIndex + direction;
 
@@ -506,21 +572,7 @@
 
   function initSearch() {
     $('#photoSearch')
-      ?.addEventListener('input', (event) => {
-        const value =
-          event.target.value
-            .trim()
-            .toLowerCase();
-
-        state.filteredPhotos =
-          state.photos.filter((photo) => {
-            return String(photo.name || '')
-              .toLowerCase()
-              .includes(value);
-          });
-
-        renderGallery();
-      });
+      ?.addEventListener('input', applyGalleryFilters);
   }
 
   function initEvents() {
@@ -668,19 +720,41 @@
       });
 
 
-    $('#sortPhotos')
-      ?.addEventListener('change', (event) => {
-        const value =
-          event.target.value;
+    $('#lightboxImage')
+      ?.addEventListener('dblclick', toggleZoom);
 
-        if (value === 'newest') {
-          state.filteredPhotos.reverse();
-        } else {
-          state.filteredPhotos = [...state.photos];
+    $('#lightboxImage')
+      ?.addEventListener('touchend', () => {
+        const now = Date.now();
+
+        if (now - state.lastTapAt < 300) {
+          toggleZoom();
         }
 
-        renderGallery();
+        state.lastTapAt = now;
       });
+
+    document.addEventListener('keydown', (event) => {
+      const lightboxOpen =
+        $('#lightboxModal')?.classList.contains('active');
+
+      if (!lightboxOpen) return;
+
+      if (event.key === 'Escape') {
+        closeLightbox();
+      }
+
+      if (event.key === 'ArrowLeft') {
+        changeLightbox(-1);
+      }
+
+      if (event.key === 'ArrowRight') {
+        changeLightbox(1);
+      }
+    });
+
+    $('#sortPhotos')
+      ?.addEventListener('change', applyGalleryFilters);
 
     initSearch();
   }
