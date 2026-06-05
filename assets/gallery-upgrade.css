@@ -1011,3 +1011,73 @@ body.gallery-page{
   background:#c89a66;
   color:#111;
 }
+
+
+/* LIGHTBOX COUNTER + DOUBLE-TAP ZOOM UPGRADE */
+
+.lightbox-photo-meta{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+  max-width:48%;
+}
+
+#lightboxName{
+  max-width:none;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+#lightboxCounter{
+  flex:0 0 auto;
+  min-height:30px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  color:rgba(255,255,255,.9);
+  font-size:13px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:.02em;
+  backdrop-filter:blur(12px);
+}
+
+#lightboxImage{
+  cursor:zoom-in;
+  transition:transform .25s ease;
+  transform-origin:center center;
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+#lightboxImage.zoomed{
+  cursor:zoom-out;
+  transform:scale(2);
+}
+
+.gallery-lightbox.active .lightbox-image-stage{
+  touch-action:manipulation;
+}
+
+@media(max-width:760px){
+  .lightbox-photo-meta{
+    max-width:calc(100% - 56px);
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+  }
+
+  #lightboxName{
+    max-width:100%;
+    font-size:15px;
+  }
+
+  #lightboxCounter{
+    min-height:26px;
+    padding:5px 9px;
+    font-size:12px;
+  }
+}
