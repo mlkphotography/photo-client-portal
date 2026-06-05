@@ -22,8 +22,19 @@
     rating: 5,
     lightboxIndex: 0,
     locked: false,
-    zoomed: false,
-    lastTapAt: 0
+    zoom: {
+      scale: 1,
+      x: 0,
+      y: 0,
+      dragging: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      originX: 0,
+      originY: 0,
+      moved: false,
+      lastTap: 0
+    }
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -36,6 +47,10 @@
       .replaceAll('>', '&gt;')
       .replaceAll('"', '&quot;')
       .replaceAll("'", '&#039;');
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
   }
 
   function setButtonLoading(isLoading) {
@@ -72,12 +87,22 @@
     alert.classList.toggle('show', Boolean(message));
   }
 
+  function showTestimonialAlert(message) {
+    const alert = $('#testimonialAlert');
+
+    if (!alert) return;
+
+    alert.textContent = message || '';
+    alert.classList.toggle('show', Boolean(message));
+  }
+
   function showModal(id) {
     const modal = document.getElementById(id);
 
     if (!modal) return;
 
     modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
   }
 
   function closeModal(id) {
@@ -86,6 +111,7 @@
     if (!modal) return;
 
     modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
   }
 
   function driveThumbnail(fileId) {
@@ -164,6 +190,27 @@
 
     stats.textContent =
       `${state.photos.length} Photo${state.photos.length === 1 ? '' : 's'} • ${state.selected.size} Selected`;
+  }
+
+  function applyGalleryFilters() {
+    const searchValue =
+      $('#photoSearch')?.value.trim().toLowerCase() || '';
+
+    const sortValue =
+      $('#sortPhotos')?.value || 'oldest';
+
+    let photos = state.photos.filter((photo) => {
+      return String(photo.name || '')
+        .toLowerCase()
+        .includes(searchValue);
+    });
+
+    if (sortValue === 'newest') {
+      photos = [...photos].reverse();
+    }
+
+    state.filteredPhotos = photos;
+    renderGallery();
   }
 
   function loginGallery() {
@@ -252,28 +299,7 @@
     }
 
     updateGalleryStats();
-    renderGallery();
-  }
-
-  function applyGalleryFilters() {
-    const searchValue =
-      $('#photoSearch')?.value.trim().toLowerCase() || '';
-
-    const sortValue =
-      $('#sortPhotos')?.value || 'oldest';
-
-    let photos = state.photos.filter((photo) => {
-      return String(photo.name || '')
-        .toLowerCase()
-        .includes(searchValue);
-    });
-
-    if (sortValue === 'newest') {
-      photos = [...photos].reverse();
-    }
-
-    state.filteredPhotos = photos;
-    renderGallery();
+    applyGalleryFilters();
   }
 
   function renderGallery() {
@@ -286,6 +312,7 @@
 
       $('#emptyGallery').style.display = 'block';
 
+      updateSelectionBar();
       updateGalleryStats();
       return;
     }
@@ -317,13 +344,13 @@
 
               <div class="photo-actions">
                 <button
-  class="favorite-icon-btn ${selected ? 'active' : ''}"
-  data-favorite="${escapeHtml(photo.fileId)}"
-  type="button"
-  aria-label="Select Photo"
->
-  ${selected ? '✓' : '+'}
-</button>
+                  class="favorite-icon-btn ${selected ? 'active' : ''}"
+                  data-favorite="${escapeHtml(photo.fileId)}"
+                  type="button"
+                  aria-label="${selected ? 'Unselect photo' : 'Select photo'}"
+                >
+                  ${selected ? '✓' : '+'}
+                </button>
 
                 <a
                   class="btn btn-secondary dark-btn"
@@ -381,6 +408,167 @@
     }
 
     renderGallery();
+    updateLightboxFavoriteButton();
+    renderThumbnailStrip();
+  }
+
+  function resetZoom() {
+    state.zoom.scale = 1;
+    state.zoom.x = 0;
+    state.zoom.y = 0;
+    state.zoom.dragging = false;
+    state.zoom.pointerId = null;
+    state.zoom.moved = false;
+    updateZoomTransform();
+  }
+
+  function clampPan() {
+    const image = $('#lightboxImage');
+    const stage = $('.lightbox-image-stage');
+
+    if (!image || !stage || state.zoom.scale <= 1) {
+      state.zoom.x = 0;
+      state.zoom.y = 0;
+      return;
+    }
+
+    const maxX = Math.max(0, ((image.clientWidth * state.zoom.scale) - stage.clientWidth) / 2 + 80);
+    const maxY = Math.max(0, ((image.clientHeight * state.zoom.scale) - stage.clientHeight) / 2 + 80);
+
+    state.zoom.x = clamp(state.zoom.x, -maxX, maxX);
+    state.zoom.y = clamp(state.zoom.y, -maxY, maxY);
+  }
+
+  function updateZoomTransform() {
+    const image = $('#lightboxImage');
+    const stage = $('.lightbox-image-stage');
+
+    if (!image) return;
+
+    clampPan();
+
+    image.style.transform =
+      `translate3d(${state.zoom.x}px, ${state.zoom.y}px, 0) scale(${state.zoom.scale})`;
+
+    image.classList.toggle('zoomed', state.zoom.scale > 1);
+    image.classList.toggle('dragging', state.zoom.dragging);
+
+    if (stage) {
+      stage.classList.toggle('is-zoomed', state.zoom.scale > 1);
+    }
+  }
+
+  function setZoom(scale, centerX, centerY) {
+    const previousScale = state.zoom.scale;
+    const nextScale = clamp(scale, 1, 3);
+
+    state.zoom.scale = nextScale;
+
+    if (nextScale <= 1) {
+      state.zoom.x = 0;
+      state.zoom.y = 0;
+    } else if (centerX !== undefined && centerY !== undefined && previousScale !== nextScale) {
+      const stage = $('.lightbox-image-stage');
+
+      if (stage) {
+        const rect = stage.getBoundingClientRect();
+        const offsetX = centerX - rect.left - rect.width / 2;
+        const offsetY = centerY - rect.top - rect.height / 2;
+        const zoomRatio = nextScale / previousScale;
+
+        state.zoom.x = state.zoom.x * zoomRatio - offsetX * (zoomRatio - 1);
+        state.zoom.y = state.zoom.y * zoomRatio - offsetY * (zoomRatio - 1);
+      }
+    }
+
+    updateZoomTransform();
+  }
+
+  function toggleZoom(event) {
+    if (state.zoom.scale > 1) {
+      resetZoom();
+      return;
+    }
+
+    setZoom(2, event?.clientX, event?.clientY);
+  }
+
+  function handleWheelZoom(event) {
+    if (!$('#lightboxModal')?.classList.contains('active')) return;
+
+    event.preventDefault();
+
+    const direction = event.deltaY < 0 ? 0.25 : -0.25;
+    setZoom(state.zoom.scale + direction, event.clientX, event.clientY);
+  }
+
+  function startPan(event) {
+    if (state.zoom.scale <= 1) return;
+
+    state.zoom.dragging = true;
+    state.zoom.pointerId = event.pointerId;
+    state.zoom.startX = event.clientX;
+    state.zoom.startY = event.clientY;
+    state.zoom.originX = state.zoom.x;
+    state.zoom.originY = state.zoom.y;
+    state.zoom.moved = false;
+
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+    updateZoomTransform();
+  }
+
+  function movePan(event) {
+    if (!state.zoom.dragging || event.pointerId !== state.zoom.pointerId) return;
+
+    const dx = event.clientX - state.zoom.startX;
+    const dy = event.clientY - state.zoom.startY;
+
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      state.zoom.moved = true;
+    }
+
+    state.zoom.x = state.zoom.originX + dx;
+    state.zoom.y = state.zoom.originY + dy;
+
+    event.preventDefault();
+    updateZoomTransform();
+  }
+
+  function endPan(event) {
+    if (event && state.zoom.pointerId && event.pointerId !== state.zoom.pointerId) return;
+
+    state.zoom.dragging = false;
+    state.zoom.pointerId = null;
+    updateZoomTransform();
+  }
+
+  function handleTouchDoubleTap(event) {
+    if (event.pointerType !== 'touch') return;
+    if (state.zoom.moved) return;
+
+    const now = Date.now();
+
+    if (now - state.zoom.lastTap < 300) {
+      toggleZoom(event);
+      state.zoom.lastTap = 0;
+    } else {
+      state.zoom.lastTap = now;
+    }
+  }
+
+  function updateLightboxFavoriteButton() {
+    const photo = state.filteredPhotos[state.lightboxIndex];
+    const button = $('#lightboxFavorite');
+
+    if (!photo || !button) return;
+
+    const selected = state.selected.has(photo.fileId);
+
+    button.textContent = selected ? '✓ Selected' : '+ Select';
+    button.classList.toggle('active', selected);
+    button.dataset.fileId = photo.fileId;
+    button.setAttribute('aria-label', selected ? 'Unselect photo' : 'Select photo');
   }
 
   function updateLightboxCounter() {
@@ -388,39 +576,65 @@
 
     if (!counter) return;
 
+    const total = state.filteredPhotos.length;
+    const current = total ? state.lightboxIndex + 1 : 0;
+
+    counter.textContent = `${current} / ${total}`;
+  }
+
+  function renderThumbnailStrip() {
+    const strip = $('#lightboxThumbnails');
+
+    if (!strip) return;
+
     if (!state.filteredPhotos.length) {
-      counter.textContent = '0 / 0';
+      strip.innerHTML = '';
       return;
     }
 
-    counter.textContent =
-      `${state.lightboxIndex + 1} / ${state.filteredPhotos.length}`;
+    strip.innerHTML = state.filteredPhotos.map((photo, index) => {
+      const selected = state.selected.has(photo.fileId);
+      const active = index === state.lightboxIndex;
+
+      return `
+        <button
+          class="lightbox-thumb ${active ? 'active' : ''} ${selected ? 'selected' : ''}"
+          type="button"
+          data-thumb-index="${index}"
+          aria-label="Open photo ${index + 1}"
+        >
+          <img
+            src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
+            alt="${escapeHtml(photo.name || `Photo ${index + 1}`)}"
+            loading="lazy"
+          >
+          ${selected ? '<span class="thumb-selected">✓</span>' : ''}
+        </button>
+      `;
+    }).join('');
+
+    scrollActiveThumbnailIntoView();
   }
 
-  function resetZoom() {
-    state.zoomed = false;
+  function scrollActiveThumbnailIntoView() {
+    const activeThumb = $('#lightboxThumbnails .lightbox-thumb.active');
 
-    const image = $('#lightboxImage');
+    if (!activeThumb) return;
 
-    if (!image) return;
-
-    image.classList.remove('zoomed');
-  }
-
-  function toggleZoom() {
-    const image = $('#lightboxImage');
-
-    if (!image) return;
-
-    state.zoomed = !state.zoomed;
-    image.classList.toggle('zoomed', state.zoomed);
+    activeThumb.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest'
+    });
   }
 
   function openLightbox(index) {
-    state.lightboxIndex = index;
+    if (!state.filteredPhotos.length) return;
+
+    state.lightboxIndex = clamp(index, 0, state.filteredPhotos.length - 1);
 
     const photo =
-      state.filteredPhotos[index];
+      state.filteredPhotos[state.lightboxIndex];
 
     if (!photo) return;
 
@@ -435,15 +649,9 @@
     $('#lightboxDownload').href =
       driveDownload(photo.fileId);
 
-    $('#lightboxFavorite').textContent =
-      state.selected.has(photo.fileId)
-        ? '✓ Selected'
-        : '+ Select';
-
-    $('#lightboxFavorite').dataset.fileId =
-      photo.fileId;
-
+    updateLightboxFavoriteButton();
     updateLightboxCounter();
+    renderThumbnailStrip();
 
     $('#lightboxModal').classList.add('active');
     $('#lightboxModal').setAttribute('aria-hidden', 'false');
@@ -517,6 +725,12 @@
       return;
     }
 
+    const button = $('#submitFinalSelectionBtn');
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Submitting...';
+    }
+
     jsonp(
       'submitSelection',
       {
@@ -527,10 +741,20 @@
         )
       },
       () => {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Submit Final Selection';
+        }
+
         closeModal('reviewSelectionModal');
         showModal('testimonialModal');
       },
       () => {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Submit Final Selection';
+        }
+
         alert('Could not save selection.');
       }
     );
@@ -543,10 +767,16 @@
         .trim();
 
     if (!message) {
-      $('#testimonialAlert').textContent =
-        'Please write your testimonial.';
-
+      showTestimonialAlert('Please write your testimonial.');
       return;
+    }
+
+    showTestimonialAlert('');
+
+    const button = $('#submitTestimonialBtn');
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Submitting...';
     }
 
     jsonp(
@@ -558,21 +788,25 @@
         testimonial: message
       },
       () => {
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Submit Testimonial';
+        }
+
         closeModal('testimonialModal');
 
         $('#galleryView').style.display = 'none';
         $('#successView').style.display = 'flex';
       },
       () => {
-        $('#testimonialAlert').textContent =
-          'Could not submit testimonial.';
+        if (button) {
+          button.disabled = false;
+          button.textContent = 'Submit Testimonial';
+        }
+
+        showTestimonialAlert('Could not submit testimonial.');
       }
     );
-  }
-
-  function initSearch() {
-    $('#photoSearch')
-      ?.addEventListener('input', applyGalleryFilters);
   }
 
   function initEvents() {
@@ -636,13 +870,11 @@
     $('#lightboxFavorite')
       ?.addEventListener('click', (event) => {
         const fileId =
-          event.target.dataset.fileId;
+          event.currentTarget.dataset.fileId;
 
         if (!fileId) return;
 
         toggleFavorite(fileId);
-
-        openLightbox(state.lightboxIndex);
       });
 
     $('#closeLightbox')
@@ -656,6 +888,36 @@
     $('#nextPhoto')
       ?.addEventListener('click', () => {
         changeLightbox(1);
+      });
+
+    $('#lightboxImage')
+      ?.addEventListener('dblclick', toggleZoom);
+
+    $('#lightboxImage')
+      ?.addEventListener('wheel', handleWheelZoom, { passive: false });
+
+    $('#lightboxImage')
+      ?.addEventListener('pointerdown', startPan);
+
+    $('#lightboxImage')
+      ?.addEventListener('pointermove', movePan);
+
+    $('#lightboxImage')
+      ?.addEventListener('pointerup', (event) => {
+        handleTouchDoubleTap(event);
+        endPan(event);
+      });
+
+    $('#lightboxImage')
+      ?.addEventListener('pointercancel', endPan);
+
+    $('#lightboxThumbnails')
+      ?.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-thumb-index]');
+
+        if (!button) return;
+
+        openLightbox(Number(button.dataset.thumbIndex));
       });
 
     $('#reviewSelectedBtn')
@@ -677,6 +939,7 @@
 
         renderSelectedPreview();
         renderGallery();
+        renderThumbnailStrip();
       });
 
     $('#submitFinalSelectionBtn')
@@ -719,24 +982,14 @@
         });
       });
 
+    $('#photoSearch')
+      ?.addEventListener('input', applyGalleryFilters);
 
-    $('#lightboxImage')
-      ?.addEventListener('dblclick', toggleZoom);
-
-    $('#lightboxImage')
-      ?.addEventListener('touchend', () => {
-        const now = Date.now();
-
-        if (now - state.lastTapAt < 300) {
-          toggleZoom();
-        }
-
-        state.lastTapAt = now;
-      });
+    $('#sortPhotos')
+      ?.addEventListener('change', applyGalleryFilters);
 
     document.addEventListener('keydown', (event) => {
-      const lightboxOpen =
-        $('#lightboxModal')?.classList.contains('active');
+      const lightboxOpen = $('#lightboxModal')?.classList.contains('active');
 
       if (!lightboxOpen) return;
 
@@ -753,10 +1006,7 @@
       }
     });
 
-    $('#sortPhotos')
-      ?.addEventListener('change', applyGalleryFilters);
-
-    initSearch();
+    window.addEventListener('resize', updateZoomTransform);
   }
 
   function init() {
