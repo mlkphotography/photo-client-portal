@@ -165,10 +165,13 @@
 
 <!-- LIGHTBOX -->
 
-<div id="lightboxModal" class="gallery-lightbox" aria-hidden="true">
+<div id="lightboxModal" class="gallery-lightbox" aria-hidden="true" role="dialog" aria-modal="true">
 
   <div class="lightbox-topbar">
-    <strong id="lightboxName">Photo</strong>
+    <div class="lightbox-photo-meta">
+      <strong id="lightboxName">Photo</strong>
+      <span id="lightboxCounter">1 / 1</span>
+    </div>
 
     <div class="lightbox-topbar-controls">
       <div class="lightbox-actions">
