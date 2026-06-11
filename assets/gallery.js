@@ -50,13 +50,16 @@
       .replaceAll("'", '&#039;');
   }
 
+  function sameId(a, b) {
+    return String(a || '') === String(b || '');
+  }
+
   function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
   }
 
   function setButtonLoading(isLoading) {
     const button = $('#openGalleryBtn');
-
     if (!button) return;
 
     button.disabled = isLoading;
@@ -77,15 +80,10 @@
     $$('.js-whatsapp-link').forEach((link) => {
       link.href = url;
     });
-
-    $$('.js-gallery-reopen-link').forEach((link) => {
-      link.href = url;
-    });
   }
 
   function showAlert(message) {
     const alert = $('#loginAlert');
-
     if (!alert) return;
 
     alert.textContent = message || '';
@@ -94,7 +92,6 @@
 
   function showTestimonialAlert(message) {
     const alert = $('#testimonialAlert');
-
     if (!alert) return;
 
     alert.textContent = message || '';
@@ -103,7 +100,6 @@
 
   function showModal(id) {
     const modal = document.getElementById(id);
-
     if (!modal) return;
 
     modal.classList.add('active');
@@ -116,7 +112,6 @@
 
   function closeModal(id) {
     const modal = document.getElementById(id);
-
     if (!modal) return;
 
     modal.classList.remove('active');
@@ -157,13 +152,11 @@
 
     const timer = setTimeout(() => {
       cleanup();
-
       if (onError) onError();
     }, 12000);
 
     function cleanup() {
       clearTimeout(timer);
-
       delete window[callbackName];
 
       if (script.parentNode) {
@@ -178,21 +171,19 @@
 
     script.onerror = function () {
       cleanup();
-
       if (onError) onError();
     };
 
     script.src = url.toString();
-
     document.body.appendChild(script);
   }
 
   function getPhotoById(fileId) {
-    return state.photos.find((photo) => photo.fileId === fileId);
+    return state.photos.find((photo) => sameId(photo.fileId, fileId));
   }
 
   function getSelectedPhotos() {
-    return state.photos.filter((photo) => state.selected.has(photo.fileId));
+    return state.photos.filter((photo) => state.selected.has(String(photo.fileId)));
   }
 
   function isLandscapePhoto(photo) {
@@ -208,7 +199,6 @@
 
   function updateGalleryStats() {
     const meta = $('#galleryMeta');
-
     if (!meta) return;
 
     let stats = $('#galleryStats');
@@ -278,10 +268,7 @@
       },
       () => {
         setButtonLoading(false);
-
-        showAlert(
-          'Could not connect to gallery server. Please try again or WhatsApp us.'
-        );
+        showAlert('Could not connect to gallery server. Please try again or WhatsApp us.');
       }
     );
   }
@@ -292,7 +279,6 @@
         data?.message ||
         'We couldn’t find a gallery with this email and code. Please check your details or WhatsApp us.'
       );
-
       return;
     }
 
@@ -309,10 +295,10 @@
       String(state.gallery.locked || '').toLowerCase() === 'yes';
 
     state.albumCoverFileId =
-      state.gallery.albumCoverFileId || '';
+      String(state.gallery.albumCoverFileId || '');
 
     state.frameFileId =
-      state.gallery.frameFileId || '';
+      String(state.gallery.frameFileId || '');
 
     $('#loginView').style.display = 'none';
     $('#galleryView').style.display = 'block';
@@ -342,14 +328,11 @@
 
   function renderGallery() {
     const grid = $('#photoGrid');
-
     if (!grid) return;
 
     if (!state.filteredPhotos.length) {
       grid.innerHTML = '';
-
       $('#emptyGallery').style.display = 'block';
-
       updateSelectionBar();
       updateGalleryStats();
       return;
@@ -359,8 +342,8 @@
 
     grid.innerHTML =
       state.filteredPhotos.map((photo, index) => {
-        const selected =
-          state.selected.has(photo.fileId);
+        const fileId = String(photo.fileId);
+        const selected = state.selected.has(fileId);
 
         return `
           <article
@@ -383,7 +366,7 @@
               <div class="photo-actions">
                 <button
                   class="favorite-icon-btn ${selected ? 'active' : ''}"
-                  data-favorite="${escapeHtml(photo.fileId)}"
+                  data-favorite="${escapeHtml(fileId)}"
                   type="button"
                   aria-label="${selected ? 'Unselect photo' : 'Select photo'}"
                 >
@@ -431,14 +414,16 @@
   function toggleFavorite(fileId) {
     if (state.locked) return;
 
-    if (state.selected.has(fileId)) {
-      state.selected.delete(fileId);
+    const id = String(fileId);
 
-      if (state.albumCoverFileId === fileId) {
+    if (state.selected.has(id)) {
+      state.selected.delete(id);
+
+      if (sameId(state.albumCoverFileId, id)) {
         state.albumCoverFileId = '';
       }
 
-      if (state.frameFileId === fileId) {
+      if (sameId(state.frameFileId, id)) {
         state.frameFileId = '';
       }
     } else {
@@ -450,7 +435,7 @@
         return;
       }
 
-      state.selected.add(fileId);
+      state.selected.add(id);
     }
 
     renderGallery();
@@ -613,38 +598,44 @@
 
     if (!photo || !button) return;
 
-    const selected = state.selected.has(photo.fileId);
+    const fileId = String(photo.fileId);
+    const selected = state.selected.has(fileId);
 
     button.textContent = selected ? '✓ Selected' : '+ Select';
     button.classList.toggle('active', selected);
-    button.dataset.fileId = photo.fileId;
+    button.dataset.fileId = fileId;
     button.setAttribute('aria-label', selected ? 'Unselect photo' : 'Select photo');
 
     const coverButton = $('#lightboxSetCover');
     const frameButton = $('#lightboxSetFrame');
+    const removeButton = $('#lightboxRemoveSelection');
 
     if (coverButton) {
-      coverButton.dataset.fileId = photo.fileId;
+      coverButton.dataset.fileId = fileId;
       coverButton.disabled = !selected || !isLandscapePhoto(photo);
       coverButton.textContent =
-        state.albumCoverFileId === photo.fileId
+        sameId(state.albumCoverFileId, fileId)
           ? 'Cover ✓'
           : 'Set Cover';
     }
 
     if (frameButton) {
-      frameButton.dataset.fileId = photo.fileId;
+      frameButton.dataset.fileId = fileId;
       frameButton.disabled = !selected;
       frameButton.textContent =
-        state.frameFileId === photo.fileId
+        sameId(state.frameFileId, fileId)
           ? 'Frame ✓'
           : 'Set Frame';
+    }
+
+    if (removeButton) {
+      removeButton.dataset.fileId = fileId;
+      removeButton.disabled = !selected;
     }
   }
 
   function updateLightboxCounter() {
     const counter = $('#lightboxCounter');
-
     if (!counter) return;
 
     const total = state.filteredPhotos.length;
@@ -664,7 +655,8 @@
     }
 
     strip.innerHTML = state.filteredPhotos.map((photo, index) => {
-      const selected = state.selected.has(photo.fileId);
+      const fileId = String(photo.fileId);
+      const selected = state.selected.has(fileId);
       const active = index === state.lightboxIndex;
 
       return `
@@ -753,38 +745,44 @@
   }
 
   function setAlbumCover(fileId) {
-    if (!state.selected.has(fileId)) return;
+    const id = String(fileId);
 
-    const photo = getPhotoById(fileId);
+    if (!state.selected.has(id)) return;
+
+    const photo = getPhotoById(id);
 
     if (!isLandscapePhoto(photo)) {
       alert('Album cover must be a landscape photo.');
       return;
     }
 
-    state.albumCoverFileId = fileId;
+    state.albumCoverFileId = id;
 
     renderSelectedPreview();
     updateLightboxFavoriteButton();
   }
 
   function setFramePhoto(fileId) {
-    if (!state.selected.has(fileId)) return;
+    const id = String(fileId);
 
-    state.frameFileId = fileId;
+    if (!state.selected.has(id)) return;
+
+    state.frameFileId = id;
 
     renderSelectedPreview();
     updateLightboxFavoriteButton();
   }
 
   function removeSelectedPhoto(fileId) {
-    state.selected.delete(fileId);
+    const id = String(fileId);
 
-    if (state.albumCoverFileId === fileId) {
+    state.selected.delete(id);
+
+    if (sameId(state.albumCoverFileId, id)) {
       state.albumCoverFileId = '';
     }
 
-    if (state.frameFileId === fileId) {
+    if (sameId(state.frameFileId, id)) {
       state.frameFileId = '';
     }
 
@@ -811,7 +809,7 @@
           </div>
 
           <div class="review-feature-preview empty">
-            Select ${isCover ? 'a landscape cover photo' : 'a frame photo'} from the gallery below.
+            Select ${isCover ? 'a landscape photo below' : 'a photo below'}
           </div>
         </article>
       `;
@@ -909,9 +907,9 @@
 
     grid.innerHTML =
       selectedPhotos.map((photo, index) => {
-        const isCover = state.albumCoverFileId === photo.fileId;
-        const isFrame = state.frameFileId === photo.fileId;
-        const landscape = isLandscapePhoto(photo);
+        const fileId = String(photo.fileId);
+        const isCover = sameId(state.albumCoverFileId, fileId);
+        const isFrame = sameId(state.frameFileId, fileId);
 
         return `
           <article class="review-photo-card ${isCover ? 'is-cover' : ''} ${isFrame ? 'is-frame' : ''}">
@@ -930,29 +928,6 @@
 
             <div class="review-photo-body">
               <strong>${escapeHtml(photo.name)}</strong>
-
-              <div class="review-photo-actions">
-                <button class="btn" type="button" data-review-view="${index}">
-                  View
-                </button>
-
-                <button
-                  class="btn"
-                  type="button"
-                  data-set-cover="${escapeHtml(photo.fileId)}"
-                  ${landscape ? '' : 'disabled'}
-                >
-                  ${isCover ? 'Cover ✓' : 'Set Cover'}
-                </button>
-
-                <button class="btn" type="button" data-set-frame="${escapeHtml(photo.fileId)}">
-                  ${isFrame ? 'Frame ✓' : 'Set Frame'}
-                </button>
-
-                <button class="btn" type="button" data-remove="${escapeHtml(photo.fileId)}">
-                  Remove
-                </button>
-              </div>
             </div>
           </article>
         `;
@@ -965,6 +940,7 @@
     renderSelectedPreview();
 
     const notes = $('#selectionNotes');
+
     if (notes && state.gallery?.selectionNotes) {
       notes.value = state.gallery.selectionNotes;
     }
@@ -1094,16 +1070,12 @@
 
     $('#clientEmail')
       ?.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          loginGallery();
-        }
+        if (event.key === 'Enter') loginGallery();
       });
 
     $('#galleryCode')
       ?.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') {
-          loginGallery();
-        }
+        if (event.key === 'Enter') loginGallery();
       });
 
     $('#logoutGalleryBtn')
@@ -1142,7 +1114,6 @@
     $('#lightboxSetCover')
       ?.addEventListener('click', (event) => {
         const fileId = event.currentTarget.dataset.fileId;
-
         if (!fileId) return;
 
         setAlbumCover(fileId);
@@ -1151,10 +1122,17 @@
     $('#lightboxSetFrame')
       ?.addEventListener('click', (event) => {
         const fileId = event.currentTarget.dataset.fileId;
-
         if (!fileId) return;
 
         setFramePhoto(fileId);
+      });
+
+    $('#lightboxRemoveSelection')
+      ?.addEventListener('click', (event) => {
+        const fileId = event.currentTarget.dataset.fileId;
+        if (!fileId) return;
+
+        removeSelectedPhoto(fileId);
       });
 
     $('#closeLightbox')
@@ -1194,7 +1172,6 @@
     $('#lightboxThumbnails')
       ?.addEventListener('click', (event) => {
         const button = event.target.closest('[data-thumb-index]');
-
         if (!button) return;
 
         openLightbox(Number(button.dataset.thumbIndex));
@@ -1205,42 +1182,19 @@
 
     $('#selectedPreviewGrid')
       ?.addEventListener('click', (event) => {
-        const remove =
-          event.target.closest('[data-remove]');
-
-        if (remove) {
-          removeSelectedPhoto(remove.dataset.remove);
-          return;
-        }
-
-        const cover =
-          event.target.closest('[data-set-cover]');
-
-        if (cover) {
-          setAlbumCover(cover.dataset.setCover);
-          return;
-        }
-
-        const frame =
-          event.target.closest('[data-set-frame]');
-
-        if (frame) {
-          setFramePhoto(frame.dataset.setFrame);
-          return;
-        }
-
         const view =
           event.target.closest('[data-review-view]');
 
-        if (view) {
-          const selectedPhotos = getSelectedPhotos();
-          const selectedPhoto = selectedPhotos[Number(view.dataset.reviewView)];
-          const filteredIndex =
-            state.filteredPhotos.findIndex((photo) => photo.fileId === selectedPhoto?.fileId);
+        if (!view) return;
 
-          if (filteredIndex >= 0) {
-            openLightbox(filteredIndex);
-          }
+        const selectedPhotos = getSelectedPhotos();
+        const selectedPhoto = selectedPhotos[Number(view.dataset.reviewView)];
+
+        const filteredIndex =
+          state.filteredPhotos.findIndex((photo) => sameId(photo.fileId, selectedPhoto?.fileId));
+
+        if (filteredIndex >= 0) {
+          openLightbox(filteredIndex);
         }
       });
 
