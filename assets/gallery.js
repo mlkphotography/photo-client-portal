@@ -615,7 +615,7 @@
       coverButton.disabled = !selected || !isLandscapePhoto(photo);
       coverButton.textContent =
         sameId(state.albumCoverFileId, fileId)
-          ? 'Cover ✓'
+          ? 'Remove Cover'
           : 'Set Cover';
     }
 
@@ -624,13 +624,14 @@
       frameButton.disabled = !selected;
       frameButton.textContent =
         sameId(state.frameFileId, fileId)
-          ? 'Frame ✓'
+          ? 'Remove Frame'
           : 'Set Frame';
     }
 
     if (removeButton) {
       removeButton.dataset.fileId = fileId;
       removeButton.disabled = !selected;
+      removeButton.textContent = 'Remove';
     }
   }
 
@@ -749,6 +750,13 @@
 
     if (!state.selected.has(id)) return;
 
+    if (sameId(state.albumCoverFileId, id)) {
+      state.albumCoverFileId = '';
+      renderSelectedPreview();
+      updateLightboxFavoriteButton();
+      return;
+    }
+
     const photo = getPhotoById(id);
 
     if (!isLandscapePhoto(photo)) {
@@ -766,6 +774,13 @@
     const id = String(fileId);
 
     if (!state.selected.has(id)) return;
+
+    if (sameId(state.frameFileId, id)) {
+      state.frameFileId = '';
+      renderSelectedPreview();
+      updateLightboxFavoriteButton();
+      return;
+    }
 
     state.frameFileId = id;
 
@@ -792,61 +807,33 @@
     updateLightboxFavoriteButton();
   }
 
-  function renderFeatureCard(type) {
-    const isCover = type === 'cover';
-    const fileId = isCover ? state.albumCoverFileId : state.frameFileId;
-    const photo = getPhotoById(fileId);
-
-    const title = isCover ? 'Album Cover' : 'Photo Frame';
-    const status = photo ? 'Selected' : 'Required';
-
-    if (!photo) {
-      return `
-        <article class="review-feature-card">
-          <div class="review-feature-head">
-            <span>${title}</span>
-            <strong>${status}</strong>
-          </div>
-
-          <div class="review-feature-preview empty">
-            Select ${isCover ? 'a landscape photo below' : 'a photo below'}
-          </div>
-        </article>
-      `;
-    }
-
-    return `
-      <article class="review-feature-card">
-        <div class="review-feature-head">
-          <span>${title}</span>
-          <strong>${status}</strong>
-        </div>
-
-        <div class="review-feature-preview">
-          <img
-            src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
-            alt="${escapeHtml(photo.name)}"
-          >
-
-          <div class="review-feature-caption">
-            <strong>${escapeHtml(photo.name)}</strong>
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
   function updateSubmitState() {
     const button = $('#submitFinalSelectionBtn');
     const status = $('#reviewSubmitStatus');
+    const limitText = $('#reviewLimitText');
 
-    const hasPhotos = state.selected.size > 0;
+    const limit = Number(state.gallery?.selectionLimit || 0);
+    const selectedCount = state.selected.size;
+
+    const hasPhotos = selectedCount > 0;
     const hasCover = Boolean(state.albumCoverFileId);
     const hasFrame = Boolean(state.frameFileId);
     const canSubmit = hasPhotos && hasCover && hasFrame && !state.locked;
 
     if (button) {
       button.disabled = !canSubmit;
+    }
+
+    if (limitText) {
+      if (limit) {
+        limitText.textContent =
+          selectedCount >= limit
+            ? `${selectedCount} / ${limit} Photos Selected — Limit Reached`
+            : `${selectedCount} / ${limit} Photos Selected`;
+      } else {
+        limitText.textContent =
+          `${selectedCount} Photo${selectedCount === 1 ? '' : 's'} Selected`;
+      }
     }
 
     if (status) {
@@ -868,7 +855,6 @@
 
   function renderSelectedPreview() {
     const count = $('#reviewSelectedCount');
-    const featureGrid = $('#reviewFeatureGrid');
     const grid = $('#selectedPreviewGrid');
     const bottomCount = $('#reviewBottomCount');
 
@@ -882,11 +868,6 @@
     if (bottomCount) {
       bottomCount.textContent =
         `${selectedPhotos.length} Photo${selectedPhotos.length === 1 ? '' : 's'} Selected`;
-    }
-
-    if (featureGrid) {
-      featureGrid.innerHTML =
-        renderFeatureCard('cover') + renderFeatureCard('frame');
     }
 
     if (!grid) return;
@@ -1133,6 +1114,7 @@
         if (!fileId) return;
 
         removeSelectedPhoto(fileId);
+        closeLightbox();
       });
 
     $('#closeLightbox')
