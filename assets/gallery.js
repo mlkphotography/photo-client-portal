@@ -1,5 +1,4 @@
 (function () {
-
   const config = window.MLK_CONFIG || {};
 
   const PLACEHOLDER_URL =
@@ -19,6 +18,8 @@
     photos: [],
     filteredPhotos: [],
     selected: new Set(),
+    albumCoverFileId: '',
+    frameFileId: '',
     rating: 5,
     lightboxIndex: 0,
     locked: false,
@@ -76,6 +77,10 @@
     $$('.js-whatsapp-link').forEach((link) => {
       link.href = url;
     });
+
+    $$('.js-gallery-reopen-link').forEach((link) => {
+      link.href = url;
+    });
   }
 
   function showAlert(message) {
@@ -103,6 +108,10 @@
 
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
+
+    if (id === 'reviewSelectionModal') {
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   function closeModal(id) {
@@ -112,6 +121,10 @@
 
     modal.classList.remove('active');
     modal.setAttribute('aria-hidden', 'true');
+
+    if (id === 'reviewSelectionModal') {
+      document.body.style.overflow = '';
+    }
   }
 
   function driveThumbnail(fileId) {
@@ -172,6 +185,25 @@
     script.src = url.toString();
 
     document.body.appendChild(script);
+  }
+
+  function getPhotoById(fileId) {
+    return state.photos.find((photo) => photo.fileId === fileId);
+  }
+
+  function getSelectedPhotos() {
+    return state.photos.filter((photo) => state.selected.has(photo.fileId));
+  }
+
+  function isLandscapePhoto(photo) {
+    if (!photo) return true;
+
+    const width = Number(photo.width || photo.imageWidth || photo.w || 0);
+    const height = Number(photo.height || photo.imageHeight || photo.h || 0);
+
+    if (!width || !height) return true;
+
+    return width >= height;
   }
 
   function updateGalleryStats() {
@@ -275,6 +307,12 @@
 
     state.locked =
       String(state.gallery.locked || '').toLowerCase() === 'yes';
+
+    state.albumCoverFileId =
+      state.gallery.albumCoverFileId || '';
+
+    state.frameFileId =
+      state.gallery.frameFileId || '';
 
     $('#loginView').style.display = 'none';
     $('#galleryView').style.display = 'block';
@@ -395,6 +433,14 @@
 
     if (state.selected.has(fileId)) {
       state.selected.delete(fileId);
+
+      if (state.albumCoverFileId === fileId) {
+        state.albumCoverFileId = '';
+      }
+
+      if (state.frameFileId === fileId) {
+        state.frameFileId = '';
+      }
     } else {
       const limit =
         Number(state.gallery.selectionLimit || 0);
@@ -410,6 +456,7 @@
     renderGallery();
     updateLightboxFavoriteButton();
     renderThumbnailStrip();
+    renderSelectedPreview();
   }
 
   function resetZoom() {
@@ -432,8 +479,11 @@
       return;
     }
 
-    const maxX = Math.max(0, ((image.clientWidth * state.zoom.scale) - stage.clientWidth) / 2 + 80);
-    const maxY = Math.max(0, ((image.clientHeight * state.zoom.scale) - stage.clientHeight) / 2 + 80);
+    const maxX =
+      Math.max(0, ((image.clientWidth * state.zoom.scale) - stage.clientWidth) / 2 + 80);
+
+    const maxY =
+      Math.max(0, ((image.clientHeight * state.zoom.scale) - stage.clientHeight) / 2 + 80);
 
     state.zoom.x = clamp(state.zoom.x, -maxX, maxX);
     state.zoom.y = clamp(state.zoom.y, -maxY, maxY);
@@ -569,6 +619,27 @@
     button.classList.toggle('active', selected);
     button.dataset.fileId = photo.fileId;
     button.setAttribute('aria-label', selected ? 'Unselect photo' : 'Select photo');
+
+    const coverButton = $('#lightboxSetCover');
+    const frameButton = $('#lightboxSetFrame');
+
+    if (coverButton) {
+      coverButton.dataset.fileId = photo.fileId;
+      coverButton.disabled = !selected || !isLandscapePhoto(photo);
+      coverButton.textContent =
+        state.albumCoverFileId === photo.fileId
+          ? 'Cover ✓'
+          : 'Set Cover';
+    }
+
+    if (frameButton) {
+      frameButton.dataset.fileId = photo.fileId;
+      frameButton.disabled = !selected;
+      frameButton.textContent =
+        state.frameFileId === photo.fileId
+          ? 'Frame ✓'
+          : 'Set Frame';
+    }
   }
 
   function updateLightboxCounter() {
@@ -681,35 +752,204 @@
     openLightbox(next);
   }
 
+  function setAlbumCover(fileId) {
+    if (!state.selected.has(fileId)) return;
+
+    const photo = getPhotoById(fileId);
+
+    if (!isLandscapePhoto(photo)) {
+      alert('Album cover must be a landscape photo.');
+      return;
+    }
+
+    state.albumCoverFileId = fileId;
+
+    renderSelectedPreview();
+    updateLightboxFavoriteButton();
+  }
+
+  function setFramePhoto(fileId) {
+    if (!state.selected.has(fileId)) return;
+
+    state.frameFileId = fileId;
+
+    renderSelectedPreview();
+    updateLightboxFavoriteButton();
+  }
+
+  function removeSelectedPhoto(fileId) {
+    state.selected.delete(fileId);
+
+    if (state.albumCoverFileId === fileId) {
+      state.albumCoverFileId = '';
+    }
+
+    if (state.frameFileId === fileId) {
+      state.frameFileId = '';
+    }
+
+    renderGallery();
+    renderThumbnailStrip();
+    renderSelectedPreview();
+    updateLightboxFavoriteButton();
+  }
+
+  function renderFeatureCard(type) {
+    const isCover = type === 'cover';
+    const fileId = isCover ? state.albumCoverFileId : state.frameFileId;
+    const photo = getPhotoById(fileId);
+
+    const title = isCover ? 'Album Cover' : 'Photo Frame';
+    const status = photo ? 'Selected' : 'Required';
+
+    if (!photo) {
+      return `
+        <article class="review-feature-card">
+          <div class="review-feature-head">
+            <span>${title}</span>
+            <strong>${status}</strong>
+          </div>
+
+          <div class="review-feature-preview empty">
+            Select ${isCover ? 'a landscape cover photo' : 'a frame photo'} from the gallery below.
+          </div>
+        </article>
+      `;
+    }
+
+    return `
+      <article class="review-feature-card">
+        <div class="review-feature-head">
+          <span>${title}</span>
+          <strong>${status}</strong>
+        </div>
+
+        <div class="review-feature-preview">
+          <img
+            src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
+            alt="${escapeHtml(photo.name)}"
+          >
+
+          <div class="review-feature-caption">
+            <strong>${escapeHtml(photo.name)}</strong>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function updateSubmitState() {
+    const button = $('#submitFinalSelectionBtn');
+    const status = $('#reviewSubmitStatus');
+
+    const hasPhotos = state.selected.size > 0;
+    const hasCover = Boolean(state.albumCoverFileId);
+    const hasFrame = Boolean(state.frameFileId);
+    const canSubmit = hasPhotos && hasCover && hasFrame && !state.locked;
+
+    if (button) {
+      button.disabled = !canSubmit;
+    }
+
+    if (status) {
+      if (!hasCover && !hasFrame) {
+        status.textContent = 'Album Cover and Frame Photo required';
+      } else if (!hasCover) {
+        status.textContent = 'Album Cover required';
+      } else if (!hasFrame) {
+        status.textContent = 'Frame Photo required';
+      } else {
+        status.textContent = 'Ready to submit';
+      }
+    }
+
+    $('#checkPhotos')?.classList.toggle('complete', hasPhotos);
+    $('#checkCover')?.classList.toggle('complete', hasCover);
+    $('#checkFrame')?.classList.toggle('complete', hasFrame);
+  }
+
   function renderSelectedPreview() {
-    const wrap =
-      $('#selectedPreviewGrid');
+    const count = $('#reviewSelectedCount');
+    const featureGrid = $('#reviewFeatureGrid');
+    const grid = $('#selectedPreviewGrid');
+    const bottomCount = $('#reviewBottomCount');
 
-    const selectedPhotos =
-      state.photos.filter((photo) =>
-        state.selected.has(photo.fileId)
-      );
+    const selectedPhotos = getSelectedPhotos();
 
-    wrap.innerHTML =
-      selectedPhotos.map((photo) => {
+    if (count) {
+      count.textContent =
+        `${selectedPhotos.length} Photo${selectedPhotos.length === 1 ? '' : 's'} Selected`;
+    }
+
+    if (bottomCount) {
+      bottomCount.textContent =
+        `${selectedPhotos.length} Photo${selectedPhotos.length === 1 ? '' : 's'} Selected`;
+    }
+
+    if (featureGrid) {
+      featureGrid.innerHTML =
+        renderFeatureCard('cover') + renderFeatureCard('frame');
+    }
+
+    if (!grid) return;
+
+    if (!selectedPhotos.length) {
+      grid.innerHTML = `
+        <div class="review-empty-state">
+          <div>
+            <h3>No selected photos</h3>
+            <p>Go back to the gallery and select photos before submitting.</p>
+          </div>
+        </div>
+      `;
+
+      updateSubmitState();
+      return;
+    }
+
+    grid.innerHTML =
+      selectedPhotos.map((photo, index) => {
+        const isCover = state.albumCoverFileId === photo.fileId;
+        const isFrame = state.frameFileId === photo.fileId;
+        const landscape = isLandscapePhoto(photo);
+
         return `
-          <article class="selected-card">
-            <img
-              src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
-              alt="${escapeHtml(photo.name)}"
-            >
+          <article class="review-photo-card ${isCover ? 'is-cover' : ''} ${isFrame ? 'is-frame' : ''}">
+            <div class="review-photo-image-wrap" data-review-view="${index}">
+              <img
+                src="${escapeHtml(photo.thumbnailUrl || driveThumbnail(photo.fileId))}"
+                alt="${escapeHtml(photo.name)}"
+                loading="lazy"
+              >
 
-            <div class="selected-card-body">
-              <strong>
-                ${escapeHtml(photo.name)}
-              </strong>
+              <div class="review-photo-badges">
+                ${isCover ? '<span>COVER</span>' : ''}
+                ${isFrame ? '<span>FRAME</span>' : ''}
+              </div>
+            </div>
 
-              <div style="margin-top:12px">
+            <div class="review-photo-body">
+              <strong>${escapeHtml(photo.name)}</strong>
+
+              <div class="review-photo-actions">
+                <button class="btn" type="button" data-review-view="${index}">
+                  View
+                </button>
+
                 <button
-                  class="btn btn-secondary dark-btn remove-selected-btn"
-                  data-remove="${escapeHtml(photo.fileId)}"
+                  class="btn"
                   type="button"
+                  data-set-cover="${escapeHtml(photo.fileId)}"
+                  ${landscape ? '' : 'disabled'}
                 >
+                  ${isCover ? 'Cover ✓' : 'Set Cover'}
+                </button>
+
+                <button class="btn" type="button" data-set-frame="${escapeHtml(photo.fileId)}">
+                  ${isFrame ? 'Frame ✓' : 'Set Frame'}
+                </button>
+
+                <button class="btn" type="button" data-remove="${escapeHtml(photo.fileId)}">
                   Remove
                 </button>
               </div>
@@ -717,6 +957,19 @@
           </article>
         `;
       }).join('');
+
+    updateSubmitState();
+  }
+
+  function openReviewSelection() {
+    renderSelectedPreview();
+
+    const notes = $('#selectionNotes');
+    if (notes && state.gallery?.selectionNotes) {
+      notes.value = state.gallery.selectionNotes;
+    }
+
+    showModal('reviewSelectionModal');
   }
 
   function submitFinalSelection() {
@@ -725,7 +978,18 @@
       return;
     }
 
+    if (!state.albumCoverFileId) {
+      alert('Please select an album cover photo before submitting.');
+      return;
+    }
+
+    if (!state.frameFileId) {
+      alert('Please select a photo frame photo before submitting.');
+      return;
+    }
+
     const button = $('#submitFinalSelectionBtn');
+
     if (button) {
       button.disabled = true;
       button.textContent = 'Submitting...';
@@ -736,14 +1000,15 @@
       {
         email: state.gallery.email,
         galleryCode: state.gallery.galleryCode,
-        selectedFiles: JSON.stringify(
-          Array.from(state.selected)
-        )
+        selectedFiles: JSON.stringify(Array.from(state.selected)),
+        albumCoverFileId: state.albumCoverFileId,
+        frameFileId: state.frameFileId,
+        selectionNotes: $('#selectionNotes')?.value.trim() || ''
       },
       () => {
         if (button) {
           button.disabled = false;
-          button.textContent = 'Submit Final Selection';
+          button.textContent = 'Submit Selection';
         }
 
         closeModal('reviewSelectionModal');
@@ -752,10 +1017,11 @@
       () => {
         if (button) {
           button.disabled = false;
-          button.textContent = 'Submit Final Selection';
+          button.textContent = 'Submit Selection';
         }
 
         alert('Could not save selection.');
+        updateSubmitState();
       }
     );
   }
@@ -774,6 +1040,7 @@
     showTestimonialAlert('');
 
     const button = $('#submitTestimonialBtn');
+
     if (button) {
       button.disabled = true;
       button.textContent = 'Submitting...';
@@ -850,10 +1117,7 @@
           event.target.closest('[data-favorite]');
 
         if (favorite) {
-          toggleFavorite(
-            favorite.dataset.favorite
-          );
-
+          toggleFavorite(favorite.dataset.favorite);
           return;
         }
 
@@ -862,9 +1126,7 @@
 
         if (!card) return;
 
-        openLightbox(
-          Number(card.dataset.photoIndex)
-        );
+        openLightbox(Number(card.dataset.photoIndex));
       });
 
     $('#lightboxFavorite')
@@ -875,6 +1137,24 @@
         if (!fileId) return;
 
         toggleFavorite(fileId);
+      });
+
+    $('#lightboxSetCover')
+      ?.addEventListener('click', (event) => {
+        const fileId = event.currentTarget.dataset.fileId;
+
+        if (!fileId) return;
+
+        setAlbumCover(fileId);
+      });
+
+    $('#lightboxSetFrame')
+      ?.addEventListener('click', (event) => {
+        const fileId = event.currentTarget.dataset.fileId;
+
+        if (!fileId) return;
+
+        setFramePhoto(fileId);
       });
 
     $('#closeLightbox')
@@ -921,32 +1201,51 @@
       });
 
     $('#reviewSelectedBtn')
-      ?.addEventListener('click', () => {
-        renderSelectedPreview();
-        showModal('reviewSelectionModal');
-      });
+      ?.addEventListener('click', openReviewSelection);
 
     $('#selectedPreviewGrid')
       ?.addEventListener('click', (event) => {
         const remove =
           event.target.closest('[data-remove]');
 
-        if (!remove) return;
+        if (remove) {
+          removeSelectedPhoto(remove.dataset.remove);
+          return;
+        }
 
-        state.selected.delete(
-          remove.dataset.remove
-        );
+        const cover =
+          event.target.closest('[data-set-cover]');
 
-        renderSelectedPreview();
-        renderGallery();
-        renderThumbnailStrip();
+        if (cover) {
+          setAlbumCover(cover.dataset.setCover);
+          return;
+        }
+
+        const frame =
+          event.target.closest('[data-set-frame]');
+
+        if (frame) {
+          setFramePhoto(frame.dataset.setFrame);
+          return;
+        }
+
+        const view =
+          event.target.closest('[data-review-view]');
+
+        if (view) {
+          const selectedPhotos = getSelectedPhotos();
+          const selectedPhoto = selectedPhotos[Number(view.dataset.reviewView)];
+          const filteredIndex =
+            state.filteredPhotos.findIndex((photo) => photo.fileId === selectedPhoto?.fileId);
+
+          if (filteredIndex >= 0) {
+            openLightbox(filteredIndex);
+          }
+        }
       });
 
     $('#submitFinalSelectionBtn')
-      ?.addEventListener(
-        'click',
-        submitFinalSelection
-      );
+      ?.addEventListener('click', submitFinalSelection);
 
     $('#testimonialStars')
       ?.addEventListener('click', (event) => {
@@ -968,17 +1267,12 @@
       });
 
     $('#submitTestimonialBtn')
-      ?.addEventListener(
-        'click',
-        submitTestimonial
-      );
+      ?.addEventListener('click', submitTestimonial);
 
     $$('[data-close-modal]')
       .forEach((button) => {
         button.addEventListener('click', () => {
-          closeModal(
-            button.dataset.closeModal
-          );
+          closeModal(button.dataset.closeModal);
         });
       });
 
@@ -990,12 +1284,20 @@
 
     document.addEventListener('keydown', (event) => {
       const lightboxOpen = $('#lightboxModal')?.classList.contains('active');
-
-      if (!lightboxOpen) return;
+      const reviewOpen = $('#reviewSelectionModal')?.classList.contains('active');
 
       if (event.key === 'Escape') {
-        closeLightbox();
+        if (lightboxOpen) {
+          closeLightbox();
+          return;
+        }
+
+        if (reviewOpen) {
+          closeModal('reviewSelectionModal');
+        }
       }
+
+      if (!lightboxOpen) return;
 
       if (event.key === 'ArrowLeft') {
         changeLightbox(-1);
@@ -1019,5 +1321,4 @@
     'DOMContentLoaded',
     init
   );
-
 })();
