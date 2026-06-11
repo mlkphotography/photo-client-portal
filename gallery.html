@@ -114,24 +114,82 @@
 
   </main>
 
-  <div id="reviewSelectionModal" class="gallery-modal" aria-hidden="true">
-    <div class="gallery-modal-panel large">
-      <button class="gallery-modal-close" data-close-modal="reviewSelectionModal" type="button">×</button>
+  <div id="reviewSelectionModal" class="gallery-modal review-selection-modal" aria-hidden="true">
+    <div class="gallery-modal-panel large review-selection-panel">
+      <button class="gallery-modal-close review-close" data-close-modal="reviewSelectionModal" type="button" aria-label="Close review">×</button>
 
-      <p class="eyebrow">Review Selected Photos</p>
-      <h2>Confirm your selected photos</h2>
-      <p class="muted">Remove any photo before submitting your final selection.</p>
+      <div class="review-hero">
+        <div>
+          <p class="eyebrow">Final Photo Selection</p>
+          <h2>Review Selection</h2>
+          <p id="reviewSelectedCount" class="review-subtitle">0 Photos Selected</p>
+        </div>
 
-      <div id="selectedPreviewGrid" class="selected-preview-grid"></div>
+        <div id="reviewChecklist" class="review-checklist" aria-label="Selection checklist">
+          <span id="checkPhotos" class="review-check-item">Photos</span>
+          <span id="checkCover" class="review-check-item">Cover</span>
+          <span id="checkFrame" class="review-check-item">Frame</span>
+        </div>
+      </div>
 
-      <div class="modal-actions">
-        <button class="btn btn-secondary dark-btn" data-close-modal="reviewSelectionModal" type="button">
-          Back to Gallery
-        </button>
+      <div class="review-feature-grid">
+        <article class="review-feature-card" id="albumCoverCard">
+          <div class="review-feature-head">
+            <span>Album Cover</span>
+            <strong id="albumCoverStatus">Required</strong>
+          </div>
+          <div id="albumCoverPreview" class="review-feature-preview empty">
+            <span>Select a landscape photo below</span>
+          </div>
+        </article>
 
-        <button id="submitFinalSelectionBtn" class="btn btn-primary" type="button">
-          Submit Final Selection
-        </button>
+        <article class="review-feature-card" id="framePhotoCard">
+          <div class="review-feature-head">
+            <span>Photo Frame</span>
+            <strong id="framePhotoStatus">Required</strong>
+          </div>
+          <div id="framePhotoPreview" class="review-feature-preview empty">
+            <span>Select a photo below</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="review-section-head">
+        <div>
+          <h3>Selected Photos</h3>
+          <p>Tap a photo to view larger, set cover, set frame, or remove.</p>
+        </div>
+      </div>
+
+      <div id="selectedPreviewGrid" class="selected-preview-grid review-photo-grid"></div>
+
+      <div class="review-notes-card">
+        <label for="selectionNotes">Additional Notes</label>
+        <textarea id="selectionNotes" rows="4" placeholder="Optional: special editing request, album wording, frame preference, or other instructions."></textarea>
+      </div>
+
+      <div class="review-important-card">
+        <strong>Important</strong>
+        <p>After submitting your final selection, you will no longer be able to make changes.</p>
+        <p>If you want to edit your selection after submission, please contact MLK Photography on WhatsApp and request gallery reopening.</p>
+        <a class="review-whatsapp-link js-whatsapp-link" href="#" target="_blank" rel="noopener">Request help on WhatsApp</a>
+      </div>
+
+      <div class="review-floating-submit">
+        <div>
+          <strong id="reviewBottomCount">0 Photos Selected</strong>
+          <span id="reviewSubmitHint">Album Cover and Photo Frame are required.</span>
+        </div>
+
+        <div class="review-bottom-actions">
+          <button class="btn btn-secondary dark-btn" data-close-modal="reviewSelectionModal" type="button">
+            Back to Gallery
+          </button>
+
+          <button id="submitFinalSelectionBtn" class="btn btn-primary" type="button" disabled>
+            Submit Selection
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -177,6 +235,14 @@
       <div class="lightbox-actions">
         <button id="lightboxFavorite" class="btn btn-primary" type="button">
           + Select
+        </button>
+
+        <button id="lightboxSetCover" class="btn btn-secondary dark-btn lightbox-extra-action" type="button">
+          Set Cover
+        </button>
+
+        <button id="lightboxSetFrame" class="btn btn-secondary dark-btn lightbox-extra-action" type="button">
+          Set Frame
         </button>
 
         <a id="lightboxDownload"
