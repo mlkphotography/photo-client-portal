@@ -19,7 +19,7 @@
     filteredPhotos: [],
     selected: new Set(),
     albumCoverFileId: '',
-    frameFileId: '',
+    frameFileIds: [],
     rating: 5,
     lightboxIndex: 0,
     locked: false,
@@ -56,6 +56,10 @@
 
   function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
+  }
+
+  function getFrameLimit() {
+    return Math.max(1, Number(state.gallery?.frameLimit || 1));
   }
 
   function setButtonLoading(isLoading) {
@@ -297,8 +301,19 @@
     state.albumCoverFileId =
       String(state.gallery.albumCoverFileId || '');
 
-    state.frameFileId =
-      String(state.gallery.frameFileId || '');
+    if (Array.isArray(state.gallery.frameFileIds)) {
+      state.frameFileIds = state.gallery.frameFileIds.map(String);
+    } else if (state.gallery.frameFileIds) {
+      try {
+        state.frameFileIds = JSON.parse(state.gallery.frameFileIds).map(String);
+      } catch (error) {
+        state.frameFileIds = [];
+      }
+    } else if (state.gallery.frameFileId) {
+      state.frameFileIds = [String(state.gallery.frameFileId)];
+    } else {
+      state.frameFileIds = [];
+    }
 
     $('#loginView').style.display = 'none';
     $('#galleryView').style.display = 'block';
@@ -423,9 +438,8 @@
         state.albumCoverFileId = '';
       }
 
-      if (sameId(state.frameFileId, id)) {
-        state.frameFileId = '';
-      }
+      state.frameFileIds =
+        state.frameFileIds.filter((item) => !sameId(item, id));
     } else {
       const limit =
         Number(state.gallery.selectionLimit || 0);
@@ -600,6 +614,7 @@
 
     const fileId = String(photo.fileId);
     const selected = state.selected.has(fileId);
+    const isFrame = state.frameFileIds.some((id) => sameId(id, fileId));
 
     button.textContent = selected ? '✓ Selected' : '+ Select';
     button.classList.toggle('active', selected);
@@ -623,9 +638,9 @@
       frameButton.dataset.fileId = fileId;
       frameButton.disabled = !selected;
       frameButton.textContent =
-        sameId(state.frameFileId, fileId)
+        isFrame
           ? 'Remove Frame'
-          : 'Set Frame';
+          : `Set Frame`;
     }
 
     if (removeButton) {
@@ -775,14 +790,20 @@
 
     if (!state.selected.has(id)) return;
 
-    if (sameId(state.frameFileId, id)) {
-      state.frameFileId = '';
-      renderSelectedPreview();
-      updateLightboxFavoriteButton();
-      return;
-    }
+    const frameLimit = getFrameLimit();
+    const alreadyFrame = state.frameFileIds.some((item) => sameId(item, id));
 
-    state.frameFileId = id;
+    if (alreadyFrame) {
+      state.frameFileIds =
+        state.frameFileIds.filter((item) => !sameId(item, id));
+    } else {
+      if (state.frameFileIds.length >= frameLimit) {
+        alert(`You can only select ${frameLimit} frame photo${frameLimit === 1 ? '' : 's'}.`);
+        return;
+      }
+
+      state.frameFileIds.push(id);
+    }
 
     renderSelectedPreview();
     updateLightboxFavoriteButton();
@@ -797,9 +818,8 @@
       state.albumCoverFileId = '';
     }
 
-    if (sameId(state.frameFileId, id)) {
-      state.frameFileId = '';
-    }
+    state.frameFileIds =
+      state.frameFileIds.filter((item) => !sameId(item, id));
 
     renderGallery();
     renderThumbnailStrip();
@@ -811,13 +831,15 @@
     const button = $('#submitFinalSelectionBtn');
     const status = $('#reviewSubmitStatus');
     const limitText = $('#reviewLimitText');
+    const frameCheck = $('#checkFrame');
 
     const limit = Number(state.gallery?.selectionLimit || 0);
     const selectedCount = state.selected.size;
+    const frameLimit = getFrameLimit();
 
     const hasPhotos = selectedCount > 0;
     const hasCover = Boolean(state.albumCoverFileId);
-    const hasFrame = Boolean(state.frameFileId);
+    const hasFrame = state.frameFileIds.length >= frameLimit;
     const canSubmit = hasPhotos && hasCover && hasFrame && !state.locked;
 
     if (button) {
@@ -828,7 +850,7 @@
       if (limit) {
         limitText.textContent =
           selectedCount >= limit
-            ? `${selectedCount} / ${limit} Photos Selected — Limit Reached`
+            ? `${selectedCount} / ${limit} Photos Selected - Limit Reached`
             : `${selectedCount} / ${limit} Photos Selected`;
       } else {
         limitText.textContent =
@@ -838,14 +860,19 @@
 
     if (status) {
       if (!hasCover && !hasFrame) {
-        status.textContent = 'Album Cover and Frame Photo required';
+        status.textContent = `Album Cover and Frame Photos required (${state.frameFileIds.length}/${frameLimit})`;
       } else if (!hasCover) {
         status.textContent = 'Album Cover required';
       } else if (!hasFrame) {
-        status.textContent = 'Frame Photo required';
+        status.textContent = `Frame Photos required: ${state.frameFileIds.length}/${frameLimit}`;
       } else {
         status.textContent = 'Ready to submit';
       }
+    }
+
+    if (frameCheck) {
+      frameCheck.textContent =
+        `Frame ${state.frameFileIds.length}/${frameLimit}`;
     }
 
     $('#checkPhotos')?.classList.toggle('complete', hasPhotos);
@@ -890,7 +917,8 @@
       selectedPhotos.map((photo, index) => {
         const fileId = String(photo.fileId);
         const isCover = sameId(state.albumCoverFileId, fileId);
-        const isFrame = sameId(state.frameFileId, fileId);
+        const frameIndex = state.frameFileIds.findIndex((id) => sameId(id, fileId));
+        const isFrame = frameIndex >= 0;
 
         return `
           <article class="review-photo-card ${isCover ? 'is-cover' : ''} ${isFrame ? 'is-frame' : ''}">
@@ -903,7 +931,7 @@
 
               <div class="review-photo-badges">
                 ${isCover ? '<span>COVER</span>' : ''}
-                ${isFrame ? '<span>FRAME</span>' : ''}
+                ${isFrame ? `<span>FRAME ${frameIndex + 1}</span>` : ''}
               </div>
             </div>
 
@@ -930,6 +958,8 @@
   }
 
   function submitFinalSelection() {
+    const frameLimit = getFrameLimit();
+
     if (!state.selected.size) {
       alert('Please select at least one photo.');
       return;
@@ -940,8 +970,8 @@
       return;
     }
 
-    if (!state.frameFileId) {
-      alert('Please select a photo frame photo before submitting.');
+    if (state.frameFileIds.length < frameLimit) {
+      alert(`Please select ${frameLimit} frame photo${frameLimit === 1 ? '' : 's'} before submitting.`);
       return;
     }
 
@@ -959,7 +989,7 @@
         galleryCode: state.gallery.galleryCode,
         selectedFiles: JSON.stringify(Array.from(state.selected)),
         albumCoverFileId: state.albumCoverFileId,
-        frameFileId: state.frameFileId,
+        frameFileIds: JSON.stringify(state.frameFileIds),
         selectionNotes: $('#selectionNotes')?.value.trim() || ''
       },
       () => {
@@ -1034,189 +1064,143 @@
   }
 
   function initEvents() {
-    $('#openGalleryBtn')
-      ?.addEventListener('click', loginGallery);
+    $('#openGalleryBtn')?.addEventListener('click', loginGallery);
 
-    $('#clientEmail')
-      ?.addEventListener('input', (event) => {
-        event.target.value =
-          event.target.value.trim().toLowerCase();
+    $('#clientEmail')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.trim().toLowerCase();
+    });
+
+    $('#galleryCode')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.trim().toUpperCase();
+    });
+
+    $('#clientEmail')?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') loginGallery();
+    });
+
+    $('#galleryCode')?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') loginGallery();
+    });
+
+    $('#logoutGalleryBtn')?.addEventListener('click', () => {
+      window.location.reload();
+    });
+
+    $('#photoGrid')?.addEventListener('click', (event) => {
+      const favorite = event.target.closest('[data-favorite]');
+
+      if (favorite) {
+        toggleFavorite(favorite.dataset.favorite);
+        return;
+      }
+
+      const card = event.target.closest('[data-photo-index]');
+      if (!card) return;
+
+      openLightbox(Number(card.dataset.photoIndex));
+    });
+
+    $('#lightboxFavorite')?.addEventListener('click', (event) => {
+      const fileId = event.currentTarget.dataset.fileId;
+      if (!fileId) return;
+
+      toggleFavorite(fileId);
+    });
+
+    $('#lightboxSetCover')?.addEventListener('click', (event) => {
+      const fileId = event.currentTarget.dataset.fileId;
+      if (!fileId) return;
+
+      setAlbumCover(fileId);
+    });
+
+    $('#lightboxSetFrame')?.addEventListener('click', (event) => {
+      const fileId = event.currentTarget.dataset.fileId;
+      if (!fileId) return;
+
+      setFramePhoto(fileId);
+    });
+
+    $('#lightboxRemoveSelection')?.addEventListener('click', (event) => {
+      const fileId = event.currentTarget.dataset.fileId;
+      if (!fileId) return;
+
+      removeSelectedPhoto(fileId);
+      closeLightbox();
+    });
+
+    $('#closeLightbox')?.addEventListener('click', closeLightbox);
+
+    $('#prevPhoto')?.addEventListener('click', () => {
+      changeLightbox(-1);
+    });
+
+    $('#nextPhoto')?.addEventListener('click', () => {
+      changeLightbox(1);
+    });
+
+    $('#lightboxImage')?.addEventListener('dblclick', toggleZoom);
+    $('#lightboxImage')?.addEventListener('wheel', handleWheelZoom, { passive: false });
+    $('#lightboxImage')?.addEventListener('pointerdown', startPan);
+    $('#lightboxImage')?.addEventListener('pointermove', movePan);
+
+    $('#lightboxImage')?.addEventListener('pointerup', (event) => {
+      handleTouchDoubleTap(event);
+      endPan(event);
+    });
+
+    $('#lightboxImage')?.addEventListener('pointercancel', endPan);
+
+    $('#lightboxThumbnails')?.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-thumb-index]');
+      if (!button) return;
+
+      openLightbox(Number(button.dataset.thumbIndex));
+    });
+
+    $('#reviewSelectedBtn')?.addEventListener('click', openReviewSelection);
+
+    $('#selectedPreviewGrid')?.addEventListener('click', (event) => {
+      const view = event.target.closest('[data-review-view]');
+      if (!view) return;
+
+      const selectedPhotos = getSelectedPhotos();
+      const selectedPhoto = selectedPhotos[Number(view.dataset.reviewView)];
+
+      const filteredIndex =
+        state.filteredPhotos.findIndex((photo) => sameId(photo.fileId, selectedPhoto?.fileId));
+
+      if (filteredIndex >= 0) {
+        openLightbox(filteredIndex);
+      }
+    });
+
+    $('#submitFinalSelectionBtn')?.addEventListener('click', submitFinalSelection);
+
+    $('#testimonialStars')?.addEventListener('click', (event) => {
+      const star = event.target.closest('[data-rating]');
+      if (!star) return;
+
+      state.rating = Number(star.dataset.rating);
+
+      $$('.rating-star').forEach((item) => {
+        item.classList.toggle(
+          'active',
+          Number(item.dataset.rating) <= state.rating
+        );
       });
+    });
 
-    $('#galleryCode')
-      ?.addEventListener('input', (event) => {
-        event.target.value =
-          event.target.value.trim().toUpperCase();
+    $('#submitTestimonialBtn')?.addEventListener('click', submitTestimonial);
+
+    $$('[data-close-modal]').forEach((button) => {
+      button.addEventListener('click', () => {
+        closeModal(button.dataset.closeModal);
       });
+    });
 
-    $('#clientEmail')
-      ?.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') loginGallery();
-      });
-
-    $('#galleryCode')
-      ?.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') loginGallery();
-      });
-
-    $('#logoutGalleryBtn')
-      ?.addEventListener('click', () => {
-        window.location.reload();
-      });
-
-    $('#photoGrid')
-      ?.addEventListener('click', (event) => {
-        const favorite =
-          event.target.closest('[data-favorite]');
-
-        if (favorite) {
-          toggleFavorite(favorite.dataset.favorite);
-          return;
-        }
-
-        const card =
-          event.target.closest('[data-photo-index]');
-
-        if (!card) return;
-
-        openLightbox(Number(card.dataset.photoIndex));
-      });
-
-    $('#lightboxFavorite')
-      ?.addEventListener('click', (event) => {
-        const fileId =
-          event.currentTarget.dataset.fileId;
-
-        if (!fileId) return;
-
-        toggleFavorite(fileId);
-      });
-
-    $('#lightboxSetCover')
-      ?.addEventListener('click', (event) => {
-        const fileId = event.currentTarget.dataset.fileId;
-        if (!fileId) return;
-
-        setAlbumCover(fileId);
-      });
-
-    $('#lightboxSetFrame')
-      ?.addEventListener('click', (event) => {
-        const fileId = event.currentTarget.dataset.fileId;
-        if (!fileId) return;
-
-        setFramePhoto(fileId);
-      });
-
-    $('#lightboxRemoveSelection')
-      ?.addEventListener('click', (event) => {
-        const fileId = event.currentTarget.dataset.fileId;
-        if (!fileId) return;
-
-        removeSelectedPhoto(fileId);
-        closeLightbox();
-      });
-
-    $('#closeLightbox')
-      ?.addEventListener('click', closeLightbox);
-
-    $('#prevPhoto')
-      ?.addEventListener('click', () => {
-        changeLightbox(-1);
-      });
-
-    $('#nextPhoto')
-      ?.addEventListener('click', () => {
-        changeLightbox(1);
-      });
-
-    $('#lightboxImage')
-      ?.addEventListener('dblclick', toggleZoom);
-
-    $('#lightboxImage')
-      ?.addEventListener('wheel', handleWheelZoom, { passive: false });
-
-    $('#lightboxImage')
-      ?.addEventListener('pointerdown', startPan);
-
-    $('#lightboxImage')
-      ?.addEventListener('pointermove', movePan);
-
-    $('#lightboxImage')
-      ?.addEventListener('pointerup', (event) => {
-        handleTouchDoubleTap(event);
-        endPan(event);
-      });
-
-    $('#lightboxImage')
-      ?.addEventListener('pointercancel', endPan);
-
-    $('#lightboxThumbnails')
-      ?.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-thumb-index]');
-        if (!button) return;
-
-        openLightbox(Number(button.dataset.thumbIndex));
-      });
-
-    $('#reviewSelectedBtn')
-      ?.addEventListener('click', openReviewSelection);
-
-    $('#selectedPreviewGrid')
-      ?.addEventListener('click', (event) => {
-        const view =
-          event.target.closest('[data-review-view]');
-
-        if (!view) return;
-
-        const selectedPhotos = getSelectedPhotos();
-        const selectedPhoto = selectedPhotos[Number(view.dataset.reviewView)];
-
-        const filteredIndex =
-          state.filteredPhotos.findIndex((photo) => sameId(photo.fileId, selectedPhoto?.fileId));
-
-        if (filteredIndex >= 0) {
-          openLightbox(filteredIndex);
-        }
-      });
-
-    $('#submitFinalSelectionBtn')
-      ?.addEventListener('click', submitFinalSelection);
-
-    $('#testimonialStars')
-      ?.addEventListener('click', (event) => {
-        const star =
-          event.target.closest('[data-rating]');
-
-        if (!star) return;
-
-        state.rating =
-          Number(star.dataset.rating);
-
-        $$('.rating-star')
-          .forEach((item) => {
-            item.classList.toggle(
-              'active',
-              Number(item.dataset.rating) <= state.rating
-            );
-          });
-      });
-
-    $('#submitTestimonialBtn')
-      ?.addEventListener('click', submitTestimonial);
-
-    $$('[data-close-modal]')
-      .forEach((button) => {
-        button.addEventListener('click', () => {
-          closeModal(button.dataset.closeModal);
-        });
-      });
-
-    $('#photoSearch')
-      ?.addEventListener('input', applyGalleryFilters);
-
-    $('#sortPhotos')
-      ?.addEventListener('change', applyGalleryFilters);
+    $('#photoSearch')?.addEventListener('input', applyGalleryFilters);
+    $('#sortPhotos')?.addEventListener('change', applyGalleryFilters);
 
     document.addEventListener('keydown', (event) => {
       const lightboxOpen = $('#lightboxModal')?.classList.contains('active');
@@ -1253,8 +1237,5 @@
     initEvents();
   }
 
-  document.addEventListener(
-    'DOMContentLoaded',
-    init
-  );
+  document.addEventListener('DOMContentLoaded', init);
 })();
